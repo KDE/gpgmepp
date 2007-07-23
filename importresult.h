@@ -1,29 +1,31 @@
-/* importresult.h - wraps a gpgme import result
-   Copyright (C) 2004 Klarälvdalens Datakonsult AB
+/*
+  importresult.h - wraps a gpgme import result
+  Copyright (C) 2004 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
- 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
- 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  This file is part of GPGME++.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME++; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
 */
 
 #ifndef __GPGMEPP_IMPORTRESULT_H__
 #define __GPGMEPP_IMPORTRESULT_H__
 
-#include <gpgmepp/gpgmefw.h>
-#include <gpgmepp/result.h>
-#include <gpgmepp/gpgmepp_export.h>
+#include <gpgme++/gpgmefw.h>
+#include <gpgme++/result.h>
+#include <gpgme++/gpgme++_export.h>
 
 #include <vector>
 
@@ -32,14 +34,23 @@ namespace GpgME {
   class Error;
   class Import;
 
-  class QPGMEPP_EXPORT ImportResult : public Result {
+  class GPGMEPP_EXPORT ImportResult : public Result {
   public:
-    ImportResult( gpgme_ctx_t ctx=0, int error=0 );
+    explicit ImportResult( gpgme_ctx_t ctx=0, int error=0 );
     explicit ImportResult( const Error & error );
     ImportResult( const ImportResult & other );
     ~ImportResult();
 
-    const ImportResult & operator=( const ImportResult & other );
+    const ImportResult & operator=( ImportResult other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( ImportResult & other ) {
+	Result::swap( other );
+	using std::swap;
+	swap( this->d, other.d );
+    }
 
     bool isNull() const;
 
@@ -68,7 +79,7 @@ namespace GpgME {
     Private * d;
   };
 
-  class QPGMEPP_EXPORT Import {
+  class GPGMEPP_EXPORT Import {
     friend class ImportResult;
     Import( ImportResult::Private * parent, unsigned int idx );
   public:
@@ -76,7 +87,16 @@ namespace GpgME {
     Import( const Import & other );
     ~Import();
 
-    const Import & operator=( const Import & other );
+    const Import & operator=( Import other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( Import & other ) {
+	using std::swap;
+	swap( this->d, other.d );
+	swap( this->idx, other.idx );
+    }
 
     bool isNull() const;
 
@@ -99,5 +119,8 @@ namespace GpgME {
   };
 
 }
+
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( ImportResult )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Import )
 
 #endif // __GPGMEPP_IMPORTRESULT_H__

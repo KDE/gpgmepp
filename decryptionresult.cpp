@@ -1,26 +1,28 @@
-/* decryptionresult.cpp - wraps a gpgme keygen result
-   Copyright (C) 2004 Klarälvdalens Datakonsult AB
+/*
+  decryptionresult.cpp - wraps a gpgme keygen result
+  Copyright (C) 2004 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
- 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
- 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  This file is part of GPGME++.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME++; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
 */
 
-#include <config-gpgmepp.h>
+#include <config-gpgme++.h>
 
-#include <gpgmepp/decryptionresult.h>
+#include <gpgme++/decryptionresult.h>
 #include "shared.h"
 #include "result_p.h"
 
@@ -62,7 +64,7 @@ const char * GpgME::DecryptionResult::unsupportedAlgortihm() const {
   return d ? d->res.unsupported_algorithm : 0 ;
 }
 
-bool GpgME::DecryptionResult::wrongKeyUsage() const {
+bool GpgME::DecryptionResult::isWrongKeyUsage() const {
 #ifdef HAVE_GPGME_WRONG_KEY_USAGE
   if ( d )
     return d->res.wrong_key_usage;

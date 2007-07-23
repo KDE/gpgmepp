@@ -1,24 +1,26 @@
-/* importresult.cpp - wraps a gpgme import result
-   Copyright (C) 2004 Klarälvdalens Datakonsult AB
+/*
+  importresult.cpp - wraps a gpgme import result
+  Copyright (C) 2004 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
- 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
- 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  This file is part of GPGME++.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME++; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
 */
 
-#include <gpgmepp/importresult.h>
+#include <gpgme++/importresult.h>
 #include "shared.h"
 #include "result_p.h"
 
@@ -156,20 +158,6 @@ GpgME::Import::~Import() {
     d->unref();
 }
 
-const GpgME::Import & GpgME::Import::operator=( const Import & other ) {
-  if ( this->d != other.d ) {
-    if ( other.d )
-      other.d->ref();
-    if ( this->d )
-      this->d->unref();
-    this->d = other.d;
-  }
-
-  this->idx = other.idx;
-  return *this;
-}
-
-
 bool GpgME::Import::isNull() const {
   return !d || idx >= d->imports.size() ;
 }
@@ -182,13 +170,13 @@ const char * GpgME::Import::fingerprint() const {
 }
 
 GpgME::Error GpgME::Import::error() const {
-  return isNull() ? 0 : d->imports[idx]->result ;
+  return Error( isNull() ? 0 : d->imports[idx]->result );
 }
 
 GpgME::Import::Status GpgME::Import::status() const {
   if ( isNull() )
     return Unknown;
-  unsigned int s = d->imports[idx]->status;
+  const unsigned int s = d->imports[idx]->status;
   unsigned int result = Unknown;
   if ( s & GPGME_IMPORT_NEW )    result |= NewKey;
   if ( s & GPGME_IMPORT_UID )    result |= NewUserIDs;

@@ -1,24 +1,26 @@
-/* verificationresult.cpp - wraps a gpgme verify result
-   Copyright (C) 2004 Klarälvdalens Datakonsult AB
+/*
+  verificationresult.cpp - wraps a gpgme verify result
+  Copyright (C) 2004 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
- 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
- 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  This file is part of GPGME++.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME++; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
 */
 
-#include <gpgmepp/verificationresult.h>
+#include <gpgme++/verificationresult.h>
 #include "shared.h"
 #include "result_p.h"
 
@@ -135,20 +137,6 @@ GpgME::Signature::~Signature() {
     d->unref();
 }
 
-const GpgME::Signature & GpgME::Signature::operator=( const Signature & other ) {
-  if ( this->d != other.d ) {
-    if ( other.d )
-      other.d->ref();
-    if ( this->d )
-      this->d->unref();
-    this->d = other.d;
-  }
-
-  this->idx = other.idx;
-  return *this;
-}
-
-
 bool GpgME::Signature::isNull() const {
   return !d || idx >= d->sigs.size() ;
 }
@@ -178,7 +166,7 @@ const char * GpgME::Signature::fingerprint() const {
 }
 
 GpgME::Error GpgME::Signature::status() const {
-  return isNull() ? 0 : d->sigs[idx]->status ;
+  return Error( isNull() ? 0 : d->sigs[idx]->status );
 }
 
 time_t GpgME::Signature::creationTime() const {
@@ -227,7 +215,7 @@ char GpgME::Signature::validityAsString() const {
 }
 
 GpgME::Error GpgME::Signature::nonValidityReason() const {
-  return isNull() ? 0 : d->sigs[idx]->validity_reason ;
+  return Error( isNull() ? 0 : d->sigs[idx]->validity_reason );
 }
 
 
@@ -266,20 +254,6 @@ GpgME::Signature::Notation::Notation( const Notation & other )
 GpgME::Signature::Notation::~Notation() {
   if ( d )
     d->unref();
-}
-
-const GpgME::Signature::Notation & GpgME::Signature::Notation::operator=( const Notation & other ) {
-  if ( this->d != other.d ) {
-    if ( other.d )
-      other.d->ref();
-    if ( this->d )
-      this->d->ref();
-    this->d = other.d;
-  }
-
-  sidx = other.sidx;
-  nidx = other.nidx;
-  return *this;
 }
 
 bool GpgME::Signature::Notation::isNull() const {

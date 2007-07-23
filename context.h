@@ -1,28 +1,31 @@
-/* context.h - wraps a gpgme key context
-   Copyright (C) 2003 Klarälvdalens Datakonsult AB
+/*
+  context.h - wraps a gpgme key context
+  Copyright (C) 2003 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
+  This file is part of GPGME++.
 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME++; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.  */
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
+*/
 
 // -*- c++ -*-
 #ifndef __GPGMEPP_CONTEXT_H__
 #define __GPGMEPP_CONTEXT_H__
 
-#include <gpgmepp/gpgmefw.h>
-#include <gpgmepp/gpgmepp_export.h>
+#include <gpgme++/gpgmefw.h>
+#include <gpgme++/gpgme++_export.h>
 
 #include <vector>
 #include <utility>
@@ -46,9 +49,9 @@ namespace GpgME {
 
   class EngineInfo;
 
-  class QPGMEPP_EXPORT Error {
+  class GPGMEPP_EXPORT Error {
   public:
-    Error( int e=0 ) : mErr( e ) {}
+    explicit Error( int e=0 ) : mErr( e ) {}
 
     const char * source() const;
     const char * asString() const;
@@ -64,8 +67,8 @@ namespace GpgME {
     int mErr;
   };
 
-  class QPGMEPP_EXPORT Context {
-    Context( gpgme_ctx_t );
+  class GPGMEPP_EXPORT Context {
+    explicit Context( gpgme_ctx_t );
   public:
     enum Protocol { OpenPGP, CMS, Unknown };
 
@@ -260,7 +263,8 @@ namespace GpgME {
     GpgME::Error cancelPendingOperation();
 
     class Private;
-    Private * impl() const { return d; }
+    const Private * impl() const { return d; }
+    Private * impl() { return d; }
   private:
     Private * d;
 
@@ -275,17 +279,17 @@ namespace GpgME {
   //
   //
 
-  QPGMEPP_EXPORT GpgME::Error setDefaultLocale( int category, const char * value );
+  GPGMEPP_EXPORT GpgME::Error setDefaultLocale( int category, const char * value );
 
-  QPGMEPP_EXPORT Context * wait( GpgME::Error & e, bool hang=true );
+  GPGMEPP_EXPORT Context * wait( GpgME::Error & e, bool hang=true );
   typedef void (*IdleFunction)(void);
-  QPGMEPP_EXPORT IdleFunction registerIdleFunction( IdleFunction idleFunction );
+  GPGMEPP_EXPORT IdleFunction registerIdleFunction( IdleFunction idleFunction );
 
   typedef void (*IOCallback)( void * data, int fd );
 
-  QPGMEPP_EXPORT EngineInfo engineInfo( Context::Protocol proto );
+  GPGMEPP_EXPORT EngineInfo engineInfo( Context::Protocol proto );
 
-  QPGMEPP_EXPORT GpgME::Error checkEngine( Context::Protocol proto );
+  GPGMEPP_EXPORT GpgME::Error checkEngine( Context::Protocol proto );
 
 } // namespace GpgME
 

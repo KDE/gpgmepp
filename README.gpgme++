@@ -74,9 +74,6 @@
     License
     -------
 
-    This library is licensed under the GNU General Public License
-    (GPL), just as gpgme is. We feel that using a different license
-    than the one gpgme itself uses doesn't make sense. OTOH, we shall
-    relicense this library to the GNU Lesser General Public License
-    (LGPL) should gpgme itself be made available under this license at
-    any time in the future.
+    This library is licensed under the GNU Library General Public
+    License (LGPL), just as gpgme is. We feel that using a different
+    license than the one gpgme itself uses doesn't make sense.

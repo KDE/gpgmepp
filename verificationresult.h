@@ -1,29 +1,31 @@
-/* verificationresult.h - wraps a gpgme verify result
-   Copyright (C) 2004 Klarälvdalens Datakonsult AB
+/*
+  verificationresult.h - wraps a gpgme verify result
+  Copyright (C) 2004 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
- 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
- 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  This file is part of GPGME++.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME++; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
 */
 
 #ifndef __GPGMEPP_VERIFICATIONRESULT_H__
 #define __GPGMEPP_VERIFICATIONRESULT_H__
 
-#include <gpgmepp/gpgmefw.h>
-#include <gpgmepp/result.h>
-#include <gpgmepp/gpgmepp_export.h>
+#include <gpgme++/gpgmefw.h>
+#include <gpgme++/result.h>
+#include <gpgme++/gpgme++_export.h>
 
 #include <time.h>
 
@@ -34,26 +36,35 @@ namespace GpgME {
   class Error;
   class Signature;
 
-  class QPGMEPP_EXPORT VerificationResult : public Result {
+  class GPGMEPP_EXPORT VerificationResult : public Result {
   public:
-    VerificationResult( gpgme_ctx_t ctx=0, int error=0 );
+    explicit VerificationResult( gpgme_ctx_t ctx=0, int error=0 );
     explicit VerificationResult( const Error & err );
     VerificationResult( const VerificationResult & other );
     ~VerificationResult();
 
-    const VerificationResult & operator=( const VerificationResult & other );
+    const VerificationResult & operator=( VerificationResult other ) {
+	swap( other );
+	return *this;
+    }
 
     bool isNull() const;
 
     Signature signature( unsigned int index ) const;
     std::vector<Signature> signatures() const;
 
+    void swap( VerificationResult & other ) {
+	Result::swap( other );
+	using std::swap;
+	swap( this->d, other.d );
+    }
+
     class Private;
   private:
     Private * d;
   };
 
-  class QPGMEPP_EXPORT Signature {
+  class GPGMEPP_EXPORT Signature {
     friend class VerificationResult;
     Signature( VerificationResult::Private * parent, unsigned int index );
   public:
@@ -63,7 +74,16 @@ namespace GpgME {
     Signature( const Signature & other );
     ~Signature();
 
-    const Signature & operator=( const Signature & other );
+    const Signature & operator=( Signature other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( Signature & other ) {
+	using std::swap;
+	swap( this->d, other.d );
+	swap( this->idx, other.idx );
+    }
 
     bool isNull() const;
 
@@ -109,7 +129,7 @@ namespace GpgME {
     unsigned int idx;
   };
 
-  class QPGMEPP_EXPORT Signature::Notation {
+  class GPGMEPP_EXPORT Signature::Notation {
     friend class Signature;
     Notation( VerificationResult::Private * parent, unsigned int sindex, unsigned int nindex );
   public:
@@ -117,7 +137,17 @@ namespace GpgME {
     Notation( const Notation & other );
     ~Notation();
 
-    const Notation & operator=( const Notation & other );
+    const Notation & operator=( Notation other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( Notation & other ) {
+	using std::swap;
+	swap( this->d, other.d );
+	swap( this->sidx, other.sidx );
+	swap( this->nidx, other.nidx );
+    }
 
     bool isNull() const;
 
@@ -131,5 +161,9 @@ namespace GpgME {
   };
 
 }
+
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( VerificationResult )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Signature )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Signature::Notation )
 
 #endif // __GPGMEPP_VERIFICATIONRESULT_H__

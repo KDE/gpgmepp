@@ -1,35 +1,38 @@
-/* context.cpp - wraps a gpgme key context
-   Copyright (C) 2003 Klarälvdalens Datakonsult AB
+/*
+  context.cpp - wraps a gpgme key context
+  Copyright (C) 2003 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
+  This file is part of GPGME++.
 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME++; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.  */
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
+*/
 
-#include <config-gpgmepp.h>
+#include <config-gpgme++.h>
 
-#include <gpgmepp/context.h>
-#include <gpgmepp/eventloopinteractor.h>
-#include <gpgmepp/trustitem.h>
-#include <gpgmepp/keylistresult.h>
-#include <gpgmepp/keygenerationresult.h>
-#include <gpgmepp/importresult.h>
-#include <gpgmepp/decryptionresult.h>
-#include <gpgmepp/verificationresult.h>
-#include <gpgmepp/signingresult.h>
-#include <gpgmepp/encryptionresult.h>
-#include <gpgmepp/engineinfo.h>
+#include <gpgme++/context.h>
+#include <gpgme++/eventloopinteractor.h>
+#include <gpgme++/trustitem.h>
+#include <gpgme++/keylistresult.h>
+#include <gpgme++/keygenerationresult.h>
+#include <gpgme++/importresult.h>
+#include <gpgme++/decryptionresult.h>
+#include <gpgme++/verificationresult.h>
+#include <gpgme++/signingresult.h>
+#include <gpgme++/encryptionresult.h>
+#include <gpgme++/engineinfo.h>
 
 #include "callbacks.h"
 #include "data_p.h"
@@ -219,7 +222,7 @@ namespace GpgME {
   }
 
   Error Context::setLocale( int cat, const char * val ) {
-    return d->lasterr = gpgme_set_locale( d->ctx, cat, val );
+    return Error( d->lasterr = gpgme_set_locale( d->ctx, cat, val ) );
   }
 
   //
@@ -230,18 +233,18 @@ namespace GpgME {
 
   Error Context::startKeyListing( const char * pattern, bool secretOnly ) {
     d->lastop = Private::KeyList;
-    return d->lasterr = gpgme_op_keylist_start( d->ctx, pattern, int( secretOnly ) );
+    return Error( d->lasterr = gpgme_op_keylist_start( d->ctx, pattern, int( secretOnly ) ) );
   }
 
   Error Context::startKeyListing( const char * patterns[], bool secretOnly ) {
     d->lastop = Private::KeyList;
-    return d->lasterr = gpgme_op_keylist_ext_start( d->ctx, patterns, int( secretOnly ), 0 );
+    return Error( d->lasterr = gpgme_op_keylist_ext_start( d->ctx, patterns, int( secretOnly ), 0 ) );
   }
 
   Key Context::nextKey( GpgME::Error & e ) {
     d->lastop = Private::KeyList;
     gpgme_key_t key;
-    e = d->lasterr = gpgme_op_keylist_next( d->ctx, &key );
+    e = Error( d->lasterr = gpgme_op_keylist_next( d->ctx, &key ) );
     return Key( key, false, keyListMode() );
   }
 
@@ -257,21 +260,21 @@ namespace GpgME {
   Key Context::key( const char * fingerprint, GpgME::Error & e , bool secret /*, bool forceUpdate*/ ) {
     d->lastop = Private::KeyList;
     gpgme_key_t key;
-    e = d->lasterr = gpgme_get_key( d->ctx, fingerprint, &key, int( secret )/*, int( forceUpdate )*/ );
+    e = Error( d->lasterr = gpgme_get_key( d->ctx, fingerprint, &key, int( secret )/*, int( forceUpdate )*/ ) );
     return Key( key, false, keyListMode() );
   }
 
   KeyGenerationResult Context::generateKey( const char * parameters, Data & pubKey ) {
     d->lastop = Private::KeyGen;
-    Data::Private * dp = pubKey.impl();
+    Data::Private * const dp = pubKey.impl();
     d->lasterr = gpgme_op_genkey( d->ctx, parameters, dp ? dp->data : 0, 0 );
     return KeyGenerationResult( d->ctx, d->lasterr );
   }
 
   Error Context::startKeyGeneration( const char * parameters, Data & pubKey ) {
     d->lastop = Private::KeyGen;
-    Data::Private * dp = pubKey.impl();
-    return d->lasterr = gpgme_op_genkey_start( d->ctx, parameters, dp ? dp->data : 0, 0 );
+    Data::Private * const dp = pubKey.impl();
+    return Error( d->lasterr = gpgme_op_genkey_start( d->ctx, parameters, dp ? dp->data : 0, 0 ) );
   }
 
   KeyGenerationResult Context::keyGenerationResult() const {
@@ -283,40 +286,40 @@ namespace GpgME {
 
   Error Context::exportPublicKeys( const char * pattern, Data & keyData ) {
     d->lastop = Private::Export;
-    Data::Private * dp = keyData.impl();
-    return d->lasterr = gpgme_op_export( d->ctx, pattern, 0, dp ? dp->data : 0 );
+    Data::Private * const dp = keyData.impl();
+    return Error( d->lasterr = gpgme_op_export( d->ctx, pattern, 0, dp ? dp->data : 0 ) );
   }
 
   Error Context::exportPublicKeys( const char * patterns[], Data & keyData ) {
     d->lastop = Private::Export;
-    Data::Private * dp = keyData.impl();
-    return d->lasterr = gpgme_op_export_ext( d->ctx, patterns, 0, dp ? dp->data : 0 );
+    Data::Private * const dp = keyData.impl();
+    return Error( d->lasterr = gpgme_op_export_ext( d->ctx, patterns, 0, dp ? dp->data : 0 ) );
   }
 
   Error Context::startPublicKeyExport( const char * pattern, Data & keyData ) {
     d->lastop = Private::Export;
-    Data::Private * dp = keyData.impl();
-    return d->lasterr = gpgme_op_export_start( d->ctx, pattern, 0, dp ? dp->data : 0 );
+    Data::Private * const dp = keyData.impl();
+    return Error( d->lasterr = gpgme_op_export_start( d->ctx, pattern, 0, dp ? dp->data : 0 ) );
   }
 
   Error Context::startPublicKeyExport( const char * patterns[], Data & keyData ) {
     d->lastop = Private::Export;
-    Data::Private * dp = keyData.impl();
-    return d->lasterr = gpgme_op_export_ext_start( d->ctx, patterns, 0, dp ? dp->data : 0 );
+    Data::Private * const dp = keyData.impl();
+    return Error( d->lasterr = gpgme_op_export_ext_start( d->ctx, patterns, 0, dp ? dp->data : 0 ) );
   }
 
 
   ImportResult Context::importKeys( const Data & data ) {
     d->lastop = Private::Import;
-    Data::Private * dp = data.impl();
+    const Data::Private * const dp = data.impl();
     d->lasterr = gpgme_op_import( d->ctx, dp ? dp->data : 0 );
     return ImportResult( d->ctx, d->lasterr );
   }
 
   Error Context::startKeyImport( const Data & data ) {
     d->lastop = Private::Import;
-    Data::Private * dp = data.impl();
-    return d->lasterr = gpgme_op_import_start( d->ctx, dp ? dp->data : 0 );
+    const Data::Private * const dp = data.impl();
+    return Error( d->lasterr = gpgme_op_import_start( d->ctx, dp ? dp->data : 0 ) );
   }
 
   ImportResult Context::importResult() const {
@@ -328,42 +331,42 @@ namespace GpgME {
 
   Error Context::deleteKey( const Key & key, bool allowSecretKeyDeletion ) {
     d->lastop = Private::Delete;
-    return d->lasterr = gpgme_op_delete( d->ctx, key.impl(), int( allowSecretKeyDeletion ) );
+    return Error( d->lasterr = gpgme_op_delete( d->ctx, key.impl(), int( allowSecretKeyDeletion ) ) );
   }
 
   Error Context::startKeyDeletion( const Key & key, bool allowSecretKeyDeletion ) {
     d->lastop = Private::Delete;
-    return d->lasterr = gpgme_op_delete_start( d->ctx, key.impl(), int( allowSecretKeyDeletion ) );
+    return Error( d->lasterr = gpgme_op_delete_start( d->ctx, key.impl(), int( allowSecretKeyDeletion ) ) );
   }
 
   Error Context::startTrustItemListing( const char * pattern, int maxLevel ) {
     d->lastop = Private::TrustList;
-    return d->lasterr = gpgme_op_trustlist_start( d->ctx, pattern, maxLevel );
+    return Error( d->lasterr = gpgme_op_trustlist_start( d->ctx, pattern, maxLevel ) );
   }
 
   TrustItem Context::nextTrustItem( Error & e ) {
     gpgme_trust_item_t ti = 0;
-    e = d->lasterr = gpgme_op_trustlist_next( d->ctx, &ti );
-    return ti;
+    e = Error( d->lasterr = gpgme_op_trustlist_next( d->ctx, &ti ) );
+    return TrustItem( ti );
   }
 
   Error Context::endTrustItemListing() {
-    return d->lasterr = gpgme_op_trustlist_end( d->ctx );
+    return Error( d->lasterr = gpgme_op_trustlist_end( d->ctx ) );
   }
 
   DecryptionResult Context::decrypt( const Data & cipherText, Data & plainText ) {
     d->lastop = Private::Decrypt;
-    Data::Private * cdp = cipherText.impl();
-    Data::Private * pdp = plainText.impl();
+    const Data::Private * const cdp = cipherText.impl();
+    Data::Private * const pdp = plainText.impl();
     d->lasterr = gpgme_op_decrypt( d->ctx, cdp ? cdp->data : 0, pdp ? pdp->data : 0 );
     return DecryptionResult( d->ctx, d->lasterr );
   }
 
   Error Context::startDecryption( const Data & cipherText, Data & plainText ) {
     d->lastop = Private::Decrypt;
-    Data::Private * cdp = cipherText.impl();
-    Data::Private * pdp = plainText.impl();
-    return d->lasterr = gpgme_op_decrypt_start( d->ctx, cdp ? cdp->data : 0, pdp ? pdp->data : 0 );
+    const Data::Private * const cdp = cipherText.impl();
+    Data::Private * const pdp = plainText.impl();
+    return Error( d->lasterr = gpgme_op_decrypt_start( d->ctx, cdp ? cdp->data : 0, pdp ? pdp->data : 0 ) );
   }
 
   DecryptionResult Context::decryptionResult() const {
@@ -377,32 +380,32 @@ namespace GpgME {
 
   VerificationResult Context::verifyDetachedSignature( const Data & signature, const Data & signedText ) {
     d->lastop = Private::Verify;
-    Data::Private * sdp = signature.impl();
-    Data::Private * tdp = signedText.impl();
+    const Data::Private * const sdp = signature.impl();
+    const Data::Private * const tdp = signedText.impl();
     d->lasterr = gpgme_op_verify( d->ctx, sdp ? sdp->data : 0, tdp ? tdp->data : 0, 0 );
     return VerificationResult( d->ctx, d->lasterr );
   }
 
   VerificationResult Context::verifyOpaqueSignature( const Data & signedData, Data & plainText ) {
     d->lastop = Private::Verify;
-    Data::Private * sdp = signedData.impl();
-    Data::Private * pdp = plainText.impl();
+    const Data::Private * const sdp = signedData.impl();
+    Data::Private * const pdp = plainText.impl();
     d->lasterr = gpgme_op_verify( d->ctx, sdp ? sdp->data : 0, 0, pdp ? pdp->data : 0 );
     return VerificationResult( d->ctx, d->lasterr );
   }
 
   Error Context::startDetachedSignatureVerification( const Data & signature, const Data & signedText ) {
     d->lastop = Private::Verify;
-    Data::Private * sdp = signature.impl();
-    Data::Private * tdp = signedText.impl();
-    return d->lasterr = gpgme_op_verify_start( d->ctx, sdp ? sdp->data : 0, tdp ? tdp->data : 0, 0 );
+    const Data::Private * const sdp = signature.impl();
+    const Data::Private * const tdp = signedText.impl();
+    return Error( d->lasterr = gpgme_op_verify_start( d->ctx, sdp ? sdp->data : 0, tdp ? tdp->data : 0, 0 ) );
   }
 
   Error Context::startOpaqueSignatureVerification( const Data & signedData, Data & plainText ) {
     d->lastop = Private::Verify;
-    Data::Private * sdp = signedData.impl();
-    Data::Private * pdp = plainText.impl();
-    return d->lasterr = gpgme_op_verify_start( d->ctx, sdp ? sdp->data : 0, 0, pdp ? pdp->data : 0 );
+    const Data::Private * const sdp = signedData.impl();
+    Data::Private * const pdp = plainText.impl();
+    return Error( d->lasterr = gpgme_op_verify_start( d->ctx, sdp ? sdp->data : 0, 0, pdp ? pdp->data : 0 ) );
   }
 
   VerificationResult Context::verificationResult() const {
@@ -415,8 +418,8 @@ namespace GpgME {
 
   std::pair<DecryptionResult,VerificationResult> Context::decryptAndVerify( const Data & cipherText, Data & plainText ) {
     d->lastop = Private::DecryptAndVerify;
-    Data::Private * cdp = cipherText.impl();
-    Data::Private * pdp = plainText.impl();
+    const Data::Private * const cdp = cipherText.impl();
+    Data::Private * const pdp = plainText.impl();
     d->lasterr = gpgme_op_decrypt_verify( d->ctx, cdp ? cdp->data : 0, pdp ? pdp->data : 0 );
     return std::make_pair( DecryptionResult( d->ctx, d->lasterr ),
 			   VerificationResult( d->ctx, d->lasterr ) );
@@ -424,9 +427,9 @@ namespace GpgME {
 
   Error Context::startCombinedDecryptionAndVerification( const Data & cipherText, Data & plainText ) {
     d->lastop = Private::DecryptAndVerify;
-    Data::Private * cdp = cipherText.impl();
-    Data::Private * pdp = plainText.impl();
-    return d->lasterr = gpgme_op_decrypt_verify_start( d->ctx, cdp ? cdp->data : 0, pdp ? pdp->data : 0 );
+    const Data::Private * const cdp = cipherText.impl();
+    Data::Private * const pdp = plainText.impl();
+    return Error( d->lasterr = gpgme_op_decrypt_verify_start( d->ctx, cdp ? cdp->data : 0, pdp ? pdp->data : 0 ) );
   }
 
 
@@ -437,7 +440,7 @@ namespace GpgME {
   }
 
   Error Context::addSigningKey( const Key & key ) {
-    return d->lasterr = gpgme_signers_add( d->ctx, key.impl() );
+    return Error( d->lasterr = gpgme_signers_add( d->ctx, key.impl() ) );
   }
 
   Key Context::signingKey( unsigned int idx ) const {
@@ -457,8 +460,8 @@ namespace GpgME {
 
   SigningResult Context::sign( const Data & plainText, Data & signature, SignatureMode mode ) {
     d->lastop = Private::Sign;
-    Data::Private * pdp = plainText.impl();
-    Data::Private * sdp = signature.impl();
+    const Data::Private * const pdp = plainText.impl();
+    Data::Private * const sdp = signature.impl();
     d->lasterr = gpgme_op_sign( d->ctx, pdp ? pdp->data : 0, sdp ? sdp->data : 0, sigmode2sigmode( mode ) );
     return SigningResult( d->ctx, d->lasterr );
   }
@@ -466,9 +469,9 @@ namespace GpgME {
 
   Error Context::startSigning( const Data & plainText, Data & signature, SignatureMode mode ) {
     d->lastop = Private::Sign;
-    Data::Private * pdp = plainText.impl();
-    Data::Private * sdp = signature.impl();
-    return d->lasterr = gpgme_op_sign_start( d->ctx, pdp ? pdp->data : 0, sdp ? sdp->data : 0, sigmode2sigmode( mode ) );
+    const Data::Private * const pdp = plainText.impl();
+    Data::Private * const sdp = signature.impl();
+    return Error( d->lasterr = gpgme_op_sign_start( d->ctx, pdp ? pdp->data : 0, sdp ? sdp->data : 0, sigmode2sigmode( mode ) ) );
   }
 
   SigningResult Context::signingResult() const {
@@ -481,9 +484,9 @@ namespace GpgME {
 
   EncryptionResult Context::encrypt( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags ) {
     d->lastop = Private::Encrypt;
-    Data::Private * pdp = plainText.impl();
-    Data::Private * cdp = cipherText.impl();
-    gpgme_key_t * keys = new gpgme_key_t[ recipients.size() + 1 ];
+    const Data::Private * const pdp = plainText.impl();
+    Data::Private * const cdp = cipherText.impl();
+    gpgme_key_t * const keys = new gpgme_key_t[ recipients.size() + 1 ];
     gpgme_key_t * keys_it = keys;
     for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it )
       if ( it->impl() )
@@ -498,17 +501,17 @@ namespace GpgME {
 
   Error Context::encryptSymmetrically( const Data & plainText, Data & cipherText ) {
     d->lastop = Private::Encrypt;
-    Data::Private * pdp = plainText.impl();
-    Data::Private * cdp = cipherText.impl();
-    return d->lasterr = gpgme_op_encrypt( d->ctx, 0, (gpgme_encrypt_flags_t)0,
-					  pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
+    const Data::Private * const pdp = plainText.impl();
+    Data::Private * const cdp = cipherText.impl();
+    return Error( d->lasterr = gpgme_op_encrypt( d->ctx, 0, (gpgme_encrypt_flags_t)0,
+                                                 pdp ? pdp->data : 0, cdp ? cdp->data : 0 ) );
   }
 
   Error Context::startEncryption( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags ) {
     d->lastop = Private::Encrypt;
-    Data::Private * pdp = plainText.impl();
-    Data::Private * cdp = cipherText.impl();
-    gpgme_key_t * keys = new gpgme_key_t[ recipients.size() + 1 ];
+    const Data::Private * const pdp = plainText.impl();
+    Data::Private * const cdp = cipherText.impl();
+    gpgme_key_t * const keys = new gpgme_key_t[ recipients.size() + 1 ];
     gpgme_key_t * keys_it = keys;
     for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it )
       if ( it->impl() )
@@ -518,7 +521,7 @@ namespace GpgME {
 					 flags & AlwaysTrust ? GPGME_ENCRYPT_ALWAYS_TRUST : (gpgme_encrypt_flags_t)0,
 					 pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
-    return d->lasterr;
+    return Error( d->lasterr );
   }
 
   EncryptionResult Context::encryptionResult() const {
@@ -530,9 +533,9 @@ namespace GpgME {
 
   std::pair<SigningResult,EncryptionResult> Context::signAndEncrypt( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags ) {
     d->lastop = Private::SignAndEncrypt;
-    Data::Private * pdp = plainText.impl();
-    Data::Private * cdp = cipherText.impl();
-    gpgme_key_t * keys = new gpgme_key_t[ recipients.size() + 1 ];
+    const Data::Private * const pdp = plainText.impl();
+    Data::Private * const cdp = cipherText.impl();
+    gpgme_key_t * const keys = new gpgme_key_t[ recipients.size() + 1 ];
     gpgme_key_t * keys_it = keys;
     for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it )
       if ( it->impl() )
@@ -548,9 +551,9 @@ namespace GpgME {
 
   Error Context::startCombinedSigningAndEncryption( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags ) {
     d->lastop = Private::SignAndEncrypt;
-    Data::Private * pdp = plainText.impl();
-    Data::Private * cdp = cipherText.impl();
-    gpgme_key_t * keys = new gpgme_key_t[ recipients.size() + 1 ];
+    const Data::Private * const pdp = plainText.impl();
+    Data::Private * const cdp = cipherText.impl();
+    gpgme_key_t * const keys = new gpgme_key_t[ recipients.size() + 1 ];
     gpgme_key_t * keys_it = keys;
     for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it )
       if ( it->impl() )
@@ -560,15 +563,15 @@ namespace GpgME {
 					      flags & AlwaysTrust ? GPGME_ENCRYPT_ALWAYS_TRUST : (gpgme_encrypt_flags_t)0,
 					      pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
-    return d->lasterr;
+    return Error( d->lasterr );
   }
 
 
   Error Context::cancelPendingOperation() {
 #ifdef HAVE_GPGME_CANCEL
-    return gpgme_cancel( d->ctx );
+    return Error( gpgme_cancel( d->ctx ) );
 #else
-    return 0;
+    return Error( 0 );
 #endif
   }
 
@@ -583,18 +586,18 @@ namespace GpgME {
   Error Context::wait() {
     gpgme_error_t e = GPG_ERR_NO_ERROR;
     gpgme_wait( d->ctx, &e, 1 );
-    return d->lasterr = e;
+    return Error( d->lasterr = e );
   }
 
   Error Context::lastError() const {
-    return d->lasterr;
+    return Error( d->lasterr );
   }
 
 
 } // namespace GpgME
 
 GpgME::Error GpgME::setDefaultLocale( int cat, const char * val ) {
-  return gpgme_set_locale( 0, cat, val );
+  return Error( gpgme_set_locale( 0, cat, val ) );
 }
 
 GpgME::EngineInfo GpgME::engineInfo( Context::Protocol proto ) {
@@ -602,7 +605,7 @@ GpgME::EngineInfo GpgME::engineInfo( Context::Protocol proto ) {
   if ( gpgme_get_engine_info( &ei ) )
     return EngineInfo();
 
-  gpgme_protocol_t p = proto == Context::CMS ? GPGME_PROTOCOL_CMS : GPGME_PROTOCOL_OpenPGP ;
+  const gpgme_protocol_t p = proto == Context::CMS ? GPGME_PROTOCOL_CMS : GPGME_PROTOCOL_OpenPGP ;
 
   for ( gpgme_engine_info_t i = ei ; i ; i = i->next )
     if ( i->protocol == p )
@@ -612,8 +615,8 @@ GpgME::EngineInfo GpgME::engineInfo( Context::Protocol proto ) {
 }
 
 GpgME::Error GpgME::checkEngine( Context::Protocol proto ) {
-  gpgme_protocol_t p = proto == Context::CMS ? GPGME_PROTOCOL_CMS : GPGME_PROTOCOL_OpenPGP ;
+  const gpgme_protocol_t p = proto == Context::CMS ? GPGME_PROTOCOL_CMS : GPGME_PROTOCOL_OpenPGP ;
 
-  return gpgme_engine_check_version( p );
+  return Error( gpgme_engine_check_version( p ) );
 }
 

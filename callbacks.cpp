@@ -1,29 +1,31 @@
-/* callbacks.cpp - callback targets for internal use:
-   Copyright (C) 2003,2004 Klarälvdalens Datakonsult AB
+/*
+  callbacks.cpp - callback targets for internal use:
+  Copyright (C) 2003,2004 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
- 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
- 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  This file is part of GPGME++.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
 */
 
 #include "callbacks.h"
 
-#include <gpgmepp/interfaces/progressprovider.h>
-#include <gpgmepp/interfaces/passphraseprovider.h>
-#include <gpgmepp/interfaces/dataprovider.h>
-#include <gpgmepp/context.h> // for Error
+#include <gpgme++/interfaces/progressprovider.h>
+#include <gpgme++/interfaces/passphraseprovider.h>
+#include <gpgme++/interfaces/dataprovider.h>
+#include <gpgme++/context.h> // for Error
 
 #include <cassert>
 #include <cerrno>
@@ -75,7 +77,7 @@ gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const c
 	written += now_written;
       } while ( written < passphrase_length );
     }
-  
+
   if ( passphrase && *passphrase )
     wipe( passphrase, strlen( passphrase ) );
   free( passphrase );

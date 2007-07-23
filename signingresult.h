@@ -1,30 +1,32 @@
-/* signingresult.h - wraps a gpgme sign result
-   Copyright (C) 2004 Klarälvdalens Datakonsult AB
+/*
+  signingresult.h - wraps a gpgme sign result
+  Copyright (C) 2004 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
- 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
- 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  This file is part of GPGME++.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME++; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
 */
 
 #ifndef __GPGMEPP_SIGNINGRESULT_H__
 #define __GPGMEPP_SIGNINGRESULT_H__
 
-#include <gpgmepp/gpgmefw.h>
-#include <gpgmepp/result.h>
-#include <gpgmepp/context.h>
-#include <gpgmepp/gpgmepp_export.h>
+#include <gpgme++/gpgmefw.h>
+#include <gpgme++/result.h>
+#include <gpgme++/context.h>
+#include <gpgme++/gpgme++_export.h>
 
 #include <time.h>
 
@@ -36,14 +38,23 @@ namespace GpgME {
   class CreatedSignature;
   class InvalidSigningKey;
 
-  class QPGMEPP_EXPORT SigningResult : public Result {
+  class GPGMEPP_EXPORT SigningResult : public Result {
   public:
-    SigningResult( gpgme_ctx_t ctx=0, int error=0 );
+    explicit SigningResult( gpgme_ctx_t ctx=0, int error=0 );
     explicit SigningResult( const Error & err );
     SigningResult( const SigningResult & other );
     ~SigningResult();
 
-    const SigningResult & operator=( const SigningResult & other );
+    const SigningResult & operator=( SigningResult other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( SigningResult & other ) {
+	Result::swap( other );
+	using std::swap;
+	swap( this->d, other.d );
+    }
 
     bool isNull() const;
 
@@ -58,7 +69,7 @@ namespace GpgME {
     Private * d;
   };
 
-  class QPGMEPP_EXPORT InvalidSigningKey {
+  class GPGMEPP_EXPORT InvalidSigningKey {
     friend class SigningResult;
     InvalidSigningKey( SigningResult::Private * parent, unsigned int index );
   public:
@@ -66,7 +77,16 @@ namespace GpgME {
     InvalidSigningKey( const InvalidSigningKey & other );
     ~InvalidSigningKey();
 
-    const InvalidSigningKey & operator=( const InvalidSigningKey & other );
+    const InvalidSigningKey & operator=( InvalidSigningKey other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( InvalidSigningKey & other ) {
+	using std::swap;
+	swap( this->d, other.d );
+	swap( this->idx, other.idx );
+    }
 
     bool isNull() const;
 
@@ -78,16 +98,25 @@ namespace GpgME {
     unsigned int idx;
   };
 
-  class QPGMEPP_EXPORT CreatedSignature {
+  class GPGMEPP_EXPORT CreatedSignature {
     friend class SigningResult;
     CreatedSignature( SigningResult::Private * parent, unsigned int index );
   public:
-    
+
     CreatedSignature();
     CreatedSignature( const CreatedSignature & other );
     ~CreatedSignature();
 
-    const CreatedSignature & operator=( const CreatedSignature & other );
+    const CreatedSignature & operator=( CreatedSignature other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( CreatedSignature & other ) {
+	using std::swap;
+	swap( this->d, other.d );
+	swap( this->idx, other.idx );
+    }
 
     bool isNull() const;
 
@@ -96,7 +125,7 @@ namespace GpgME {
     time_t creationTime() const;
 
     Context::SignatureMode mode() const;
-    
+
     unsigned int publicKeyAlgorithm() const;
     const char * publicKeyAlgorithmAsString() const;
 
@@ -111,5 +140,9 @@ namespace GpgME {
   };
 
 }
+
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( SigningResult )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( InvalidSigningKey )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( CreatedSignature )
 
 #endif // __GPGMEPP_SIGNINGRESULT_H__

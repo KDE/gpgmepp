@@ -20,21 +20,30 @@
 #ifndef GPGMEPP_EXPORT_H
 #define GPGMEPP_EXPORT_H
 
-/* needed for QPGMEPP_EXPORT and KDE_IMPORT macros */
+/* needed for GPGMEPP_EXPORT and KDE_IMPORT macros */
 #include <kdemacros.h>
 
-#ifndef QPGMEPP_EXPORT
-# if defined(MAKE_GPGMEPP_LIB)
+#ifndef GPGMEPP_EXPORT
+# if defined(MAKE_GPGME___LIB)
    /* We are building this library */ 
-#  define QPGMEPP_EXPORT KDE_EXPORT
+#  define GPGMEPP_EXPORT KDE_EXPORT
 # else
    /* We are using this library */ 
-#  define QPGMEPP_EXPORT KDE_IMPORT
+#  define GPGMEPP_EXPORT KDE_IMPORT
 # endif
 #endif
 
-# ifndef QPGMEPP_EXPORT_DEPRECATED
-#  define QPGMEPP_EXPORT_DEPRECATED KDE_DEPRECATED QPGMEPP_EXPORT
+# ifndef GPGMEPP_EXPORT_DEPRECATED
+#  define GPGMEPP_EXPORT_DEPRECATED KDE_DEPRECATED GPGMEPP_EXPORT
+# endif
+
+# ifndef GPGMEPP_DEPRECATED
+#  define GPGMEPP_DEPRECATED KDE_DEPRECATED
+# endif
+
+# ifndef GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION
+#  define GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Class ) \
+    namespace std { template <> inline void swap< GpgME::Class >( GpgME::Class & lhs, GpgME::Class & rhs ) { lhs.swap( rhs ); } }
 # endif
 
 #endif

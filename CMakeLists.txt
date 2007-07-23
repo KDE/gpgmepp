@@ -1,6 +1,6 @@
 include_directories(  ${GPGME_INCLUDES} )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgmepp.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gpgmepp.h )
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gpgme++.h )
 
 add_subdirectory( interfaces )
 
@@ -24,20 +24,18 @@ set(gpgme_LIB_SRCS
 )
 
 
-kde4_automoc(${gpgme_LIB_SRCS})
 
-kde4_add_library(gpgmepp SHARED ${gpgme_LIB_SRCS})
+kde4_add_library(gpgme++ SHARED ${gpgme_LIB_SRCS})
 
-#Laurent test it !
-target_link_libraries(gpgmepp ${KDE4_KDECORE_LIBS} ${GPGME_LIBRARIES})
+target_link_libraries(gpgme++ ${GPGME_LIBRARIES})
 
-set_target_properties(gpgmepp PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
-install(TARGETS gpgmepp  DESTINATION ${LIB_INSTALL_DIR})
+set_target_properties(gpgme++ PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
+install(TARGETS gpgme++  DESTINATION ${LIB_INSTALL_DIR})
 
 
 ########### install files ###############
 
 install( FILES context.h key.h trustitem.h 
    eventloopinteractor.h data.h gpgmefw.h result.h keylistresult.h keygenerationresult.h 
-   importresult.h decryptionresult.h verificationresult.h signingresult.h encryptionresult.h engineinfo.h gpgmepp_export.h 
-   DESTINATION ${INCLUDE_INSTALL_DIR}/gpgmepp )
+   importresult.h decryptionresult.h verificationresult.h signingresult.h encryptionresult.h engineinfo.h gpgme++_export.h 
+   DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++ )

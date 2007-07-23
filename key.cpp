@@ -1,25 +1,28 @@
-/* key.cpp - wraps a gpgme key
-   Copyright (C) 2003, 2005 Klarälvdalens Datakonsult AB
+/*
+  key.cpp - wraps a gpgme key
+  Copyright (C) 2003, 2005 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
+  This file is part of GPGME++.
 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.  */
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
+*/
 
-#include <config-gpgmepp.h>
+#include <config-gpgme++.h>
 
-#include <gpgmepp/key.h>
+#include <gpgme++/key.h>
 
 #include "util.h"
 
@@ -33,15 +36,17 @@ namespace GpgME {
 
   using std::vector;
 
-  struct Key::Private {
+  class Key::Private {
+  public:
     Private( gpgme_key_t aKey, unsigned int aMode )
       : key( aKey ),
 #ifdef HAVE_GPGME_KEY_T_KEYLIST_MODE
 	mode( 0 )
+    { Q_UNUSED( aMode); }
 #else
 	mode( aMode )
-#endif
     {}
+#endif
     gpgme_key_t key;
     unsigned int mode;
   };
@@ -66,17 +71,6 @@ namespace GpgME {
     if ( d->key )
       gpgme_key_unref( d->key );
     delete d; d = 0;
-  }
-
-  const Key & Key::operator=( const Key & other ) {
-    if ( d == other.d ) return *this;
-
-    if ( other.d->key )
-      gpgme_key_ref( other.d->key );
-    if ( d->key )
-      gpgme_key_unref( d->key );
-    *d = *other.d;
-    return *this;
   }
 
   bool Key::isNull() const {
@@ -284,7 +278,8 @@ namespace GpgME {
   //
   //
 
-  struct Subkey::Private {
+  class Subkey::Private {
+  public:
     Private( gpgme_key_t aKey, unsigned int idx )
       : key( aKey ), subkey( 0 )
     {
@@ -337,17 +332,6 @@ namespace GpgME {
     if ( d->key )
       gpgme_key_unref( d->key );
     delete d; d = 0;
-  }
-
-  const Subkey & Subkey::operator=( const Subkey & other ) {
-    if ( &other == this ) return *this;
-
-    if ( other.d->key )
-      gpgme_key_ref( other.d->key );
-    if ( d->key )
-      gpgme_key_unref( d->key );
-    *d = *other.d;
-    return *this;
   }
 
   bool Subkey::isNull() const {
@@ -440,7 +424,8 @@ namespace GpgME {
   //
   //
 
-  struct UserID::Private {
+  class UserID::Private {
+  public:
     Private( gpgme_key_t aKey, unsigned int idx )
       : key( aKey ), uid( 0 )
     {
@@ -493,17 +478,6 @@ namespace GpgME {
     if ( d->key )
       gpgme_key_unref( d->key );
     delete d; d = 0;
-  }
-
-  const UserID & UserID::operator=( const UserID & other ) {
-    if ( &other == this ) return *this;
-
-    if ( other.d->key )
-      gpgme_key_ref( other.d->key );
-    if ( d->key )
-      gpgme_key_unref( d->key );
-    *d = *other.d;
-    return *this;
   }
 
   bool UserID::isNull() const {
@@ -596,7 +570,8 @@ namespace GpgME {
   //
   //
 
-  struct UserID::Signature::Private {
+  class UserID::Signature::Private {
+  public:
     Private( gpgme_key_t aKey, gpgme_user_id_t aUid, unsigned int idx )
       : key( aKey ), uid( 0 ), sig( 0 )
     {
@@ -666,17 +641,6 @@ namespace GpgME {
     if ( d->key )
       gpgme_key_unref( d->key );
     delete d; d = 0;
-  }
-
-  const UserID::Signature & UserID::Signature::operator=( const Signature & other ) {
-    if ( &other == this ) return *this;
-
-    if ( other.d->key )
-      gpgme_key_ref( other.d->key );
-    if ( d->key )
-      gpgme_key_unref( d->key );
-    *d = *other.d;
-    return *this;
   }
 
   bool UserID::Signature::isNull() const {
@@ -813,7 +777,8 @@ namespace GpgME {
   //
   //
 
-  struct UserID::Signature::Notation::Private {
+  class UserID::Signature::Notation::Private {
+  public:
     Private( gpgme_key_t aKey, gpgme_user_id_t aUid,
 	     gpgme_key_sig_t aSig, unsigned int idx )
       : key( aKey ), uid( 0 ), sig( 0 ), nota( 0 )
@@ -908,17 +873,6 @@ namespace GpgME {
     if ( d->key )
       gpgme_key_unref( d->key );
     delete d; d = 0;
-  }
-
-  const UserID::Signature::Notation & UserID::Signature::Notation::operator=( const Notation & other ) {
-    if ( &other == this ) return *this;
-
-    if ( other.d->key )
-      gpgme_key_ref( other.d->key );
-    if ( d->key )
-      gpgme_key_unref( d->key );
-    *d = *other.d;
-    return *this;
   }
 
   bool UserID::Signature::Notation::isNull() const {

@@ -1,33 +1,37 @@
-/* key.h - wraps a gpgme key
-   Copyright (C) 2003, 2005 Klarälvdalens Datakonsult AB
+/*
+  key.h - wraps a gpgme key
+  Copyright (C) 2003, 2005 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
+  This file is part of GPGME++.
 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.  */
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
+*/
 
 // -*- c++ -*-
 #ifndef __GPGMEPP_KEY_H__
 #define __GPGMEPP_KEY_H__
 
-#include <gpgmepp/gpgmefw.h>
-#include <gpgmepp/context.h>
-#include <gpgmepp/gpgmepp_export.h>
+#include <gpgme++/gpgmefw.h>
+#include <gpgme++/context.h>
+#include <gpgme++/gpgme++_export.h>
 
 #include <sys/time.h>
 
 #include <vector>
+#include <algorithm>
 
 namespace GpgME {
 
@@ -38,7 +42,7 @@ namespace GpgME {
   // class Key
   //
 
-  class QPGMEPP_EXPORT Key {
+  class GPGMEPP_EXPORT Key {
     friend class Context;
   public:
     Key();
@@ -48,7 +52,15 @@ namespace GpgME {
 
     static Key null;
 
-    const Key & operator=( const Key & other );
+    const Key & operator=( Key other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( Key & other ) {
+	using std::swap;
+	swap( this->d, other.d );
+    }
 
     bool isNull() const;
 
@@ -113,14 +125,22 @@ namespace GpgME {
   // class Subkey
   //
 
-  class QPGMEPP_EXPORT Subkey {
+  class GPGMEPP_EXPORT Subkey {
   public:
-    Subkey( gpgme_key_t key=0, gpgme_sub_key_t subkey=0 );
+    explicit Subkey( gpgme_key_t key=0, gpgme_sub_key_t subkey=0 );
     Subkey( gpgme_key_t key, unsigned int idx );
     Subkey( const Subkey & other );
     ~Subkey();
 
-    const Subkey & operator=( const Subkey & other );
+    const Subkey & operator=( Subkey other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( Subkey & other ) {
+	using std::swap;
+	swap( this->d, other.d );
+    }
 
     bool isNull() const;
 
@@ -160,16 +180,24 @@ namespace GpgME {
   // class UserID
   //
 
-  class QPGMEPP_EXPORT UserID {
+  class GPGMEPP_EXPORT UserID {
   public:
     class Signature;
 
-    UserID( gpgme_key_t key=0, gpgme_user_id_t uid=0 );
+    explicit UserID( gpgme_key_t key=0, gpgme_user_id_t uid=0 );
     UserID( gpgme_key_t key, unsigned int idx );
     UserID( const UserID & other );
     ~UserID();
 
-    const UserID & operator=( const UserID & other );
+    const UserID & operator=( UserID other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( UserID & other ) {
+	using std::swap;
+	swap( this->d, other.d );
+    }
 
     bool isNull() const;
 
@@ -202,16 +230,24 @@ namespace GpgME {
   // class UserID::Signature
   //
 
-  class QPGMEPP_EXPORT UserID::Signature {
+  class GPGMEPP_EXPORT UserID::Signature {
   public:
     class Notation;
 
-    Signature( gpgme_key_t key=0, gpgme_user_id_t uid=0, gpgme_key_sig_t sig=0 );
+    explicit Signature( gpgme_key_t key=0, gpgme_user_id_t uid=0, gpgme_key_sig_t sig=0 );
     Signature( gpgme_key_t key, gpgme_user_id_t uid, unsigned int idx );
     Signature( const Signature & other );
     ~Signature();
 
-    const Signature & operator=( const Signature & other );
+    const Signature & operator=( Signature other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( Signature & other ) {
+	using std::swap;
+	swap( this->d, other.d );
+    }
 
     bool isNull() const;
 
@@ -259,16 +295,24 @@ namespace GpgME {
   //
   //
 
-  class QPGMEPP_EXPORT UserID::Signature::Notation {
+  class GPGMEPP_EXPORT UserID::Signature::Notation {
   public:
-    Notation( gpgme_key_t key=0, gpgme_user_id_t uid=0,
-	      gpgme_key_sig_t sig=0, gpgme_sig_notation_t nota=0 );
+    explicit Notation( gpgme_key_t key=0, gpgme_user_id_t uid=0,
+                       gpgme_key_sig_t sig=0, gpgme_sig_notation_t nota=0 );
     Notation( gpgme_key_t key, gpgme_user_id_t uid,
-	      gpgme_key_sig_t sig, unsigned int idx );
+              gpgme_key_sig_t sig, unsigned int idx );
     Notation( const Notation & other );
     ~Notation();
 
-    const Notation & operator=( const Notation & other );
+    const Notation & operator=( Notation other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( Notation & other ) {
+	using std::swap;
+	swap( this->d, other.d );
+    }
 
     bool isNull() const;
 
@@ -283,5 +327,11 @@ namespace GpgME {
   };
 
 } // namespace GpgME
+
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Key )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Subkey )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( UserID )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( UserID::Signature )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( UserID::Signature::Notation )
 
 #endif // __GPGMEPP_KEY_H__

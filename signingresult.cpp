@@ -1,24 +1,26 @@
-/* signingresult.cpp - wraps a gpgme verify result
-   Copyright (C) 2004 Klarälvdalens Datakonsult AB
+/*
+  signingresult.cpp - wraps a gpgme verify result
+  Copyright (C) 2004 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
- 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
- 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  This file is part of GPGME++.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME++; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
 */
 
-#include <gpgmepp/signingresult.h>
+#include <gpgme++/signingresult.h>
 #include "shared.h"
 #include "result_p.h"
 
@@ -129,20 +131,6 @@ GpgME::InvalidSigningKey::~InvalidSigningKey() {
     d->unref();
 }
 
-const GpgME::InvalidSigningKey & GpgME::InvalidSigningKey::operator=( const InvalidSigningKey & other ) {
-  if ( this->d != other.d ) {
-    if ( other.d )
-      other.d->ref();
-    if ( this->d )
-      this->d->unref();
-    this->d = other.d;
-  }
-
-  this->idx = other.idx;
-  return *this;
-}
-
-
 bool GpgME::InvalidSigningKey::isNull() const {
   return !d || idx >= d->invalid.size() ;
 }
@@ -152,7 +140,7 @@ const char * GpgME::InvalidSigningKey::fingerprint() const {
 }
 
 GpgME::Error GpgME::InvalidSigningKey::reason() const {
-  return isNull() ? 0 : d->invalid[idx]->reason ;
+  return Error( isNull() ? 0 : d->invalid[idx]->reason );
 }
 
 
@@ -177,20 +165,6 @@ GpgME::CreatedSignature::~CreatedSignature() {
   if ( d )
     d->unref();
 }
-
-const GpgME::CreatedSignature & GpgME::CreatedSignature::operator=( const CreatedSignature & other ) {
-  if ( this->d != other.d ) {
-    if ( other.d )
-      other.d->ref();
-    if ( this->d )
-      this->d->unref();
-    this->d = other.d;
-  }
-
-  this->idx = other.idx;
-  return *this;
-}
-
 
 bool GpgME::CreatedSignature::isNull() const {
   return !d || idx >= d->created.size() ;

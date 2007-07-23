@@ -1,58 +1,69 @@
-/* data.h - wraps a gpgme data object
-   Copyright (C) 2003,2004 Klarälvdalens Datakonsult AB
+/*
+  data.h - wraps a gpgme data object
+  Copyright (C) 2003,2004 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
- 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
- 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  This file is part of GPGME++.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME++; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
 */
 
 #ifndef __GPGMEPP_DATA_H__
 #define __GPGMEPP_DATA_H__
 
-#include <gpgmepp/gpgmefw.h>
-#include <gpgmepp/gpgmepp_export.h>
+#include <gpgme++/gpgmefw.h>
+#include <gpgme++/gpgme++_export.h>
 
 #include <sys/types.h> // for size_t, off_t
 #include <cstdio> // FILE
+#include <algorithm>
 
 namespace GpgME {
 
   class DataProvider;
-  
-  class QPGMEPP_EXPORT Data {
+
+  class GPGMEPP_EXPORT Data {
   public:
     Data();
-    Data( gpgme_data_t data );
+    explicit Data( gpgme_data_t data );
     Data( const Data & other );
 
     // Memory-Based Data Buffers:
     Data( const char * buffer, size_t size, bool copy=true );
-    Data( const char * filename );
+    explicit Data( const char * filename );
     Data( const char * filename, off_t offset, size_t length );
     Data( FILE * fp, off_t offset, size_t length );
     // File-Based Data Buffers:
-    Data( FILE * fp );
-    Data( int fd );
+    explicit Data( FILE * fp );
+    explicit Data( int fd );
     // Callback-Based Data Buffers:
-    Data( DataProvider * provider );
+    explicit Data( DataProvider * provider );
 
     virtual ~Data();
 
     static Data null;
 
-    const Data & operator=( const Data & other );
+    const Data & operator=( Data other ) {
+	swap( other );
+	return *this;
+    }
+
+    void swap( Data & other ) {
+	using std::swap;
+	swap( this->d, other.d );
+    }
 
     bool isNull() const;
 
@@ -61,11 +72,14 @@ namespace GpgME {
     off_t seek( off_t offset, int whence );
 
     class Private;
-    Private * impl() const { return d; }
+    Private * impl() { return d; }
+    const Private * impl() const { return d; }
   private:
     Private * d;
   };
 
 }
+
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Data )
 
 #endif // __GPGMEPP_DATA_H__

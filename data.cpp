@@ -1,25 +1,27 @@
-/* data.cpp - wraps a gpgme data object
-   Copyright (C) 2003 Klarälvdalens Datakonsult AB
+/*
+  data.cpp - wraps a gpgme data object
+  Copyright (C) 2003 Klarälvdalens Datakonsult AB
 
-   This file is part of GPGME++.
- 
-   GPGME++ is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
- 
-   GPGME++ is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
+  This file is part of GPGME++.
 
-   You should have received a copy of the GNU General Public License
-   along with GPGME++; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  GPGME++ is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  GPGME++ is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with GPGME++; see the file COPYING.LIB.  If not, write to the
+  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
 */
 
-#include <gpgmepp/context.h> // Error
-#include <gpgmepp/interfaces/dataprovider.h>
+#include <gpgme++/context.h> // Error
+#include <gpgme++/interfaces/dataprovider.h>
 #include "data_p.h"
 
 #include <gpgme.h>
@@ -57,18 +59,6 @@ GpgME::Data::~Data() {
   d->unref(); d = 0;
 }
 
-
-const GpgME::Data & GpgME::Data::operator=( const Data & other ) {
-  if ( this->d == other.d ) return *this;
-
-  if ( other.d )
-    other.d->ref();
-  if ( this->d )
-    this->d->unref();
-  this->d = other.d;
-
-  return *this;
-}
 
 GpgME::Data::Data( const char * buffer, size_t size, bool copy ) {
   gpgme_data_t data;
