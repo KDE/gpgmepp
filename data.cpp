@@ -133,6 +133,44 @@ bool GpgME::Data::isNull() const {
   return !d || !d->data;
 }
 
+GpgME::Data::Encoding GpgME::Data::encoding() const {
+    switch ( gpgme_data_get_encoding( d->data ) ) {
+    case GPGME_DATA_ENCODING_NONE:   return AutoEncoding;
+    case GPGME_DATA_ENCODING_BINARY: return BinaryEncoding;
+    case GPGME_DATA_ENCODING_BASE64: return Base64Encoding;
+    case GPGME_DATA_ENCODING_ARMOR:  return ArmorEncoding;
+    }
+    return AutoEncoding;
+}
+
+GpgME::Error GpgME::Data::setEncoding( Encoding enc ) {
+    gpgme_data_encoding_t ge = GPGME_DATA_ENCODING_NONE;
+    switch ( enc ) {
+    case AutoEncoding:   ge = GPGME_DATA_ENCODING_NONE;   break;
+    case BinaryEncoding: ge = GPGME_DATA_ENCODING_BINARY; break;
+    case Base64Encoding: ge = GPGME_DATA_ENCODING_BASE64; break;
+    case ArmorEncoding:  ge = GPGME_DATA_ENCODING_ARMOR;  break;
+    }
+    return Error( gpgme_data_set_encoding( d->data, ge ) );
+}
+
+char * GpgME::Data::fileName() const {
+#ifdef HAVE_GPGME_DATA_SET_FILE_NAME
+    return gpgme_data_get_file_name( d->data );
+#else
+    return 0;
+#endif
+}
+
+GpgME::Error GpgME::Data::setFileName( const char * name ) {
+#ifdef HAVE_GPGME_DATA_SET_FILE_NAME
+    return Error( gpgme_data_set_file_name( d->data, name ) );
+#else
+    (void)name;
+    return Error();
+#endif
+}
+
 ssize_t GpgME::Data::read( void * buffer, size_t length ) {
   return gpgme_data_read( d->data, buffer, length );
 }

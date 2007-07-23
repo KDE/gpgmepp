@@ -33,6 +33,7 @@
 namespace GpgME {
 
   class DataProvider;
+  class Error;
 
   class GPGMEPP_EXPORT Data {
   public:
@@ -66,6 +67,18 @@ namespace GpgME {
     }
 
     bool isNull() const;
+
+    enum Encoding {
+	AutoEncoding,
+	BinaryEncoding,
+	Base64Encoding,
+	ArmorEncoding
+    };
+    Encoding encoding() const;
+    Error setEncoding( Encoding encoding );
+
+    char * fileName() const;
+    Error setFileName( const char * name );
 
     ssize_t read( void * buffer, size_t length );
     ssize_t write( const void * buffer, size_t length );

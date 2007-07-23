@@ -73,6 +73,20 @@ check_cxx_source_compiles ("
 " HAVE_GPGME_SUBKEY_T_IS_QUALIFIED 
 )
 
+# check if gpgme has gpgme_data_{get,set}_file_name (new in 1.1.0)
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_data_t data = 0;
+    const char * filename = 0;
+    const gpgme_error_t err = gpgme_data_set_file_name( data, filename );
+    char * filename2 = gpgme_data_get_file_name( data );
+    (void)filename2; (void)err;
+    return 0;
+  }
+" HAVE_GPGME_DATA_SET_FILE_NAME
+)
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 
