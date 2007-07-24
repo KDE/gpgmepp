@@ -24,7 +24,7 @@
 #include <kdemacros.h>
 
 #ifndef GPGMEPP_EXPORT
-# if defined(MAKE_GPGME___LIB)
+# if defined(MAKE_GPGME___LIB) || defined(MAKE_GPGMEPP_LIB)
    /* We are building this library */ 
 #  define GPGMEPP_EXPORT KDE_EXPORT
 # else
