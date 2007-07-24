@@ -35,17 +35,18 @@ static inline gpgme_keylist_mode_t add_to_gpgme_keylist_mode_t( unsigned int old
   if ( newmodes & GpgME::Context::Local ) oldmode |= GPGME_KEYLIST_MODE_LOCAL;
   if ( newmodes & GpgME::Context::Extern ) oldmode |= GPGME_KEYLIST_MODE_EXTERN;
   if ( newmodes & GpgME::Context::Signatures ) oldmode |= GPGME_KEYLIST_MODE_SIGS;
-  if ( newmodes & GpgME::Context::Validate ) {
-#ifdef HAVE_GPGME_KEYLIST_MODE_VALIDATE
-    oldmode |= GPGME_KEYLIST_MODE_VALIDATE;
+  if ( newmodes & GpgME::Context::SignatureNotations ) {
+#ifdef HAVE_GPGME_KEYLIST_MODE_SIG_NOTATIONS
+    oldmode |= GPGME_KEYLIST_MODE_SIG_NOTATIONS;
 #elif !defined(NDEBUG)
-    std::cerr << "GpgME::Context: ignoring Valdidate keylist flag (gpgme too old)." << std::endl;
+    std::cerr << "GpgME::Context: ignoring SignatureNotations keylist flag (gpgme too old)." << std::endl;
 #endif
   }
+  if ( newmodes & GpgME::Context::Validate ) oldmode |= GPGME_KEYLIST_MODE_VALIDATE;
 #ifndef NDEBUG
-  if ( newmodes & ~(GpgME::Context::Local|GpgME::Context::Extern|GpgME::Context::Signatures|GpgME::Context::Validate) )
+  if ( newmodes & ~(GpgME::Context::Local|GpgME::Context::Extern|GpgME::Context::Signatures|GpgME::Context::SignatureNotations|GpgME::Context::Validate) )
     std::cerr << "GpgME::Context: keylist mode must be one of Local, "
-      "Extern, Signatures, or Validate, or a combination thereof!" << std::endl;
+      "Extern, Signatures, SignatureNotations, or Validate, or a combination thereof!" << std::endl;
 #endif
   return static_cast<gpgme_keylist_mode_t>( oldmode );
 }
@@ -55,20 +56,21 @@ static inline unsigned int convert_from_gpgme_keylist_mode_t( unsigned int mode 
   if ( mode & GPGME_KEYLIST_MODE_LOCAL ) result |= GpgME::Context::Local;
   if ( mode & GPGME_KEYLIST_MODE_EXTERN ) result |= GpgME::Context::Extern;
   if ( mode & GPGME_KEYLIST_MODE_SIGS ) result |= GpgME::Context::Signatures;
-#ifdef HAVE_GPGME_KEYLIST_MODE_VALIDATE
-  if ( mode & GPGME_KEYLIST_MODE_VALIDATE ) result |= GpgME::Context::Validate;
+#ifdef HAVE_GPGME_KEYLIST_MODE_SIG_NOTATIONS
+  if ( mode & GPGME_KEYLIST_MODE_SIG_NOTATIONS ) result |= GpgME::Context::SignatureNotations;
 #endif
+  if ( mode & GPGME_KEYLIST_MODE_VALIDATE ) result |= GpgME::Context::Validate;
 #ifndef NDEBUG
   if ( mode & ~(GPGME_KEYLIST_MODE_LOCAL|
 		GPGME_KEYLIST_MODE_EXTERN|
-#ifdef HAVE_GPGME_KEYLIST_MODE_VALIDATE
-		GPGME_KEYLIST_MODE_VALIDATE|
+#ifdef HAVE_GPGME_KEYLIST_MODE_SIG_NOTATIONS
+		GPGME_KEYLIST_MODE_SIG_NOTATIONS|
 #endif
+		GPGME_KEYLIST_MODE_VALIDATE|
 		GPGME_KEYLIST_MODE_SIGS) )
     std::cerr << "GpgME::Context: WARNING: gpgme_get_keylist_mode() returned an unknown flag!" << std::endl;
 #endif // NDEBUG
   return result;
 }
-
 
 #endif // __GPGMEPP_UTIL_H__

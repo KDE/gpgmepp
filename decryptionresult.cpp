@@ -65,9 +65,5 @@ const char * GpgME::DecryptionResult::unsupportedAlgortihm() const {
 }
 
 bool GpgME::DecryptionResult::isWrongKeyUsage() const {
-#ifdef HAVE_GPGME_WRONG_KEY_USAGE
-  if ( d )
-    return d->res.wrong_key_usage;
-#endif
-  return false;
+    return d && d->res.wrong_key_usage;
 }

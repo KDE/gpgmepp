@@ -105,6 +105,7 @@ namespace GpgME {
       Local = 0x1,
       Extern = 0x2,
       Signatures = 0x4,
+      SignatureNotations = 0x8,
       Validate = 0x10
     };
     void setKeyListMode( unsigned int keyListMode );

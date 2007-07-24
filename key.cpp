@@ -38,31 +38,23 @@ namespace GpgME {
 
   class Key::Private {
   public:
-    Private( gpgme_key_t aKey, unsigned int aMode )
-      : key( aKey ),
-#ifdef HAVE_GPGME_KEY_T_KEYLIST_MODE
-	mode( 0 )
-    { Q_UNUSED( aMode); }
-#else
-	mode( aMode )
-    {}
-#endif
+    Private( gpgme_key_t aKey ) : key( aKey ) {}
+
     gpgme_key_t key;
-    unsigned int mode;
   };
 
   Key::Key() {
-    d = new Private( 0, 0 );
+    d = new Private( 0 );
   }
 
-  Key::Key( gpgme_key_t key, bool ref, unsigned int mode ) {
-    d = new Private( key, mode );
+  Key::Key( gpgme_key_t key, bool ref ) {
+    d = new Private( key );
     if ( ref && d->key )
       gpgme_key_ref( d->key );
   }
 
   Key::Key( const Key & other ) {
-    d = new Private( other.d->key, other.d->mode );
+    d = new Private( other.d->key );
     if ( d->key )
       gpgme_key_ref( d->key );
   }
@@ -237,16 +229,12 @@ namespace GpgME {
   }
 
   const char * Key::keyID() const {
-#ifdef HAVE_GPGME_KEY_T_KEYID
-    return d->key ? d->key->keyid : 0 ;
-#else
     if ( !d->key || !d->key->subkeys || !d->key->subkeys->fpr )
       return 0;
     const int len = strlen( d->key->subkeys->fpr );
     if ( len < 16 )
       return 0;
     return d->key->subkeys->fpr + len - 16; // return the last 8 bytes (in hex notation)
-#endif
   }
 
   const char * Key::shortKeyID() const {
@@ -257,19 +245,11 @@ namespace GpgME {
   }
 
   const char * Key::primaryFingerprint() const {
-#ifdef HAVE_GPGME_KEY_T_FPR
-    return d->key ? d->key->fpr : 0 ;
-#else
     return d->key && d->key->subkeys ? d->key->subkeys->fpr : 0 ;
-#endif
   }
 
   unsigned int Key::keyListMode() const {
-#ifdef HAVE_GPGME_KEY_T_KEYLIST_MODE
     return d->key ? convert_from_gpgme_keylist_mode_t( d->key->keylist_mode ) : 0 ;
-#else
-    return d ? d->mode : 0 ;
-#endif
   }
 
   //
@@ -791,11 +771,8 @@ namespace GpgME {
 	      if ( s == aSig ) {
 		sig = s;
 #ifdef HAVE_GPGME_KEY_SIG_NOTATIONS
-		for ( gpgme_sig_notation_t n = sig->notations ; n ; n = n->next, --idx )
-		  if ( n == aNota ) {
-		    nota = n;
-		    break;
-		  }
+		for ( nota = sig->notations ; nota && idx > 0; nota = nota->next, --idx )
+		    ;
 #else
 		(void)idx;
 #endif
@@ -890,5 +867,43 @@ namespace GpgME {
   const char * UserID::Signature::Notation::value() const {
     return d->nota ? d->nota->value : 0 ;
   }
+
+#ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
+    static inline UserID::Signature::Notation::Flags convert_from_gpgme_sig_notation_flags_t( unsigned int flags ) {
+	unsigned long result = 0;
+#ifdef HAVE_GPGME_SIG_NOTATION_HUMAN_READABLE
+	if ( flags & GPGME_SIG_NOTATION_HUMAN_READABLE ) result |= UserID::Signature::Notation::HumanReadable ;
+#endif
+#ifdef HAVE_GPGME_SIG_NOTATION_CRITICAL
+	if ( flags & GPGME_SIG_NOTATION_CRITICAL ) result |= UserID::Signature::Notation::Critical ;
+#endif
+	return static_cast<UserID::Signature::Notation::Flags>( result );
+    }
+#endif
+
+
+  UserID::Signature::Notation::Flags UserID::Signature::Notation::flags() const {
+#ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
+      if ( d->nota )
+	  return convert_from_gpgme_sig_notation_flags_t( d->nota->flags );
+#endif
+      return NoFlags;
+  }      
+
+    bool UserID::Signature::Notation::isHumanReadable() const {
+#ifdef HAVE_GPGME_SIG_NOTATION_HUMAN_READABLE
+	return d->nota && d->nota->human_readable ;
+#else
+	return false;
+#endif
+    }
+
+    bool UserID::Signature::Notation::isCritical() const {
+#ifdef HAVE_GPGME_SIG_NOTATION_CRITICAL
+	return d->nota && d->nota->critical ;
+#else
+	return false;
+#endif
+    }
 
 } // namespace GpgME

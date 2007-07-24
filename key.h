@@ -46,7 +46,7 @@ namespace GpgME {
     friend class Context;
   public:
     Key();
-    Key( gpgme_key_t key, bool acquireRef, unsigned int keyListMode=0 );
+    Key( gpgme_key_t key, bool acquireRef );
     Key( const Key & key );
     ~Key();
 
@@ -320,6 +320,16 @@ namespace GpgME {
 
     const char * name() const;
     const char * value() const;
+
+    enum Flags {
+	NoFlags = 0,
+	HumanReadable = 1,
+	Critical = 2
+    };
+    Flags flags() const;
+
+    bool isHumanReadable() const;
+    bool isCritical() const;
 
   private:
     class Private;
