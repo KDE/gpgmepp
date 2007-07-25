@@ -123,6 +123,10 @@ namespace GpgME {
 
     GpgME::Error setLocale( int category, const char * value );
 
+    EngineInfo engineInfo() const;
+    GpgME::Error setEngineFileName( const char * filename );
+    GpgME::Error setEngineHomeDirectory( const char * filename );
+
   private:
     friend class EventLoopInteractor;
     void installIOCallbacks( gpgme_io_cbs * iocbs );

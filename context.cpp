@@ -51,6 +51,10 @@ using std::endl;
 
 #include <cassert>
 
+static inline GpgME::Error makeError( gpg_err_code_t code ) {
+  return GpgME::Error( gpg_err_make( (gpg_err_source_t)22, code ) );
+}
+
 namespace GpgME {
 
   const char * Error::source() const {
@@ -223,6 +227,28 @@ namespace GpgME {
 
   Error Context::setLocale( int cat, const char * val ) {
     return Error( d->lasterr = gpgme_set_locale( d->ctx, cat, val ) );
+  }
+
+  EngineInfo Context::engineInfo() const {
+      return EngineInfo( gpgme_ctx_get_engine_info( d->ctx ) );
+  }
+
+  Error Context::setEngineFileName( const char * filename ) {
+#ifdef HAVE_GPGME_CTX_GETSET_ENGINE_INFO
+      const char * const home_dir = engineInfo().homeDirectory();
+      return Error( gpgme_ctx_set_engine_info( d->ctx, gpgme_get_protocol( d->ctx ), filename, home_dir ) );
+#else
+      return makeError( GPG_ERR_NOT_IMPLEMENTED );
+#endif
+  }
+
+  Error Context::setEngineHomeDirectory( const char * home_dir ) {
+#ifdef HAVE_GPGME_CTX_GETSET_ENGINE_INFO
+      const char * const filename = engineInfo().fileName();
+      return Error( gpgme_ctx_set_engine_info( d->ctx, gpgme_get_protocol( d->ctx ), filename, home_dir ) );
+#else
+      return makeError( GPG_ERR_NOT_IMPLEMENTED );
+#endif
   }
 
   //

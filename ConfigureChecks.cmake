@@ -109,6 +109,20 @@ check_cxx_source_compiles ("
 " HAVE_GPGME_ENGINE_INFO_T_HOME_DIR
 )
 
+#check if gpgme has gpgme_ctx_{get,set}_engine_info()
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_ctx_t ctx = 0;
+    const gpgme_engine_info_t ei = gpgme_ctx_get_engine_info( ctx );
+    const char * filename = 0;
+    const char * home_dir = 0;
+    const gpgme_error_t e
+      = gpgme_ctx_set_engine_info( ctx, GPGME_PROTOCOL_OpenPGP, filename, home_dir );
+  }
+" HAVE_GPGME_CTX_GETSET_ENGINE_INFO
+)
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 
