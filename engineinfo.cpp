@@ -83,3 +83,10 @@ const char * GpgME::EngineInfo::requiredVersion() const {
   return isNull() ? 0 : d->info->req_version;
 }
 
+const char * GpgME::EngineInfo::homeDirectory() const {
+#ifdef HAVE_GPGME_ENGINE_INFO_T_HOME_DIR
+  return isNull() ? 0 : d->info->home_dir;
+#else
+  return 0;
+#endif
+}

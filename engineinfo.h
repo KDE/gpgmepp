@@ -54,6 +54,8 @@ namespace GpgME {
     const char * fileName() const;
     const char * version() const;
     const char * requiredVersion() const;
+    const char * homeDirectory() const;
+
   private:
     class Private;
     Private * d;

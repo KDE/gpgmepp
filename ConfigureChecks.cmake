@@ -99,6 +99,16 @@ check_cxx_source_compiles ("
 " HAVE_GPGME_SUBKEY_T_IS_QUALIFIED 
 )
 
+# check if gpgme has gpgme_engine_info_t->home_dir
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_engine_info_t ei = 0;
+    const char * hd = ei->home_dir;
+  }
+" HAVE_GPGME_ENGINE_INFO_T_HOME_DIR
+)
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 

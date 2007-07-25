@@ -25,3 +25,5 @@
 /* Define to 1 if your gpgme's gpgme_subkey_t has the is_qualified flag */
 #cmakedefine HAVE_GPGME_SUBKEY_T_IS_QUALIFIED 1
 
+/* Define to 1 if your gpgme's gpgme_engine_info_t has the home_dir member */
+#cmakedefine HAVE_GPGME_ENGINE_INFO_T_HOME_DIR 1
