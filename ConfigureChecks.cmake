@@ -174,7 +174,17 @@ check_cxx_source_compiles ("
   }
 " HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
 )
-    
+
+# check if gpgme has gpgme_verify_result_t->file_name
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_verify_result_t res = 0;
+    const char * fn = res->file_name;
+    (void)fn;
+  }
+" HAVE_GPGME_VERIFY_RESULT_T_FILE_NAME
+)
 
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)

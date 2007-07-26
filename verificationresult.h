@@ -49,16 +49,19 @@ namespace GpgME {
 	return *this;
     }
 
-    bool isNull() const;
-
-    Signature signature( unsigned int index ) const;
-    std::vector<Signature> signatures() const;
-
     void swap( VerificationResult & other ) {
 	Result::swap( other );
 	using std::swap;
 	swap( this->d, other.d );
     }
+
+    bool isNull() const;
+
+    const char * fileName() const;
+
+    unsigned int numSignatures() const;
+    Signature signature( unsigned int index ) const;
+    std::vector<Signature> signatures() const;
 
     class Private;
   private:

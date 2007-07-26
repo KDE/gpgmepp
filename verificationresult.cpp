@@ -30,6 +30,7 @@
 #include <gpgme.h>
 
 #include <algorithm>
+#include <string>
 #include <cstring>
 #include <cstdlib>
 
@@ -38,6 +39,9 @@ public:
   Private( const gpgme_verify_result_t r ) : Shared() {
     if ( !r )
       return;
+#ifdef HAVE_GPGME_VERIFY_RESULT_T_FILE_NAME
+    file_name = r->file_name;
+#endif
     // copy recursively, using compiler-generated copy ctor.
     // We just need to handle the pointers in the structs:
     for ( gpgme_signature_t is = r->signatures ; is ; is = is->next ) {
@@ -85,6 +89,7 @@ public:
   std::vector<gpgme_signature_t> sigs;
   std::vector< std::vector<Nota> > nota;
   std::vector<char*> purls;
+  std::string file_name;
 };
 
 GpgME::VerificationResult::VerificationResult( gpgme_ctx_t ctx, int error )
@@ -100,6 +105,14 @@ GpgME::VerificationResult::VerificationResult( gpgme_ctx_t ctx, int error )
 }
 
 make_standard_stuff(VerificationResult)
+
+const char * GpgME::VerificationResult::fileName() const {
+  return d ? d->file_name.c_str() : 0 ;
+}
+
+unsigned int GpgME::VerificationResult::numSignatures() const {
+  return d ? d->sigs.size() : 0 ;
+}
 
 GpgME::Signature GpgME::VerificationResult::signature( unsigned int idx ) const {
   return Signature( d, idx );

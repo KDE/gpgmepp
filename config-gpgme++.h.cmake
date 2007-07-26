@@ -35,7 +35,10 @@
 #cmakedefine HAVE_GPGME_SIG_NOTATION_CLEARADDGET 1
 
 /* Define to 1 if your gpgme's gpgme_decrypt_result_t has the file_name member */
-#cmakedefine HAVE_GPGME_DECRYPT_RESULT_T_FILE_NAME
+#cmakedefine HAVE_GPGME_DECRYPT_RESULT_T_FILE_NAME 1
 
 /* Define to 1 if your gpgme's gpgme_decrypt_result_t has the recipients member */
-#cmakedefine HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
+#cmakedefine HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS 1
+
+/* Define to 1 if your gpgme's gpgme_verify_result_t has the file_name member */
+#cmakedefine HAVE_GPGME_VERIFY_RESULT_T_FILE_NAME 1
