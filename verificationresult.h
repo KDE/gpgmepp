@@ -113,7 +113,8 @@ namespace GpgME {
     time_t expirationTime() const;
     bool neverExpires() const;
 
-    bool wrongKeyUsage() const;
+    GPGMEPP_DEPRECATED bool wrongKeyUsage() const { return isWrongKeyUsage(); }
+    bool isWrongKeyUsage() const;
 
     enum Validity {
       Unknown, Undefined, Never, Marginal, Full, Ultimate

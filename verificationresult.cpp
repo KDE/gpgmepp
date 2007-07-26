@@ -185,7 +185,7 @@ bool GpgME::Signature::neverExpires() const {
   return expirationTime() == (time_t)0;
 }
 
-bool GpgME::Signature::wrongKeyUsage() const {
+bool GpgME::Signature::isWrongKeyUsage() const {
   return !isNull() && d->sigs[idx]->wrong_key_usage;
 }
 
