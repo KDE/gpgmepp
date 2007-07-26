@@ -186,5 +186,28 @@ check_cxx_source_compiles ("
 " HAVE_GPGME_VERIFY_RESULT_T_FILE_NAME
 )
 
+# check if gpgme has gpgme_signature_t->pka_{trust,address}
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_signature_t sig = 0;
+    unsigned int pkat = sig->pka_trust;
+    const char * pkaa = sig->pka_address;
+  }
+" HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
+)
+
+# check if gpgme has gpgme_signature_t->{hash,pubkey}_algo
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_signature_t sig = 0;
+    gpgme_pubkey_algo_t pk = sig->pubkey_algo;
+    gpgme_hash_algo_t h = sig->hash_algo;
+  }
+" HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS
+)
+
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)

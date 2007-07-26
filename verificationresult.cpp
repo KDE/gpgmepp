@@ -202,6 +202,22 @@ bool GpgME::Signature::isWrongKeyUsage() const {
   return !isNull() && d->sigs[idx]->wrong_key_usage;
 }
 
+GpgME::Signature::PKAStatus GpgME::Signature::pkaStatus() const {
+#ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
+  if ( !isNull() )
+    return static_cast<PKAStatus>( d->sigs[idx]->pka_trust );
+#endif
+  return UnknownPKAStatus;
+}
+
+const char * GpgME::Signature::pkaAddress() const {
+#ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
+  if ( !isNull() )
+    return d->sigs[idx]->pka_address;
+#endif
+  return 0;
+}
+
 GpgME::Signature::Validity GpgME::Signature::validity() const {
   if ( isNull() )
     return Unknown;
@@ -233,6 +249,38 @@ char GpgME::Signature::validityAsString() const {
 
 GpgME::Error GpgME::Signature::nonValidityReason() const {
   return Error( isNull() ? 0 : d->sigs[idx]->validity_reason );
+}
+
+unsigned int GpgME::Signature::publicKeyAlgorithm() const {
+#ifdef HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS
+  if ( !isNull() )
+    return d->sigs[idx]->pubkey_algo;
+#endif
+  return 0;
+}
+
+const char * GpgME::Signature::publicKeyAlgorithmAsString() const {
+#ifdef HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS
+  if ( !isNull() )
+    return gpgme_pubkey_algo_name( d->sigs[idx]->pubkey_algo );
+#endif
+  return 0;
+}
+
+unsigned int GpgME::Signature::hashAlgorithm() const {
+#ifdef HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS
+  if ( !isNull() )
+    return d->sigs[idx]->hash_algo;
+#endif
+  return 0;
+}
+
+const char * GpgME::Signature::hashAlgorithmAsString() const {
+#ifdef HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS
+  if ( !isNull() )
+    return gpgme_hash_algo_name( d->sigs[idx]->hash_algo );
+#endif
+  return 0;
 }
 
 const char * GpgME::Signature::policyURL() const {

@@ -42,3 +42,9 @@
 
 /* Define to 1 if your gpgme's gpgme_verify_result_t has the file_name member */
 #cmakedefine HAVE_GPGME_VERIFY_RESULT_T_FILE_NAME 1
+
+/* Define to 1 if your gpgme's gpgme_signature_t has the pka_{trust,address} fields */
+#cmakedefine HAVE_GPGME_SIGNATURE_T_PKA_FIELDS 1
+
+/* Define to 1 if your gpgme's gpgme_signature_t has the {hash,pubkey}_algo fields */
+#cmakedefine HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS 1

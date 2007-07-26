@@ -119,12 +119,24 @@ namespace GpgME {
     GPGMEPP_DEPRECATED bool wrongKeyUsage() const { return isWrongKeyUsage(); }
     bool isWrongKeyUsage() const;
 
+    enum PKAStatus {
+	UnknownPKAStatus, PKAVerificationFailed, PKAVerificationSucceeded
+    };
+    PKAStatus pkaStatus() const;
+    const char * pkaAddress() const;
+
     enum Validity {
       Unknown, Undefined, Never, Marginal, Full, Ultimate
     };
     Validity validity() const;
     char validityAsString() const;
     Error nonValidityReason() const;
+
+    unsigned int publicKeyAlgorithm() const;
+    const char * publicKeyAlgorithmAsString() const;
+
+    unsigned int hashAlgorithm() const;
+    const char * hashAlgorithmAsString() const;
 
     const char * policyURL() const;
     GpgME::Notation notation( unsigned int index ) const;
