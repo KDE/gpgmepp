@@ -25,7 +25,8 @@
 #define __GPGMEPP_UTIL_H__
 
 #include <gpgme.h>
-#include <context.h>
+#include <gpgme++/notation.h>
+#include <gpgme++/context.h>
 
 #ifndef NDEBUG
 #include <iostream>
@@ -72,5 +73,38 @@ static inline unsigned int convert_from_gpgme_keylist_mode_t( unsigned int mode 
 #endif // NDEBUG
   return result;
 }
+
+#ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
+static inline GpgME::Notation::Flags convert_from_gpgme_sig_notation_flags_t( unsigned int flags ) {
+    unsigned int result = 0;
+#ifdef HAVE_GPGME_SIG_NOTATION_HUMAN_READABLE
+    if ( flags & GPGME_SIG_NOTATION_HUMAN_READABLE ) result |= GpgME::Notation::HumanReadable ;
+#endif
+#ifdef HAVE_GPGME_SIG_NOTATION_CRITICAL
+    if ( flags & GPGME_SIG_NOTATION_CRITICAL ) result |= GpgME::Notation::Critical ;
+#endif
+    return static_cast<GpgME::Notation::Flags>( result );
+}
+#endif
+
+static inline gpgme_sig_notation_flags_t  add_to_gpgme_sig_notation_flags_t( unsigned int oldflags, unsigned int newflags ) {
+    unsigned int result = oldflags;
+    if ( newflags & GpgME::Notation::HumanReadable ) {
+#ifdef HAVE_GPGME_SIG_NOTATION_HUMAN_READABLE
+	result |= GPGME_SIG_NOTATION_HUMAN_READABLE;
+#elif !defined(NDEBUG)
+	std::cerr << "GpgME::Context: ignoring HumanReadable signature notation flag (gpgme too old)" << std::endl;
+#endif
+    }
+    if ( newflags & GpgME::Notation::Critical ) {
+#ifdef HAVE_GPGME_SIG_NOTATION_CRITICAL
+	result |= GPGME_SIG_NOTATION_CRITICAL;
+#elif !defined(NDEBUG)
+	std::cerr << "GpgME::Context: ignoring Critical signature notation flag (gpgme too old)" << std::endl;
+#endif
+    }
+    return static_cast<gpgme_sig_notation_flags_t>( result );
+}
+
 
 #endif // __GPGMEPP_UTIL_H__

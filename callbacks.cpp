@@ -20,12 +20,14 @@
   Boston, MA 02110-1301, USA.
 */
 
+#include <gpgme++/config-gpgme++.h>
+
 #include "callbacks.h"
 
 #include <gpgme++/interfaces/progressprovider.h>
 #include <gpgme++/interfaces/passphraseprovider.h>
 #include <gpgme++/interfaces/dataprovider.h>
-#include <gpgme++/context.h> // for Error
+#include <gpgme++/error.h>
 
 #include <cassert>
 #include <cerrno>

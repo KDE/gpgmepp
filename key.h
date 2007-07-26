@@ -232,7 +232,7 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT UserID::Signature {
   public:
-    class Notation;
+    typedef GpgME::Notation Notation GPGMEPP_DEPRECATED;
 
     explicit Signature( gpgme_key_t key=0, gpgme_user_id_t uid=0, gpgme_key_sig_t sig=0 );
     Signature( gpgme_key_t key, gpgme_user_id_t uid, unsigned int idx );
@@ -281,55 +281,8 @@ namespace GpgME {
     const char * policyURL() const;
 
     unsigned int numNotations() const;
-    Notation notation( unsigned int idx ) const;
-    std::vector<Notation> notations() const;
-
-  private:
-    class Private;
-    Private * d;
-  };
-
-  //
-  //
-  // class UserID::Signature::Notation
-  //
-  //
-
-  class GPGMEPP_EXPORT UserID::Signature::Notation {
-  public:
-    explicit Notation( gpgme_key_t key=0, gpgme_user_id_t uid=0,
-                       gpgme_key_sig_t sig=0, gpgme_sig_notation_t nota=0 );
-    Notation( gpgme_key_t key, gpgme_user_id_t uid,
-              gpgme_key_sig_t sig, unsigned int idx );
-    Notation( const Notation & other );
-    ~Notation();
-
-    const Notation & operator=( Notation other ) {
-	swap( other );
-	return *this;
-    }
-
-    void swap( Notation & other ) {
-	using std::swap;
-	swap( this->d, other.d );
-    }
-
-    bool isNull() const;
-
-    Signature parent() const;
-
-    const char * name() const;
-    const char * value() const;
-
-    enum Flags {
-	NoFlags = 0,
-	HumanReadable = 1,
-	Critical = 2
-    };
-    Flags flags() const;
-
-    bool isHumanReadable() const;
-    bool isCritical() const;
+    GpgME::Notation notation( unsigned int idx ) const;
+    std::vector<GpgME::Notation> notations() const;
 
   private:
     class Private;
@@ -342,6 +295,5 @@ GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Key )
 GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Subkey )
 GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( UserID )
 GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( UserID::Signature )
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( UserID::Signature::Notation )
 
 #endif // __GPGMEPP_KEY_H__

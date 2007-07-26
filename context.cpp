@@ -474,6 +474,59 @@ namespace GpgME {
     return Key( key, false );
   }
 
+  std::vector<Key> Context::signingKeys() const {
+    std::vector<Key> result;
+    for ( unsigned int i = 0 ; gpgme_key_t key = gpgme_signers_enum( d->ctx, i ) ; ++i )
+      result.push_back( Key( key, false ) );
+    return result;
+  }
+
+  void Context::clearSignatureNotations() {
+#ifdef HAVE_GPGME_SIG_NOTATION_CLEARADDGET
+    gpgme_sig_notation_clear( d->ctx );
+#endif
+  }
+
+  GpgME::Error Context::addSignatureNotation( const char * name, const char * value, unsigned int flags ) {
+#ifdef HAVE_GPGME_SIG_NOTATION_CLEARADDGET
+    return Error( gpgme_sig_notation_add( d->ctx, name, value, add_to_gpgme_sig_notation_flags_t( 0, flags ) ) );
+#else
+    (void)name; (void)value; (void)flags;
+    return makeError( GPG_ERR_NOT_IMPLEMENTED );
+#endif
+  }
+
+  GpgME::Error Context::addSignaturePolicyURL( const char * url, bool critical ) {
+#ifdef HAVE_GPGME_SIG_NOTATION_CLEARADDGET
+    return Error( gpgme_sig_notation_add( d->ctx, 0, url, critical ? GPGME_SIG_NOTATION_CRITICAL : 0 ) );
+#else
+    (void)url; (void)critical;
+    return makeError( GPG_ERR_NOT_IMPLEMENTED );
+#endif
+  }
+
+  const char * Context::signaturePolicyURL() const {
+    for ( gpgme_sig_notation_t n = gpgme_sig_notation_get( d->ctx ) ; n ; n = n->next )
+      if ( !n->name )
+        return n->value;
+    return 0;
+  }
+
+  Notation Context::signatureNotation( unsigned int idx ) const {
+    for ( gpgme_sig_notation_t n = gpgme_sig_notation_get( d->ctx ) ; n ; n = n->next )
+      if ( n->name )
+        if ( idx-- == 0 )
+          return Notation( n );
+    return Notation();
+  }
+
+  std::vector<Notation> Context::signatureNotations() const {
+    std::vector<Notation> result;
+    for ( gpgme_sig_notation_t n = gpgme_sig_notation_get( d->ctx ) ; n ; n = n->next )
+      if ( n->name )
+        result.push_back( Notation( n ) );
+    return result;
+  }
 
   static gpgme_sig_mode_t sigmode2sigmode( Context::SignatureMode mode ) {
     switch ( mode ) {

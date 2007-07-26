@@ -35,6 +35,7 @@ namespace GpgME {
 
   class Error;
   class Signature;
+  class Notation;
 
   class GPGMEPP_EXPORT VerificationResult : public Result {
   public:
@@ -68,7 +69,7 @@ namespace GpgME {
     friend class VerificationResult;
     Signature( VerificationResult::Private * parent, unsigned int index );
   public:
-    class Notation;
+    typedef GpgME::Notation Notation GPGMEPP_DEPRECATED;
 
     Signature();
     Signature( const Signature & other );
@@ -121,49 +122,18 @@ namespace GpgME {
     char validityAsString() const;
     Error nonValidityReason() const;
 
-    Notation notation( unsigned int index ) const;
-    std::vector<Notation> notations() const;
+    const char * policyURL() const;
+    GpgME::Notation notation( unsigned int index ) const;
+    std::vector<GpgME::Notation> notations() const;
 
   private:
     VerificationResult::Private * d;
     unsigned int idx;
   };
 
-  class GPGMEPP_EXPORT Signature::Notation {
-    friend class Signature;
-    Notation( VerificationResult::Private * parent, unsigned int sindex, unsigned int nindex );
-  public:
-    Notation();
-    Notation( const Notation & other );
-    ~Notation();
-
-    const Notation & operator=( Notation other ) {
-	swap( other );
-	return *this;
-    }
-
-    void swap( Notation & other ) {
-	using std::swap;
-	swap( this->d, other.d );
-	swap( this->sidx, other.sidx );
-	swap( this->nidx, other.nidx );
-    }
-
-    bool isNull() const;
-
-    const char * name() const;
-    const char * value() const;
-
-  private:
-    VerificationResult::Private * d;
-    unsigned int sidx;
-    unsigned int nidx;
-  };
-
 }
 
 GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( VerificationResult )
 GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Signature )
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Signature::Notation )
 
 #endif // __GPGMEPP_VERIFICATIONRESULT_H__

@@ -20,7 +20,9 @@
   Boston, MA 02110-1301, USA.
 */
 
-#include <gpgme++/context.h> // Error
+#include <gpgme++/config-gpgme++.h>
+
+#include <gpgme++/error.h>
 #include <gpgme++/interfaces/dataprovider.h>
 #include "data_p.h"
 

@@ -1,6 +1,6 @@
 /*
   context.h - wraps a gpgme key context
-  Copyright (C) 2003 Klarälvdalens Datakonsult AB
+  Copyright (C) 2003, 2007 Klarälvdalens Datakonsult AB
 
   This file is part of GPGME++.
 
@@ -27,6 +27,9 @@
 #include <gpgme++/gpgmefw.h>
 #include <gpgme++/gpgme++_export.h>
 
+#include <gpgme++/error.h>
+#include <gpgme++/verificationresult.h> // for Signature::Notation
+
 #include <vector>
 #include <utility>
 
@@ -48,24 +51,6 @@ namespace GpgME {
   class EncryptionResult;
 
   class EngineInfo;
-
-  class GPGMEPP_EXPORT Error {
-  public:
-    explicit Error( int e=0 ) : mErr( e ) {}
-
-    const char * source() const;
-    const char * asString() const;
-
-    int code() const;
-    int sourceID() const;
-
-    bool isCanceled() const;
-
-    operator int() const { return mErr; }
-    operator bool() const { return mErr && !isCanceled(); }
-  private:
-    int mErr;
-  };
 
   class GPGMEPP_EXPORT Context {
     explicit Context( gpgme_ctx_t );
@@ -232,6 +217,14 @@ namespace GpgME {
     void clearSigningKeys();
     GpgME::Error addSigningKey( const Key & signer );
     Key signingKey( unsigned int index ) const;
+    std::vector<Key> signingKeys() const;
+
+    void clearSignatureNotations();
+    GpgME::Error addSignatureNotation( const char * name, const char * value, unsigned int flags=0 );
+    GpgME::Error addSignaturePolicyURL( const char * url, bool critical=false );
+    const char * signaturePolicyURL() const;
+    Notation signatureNotation( unsigned int index ) const;
+    std::vector<Notation> signatureNotations() const;
 
     enum SignatureMode { Normal, Detached, Clearsigned };
     SigningResult sign( const Data & plainText, Data & signature, SignatureMode mode );

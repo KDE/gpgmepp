@@ -38,7 +38,7 @@ install(TARGETS gpgmepp  DESTINATION ${LIB_INSTALL_DIR})
 
 ########### install files ###############
 
-install( FILES context.h key.h trustitem.h 
+install( FILES error.h context.h key.h trustitem.h 
    eventloopinteractor.h data.h gpgmefw.h result.h keylistresult.h keygenerationresult.h 
-   importresult.h decryptionresult.h verificationresult.h signingresult.h encryptionresult.h engineinfo.h gpgme++_export.h 
+   importresult.h decryptionresult.h verificationresult.h signingresult.h encryptionresult.h notation.h engineinfo.h gpgme++_export.h 
    DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++ )

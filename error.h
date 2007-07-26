@@ -1,6 +1,6 @@
 /*
-  result.h - base class for results
-  Copyright (C) 2004 Klarälvdalens Datakonsult AB
+  error.h - wraps a gpgme error
+  Copyright (C) 2003, 2007 Klarälvdalens Datakonsult AB
 
   This file is part of GPGME++.
 
@@ -20,29 +20,33 @@
   Boston, MA 02110-1301, USA.
 */
 
-#ifndef __GPGMEPP_RESULT_H__
-#define __GPGMEPP_RESULT_H__
+// -*- c++ -*-
+#ifndef __GPGMEPP_ERROR_H__
+#define __GPGMEPP_ERROR_H__
 
 #include <gpgme++/gpgmefw.h>
-#include <gpgme++/error.h>
-
-#include <algorithm> // std::swap
+#include <gpgme++/gpgme++_export.h>
 
 namespace GpgME {
 
-  class GPGMEPP_EXPORT Result {
-  protected:
-    explicit Result( int error=0 ) : mError( error ) {}
-
-    void swap( Result & other ) { std::swap( other.mError, mError ); }
-
+  class GPGMEPP_EXPORT Error {
   public:
-    const Error & error() const { return mError; }
+    explicit Error( int e=0 ) : mErr( e ) {}
 
-  protected:
-    Error mError;
+    const char * source() const;
+    const char * asString() const;
+
+    int code() const;
+    int sourceID() const;
+
+    bool isCanceled() const;
+
+    operator int() const { return mErr; }
+    operator bool() const { return mErr && !isCanceled(); }
+  private:
+    int mErr;
   };
 
-}
+} // namespace GpgME
 
-#endif // __GPGMEPP_RESULT_H__
+#endif /* __GPGMEPP_ERROR_H__ */

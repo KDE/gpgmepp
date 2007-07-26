@@ -20,9 +20,12 @@
   Boston, MA 02110-1301, USA.
 */
 
+#include <gpgme++/config-gpgme++.h>
 #include <gpgme++/verificationresult.h>
+#include <gpgme++/notation.h>
 #include "shared.h"
 #include "result_p.h"
+#include "util.h"
 
 #include <gpgme.h>
 
@@ -52,7 +55,7 @@ public:
 	    purls.back() = strdup( in->value ); // policy url
 	  continue;
 	}
-	Nota n = { 0, 0 };
+	Nota n = { 0, 0, in->flags };
 	n.name = strdup( in->name );
 	if ( in->value )
 	  n.value = strdup( in->value );
@@ -76,6 +79,7 @@ public:
   struct Nota {
     char * name;
     char * value;
+    gpgme_sig_notation_flags_t flags;
   };
 
   std::vector<gpgme_signature_t> sigs;
@@ -218,54 +222,126 @@ GpgME::Error GpgME::Signature::nonValidityReason() const {
   return Error( isNull() ? 0 : d->sigs[idx]->validity_reason );
 }
 
-
-GpgME::Signature::Notation GpgME::Signature::notation( unsigned int nidx ) const {
-  return Notation( d, idx, nidx );
+const char * GpgME::Signature::policyURL() const {
+    return isNull() ? 0 : d->purls[idx] ;
 }
 
-std::vector<GpgME::Signature::Notation> GpgME::Signature::notations() const {
+GpgME::Notation GpgME::Signature::notation( unsigned int nidx ) const {
+  return GpgME::Notation( d, idx, nidx );
+}
+
+std::vector<GpgME::Notation> GpgME::Signature::notations() const {
   if ( isNull() )
-    return std::vector<Notation>();
-  std::vector<Notation> result;
+    return std::vector<GpgME::Notation>();
+  std::vector<GpgME::Notation> result;
   result.reserve( d->nota[idx].size() );
   for ( unsigned int i = 0 ; i < d->nota[idx].size() ; ++i )
-    result.push_back( Notation( d, idx, i ) );
+    result.push_back( GpgME::Notation( d, idx, i ) );
   return result;
 }
 
 
-GpgME::Signature::Notation::Notation( VerificationResult::Private * parent, unsigned int sindex, unsigned int nindex )
-  : d( parent ), sidx( sindex ), nidx( nindex )
+class GpgME::Notation::Private {
+public:
+    Private() : d( 0 ), sidx( 0 ), nidx( 0 ), nota( 0 ) {}
+    Private( VerificationResult::Private * priv, unsigned int sindex, unsigned int nindex )
+	: d( priv ), sidx( sindex ), nidx( nindex ), nota( 0 )
+    {
+      if ( d )
+        d->ref();
+    }
+    Private( gpgme_sig_notation_t n )
+	: d( 0 ), sidx( 0 ), nidx( 0 ), nota( n ? new _gpgme_sig_notation( *n ) : 0 )
+    {
+      if ( nota && nota->name )
+        nota->name = strdup( nota->name );
+      if ( nota && nota->value )
+        nota->value = strdup( nota->value );
+    }
+    Private( const Private & other )
+	: d( other.d ), sidx( other.sidx ), nidx( other.nidx ), nota( other.nota )
+    {
+      if ( d )
+        d->ref();
+      if ( nota ) {
+        nota->name = strdup( nota->name );
+        nota->value = strdup( nota->value );
+      }
+    }
+    ~Private() {
+      if ( d )
+        d->unref();
+      if ( nota ) {
+        std::free( nota->name );  nota->name = 0;
+        std::free( nota->value ); nota->value = 0;
+      }
+    }
+
+    VerificationResult::Private * d;
+    unsigned int sidx, nidx;
+    gpgme_sig_notation_t nota;
+};
+
+
+GpgME::Notation::Notation( VerificationResult::Private * parent, unsigned int sindex, unsigned int nindex )
+  : d( new Private( parent, sindex, nindex ) )
 {
-  if ( d )
-    d->ref();
+
 }
 
-GpgME::Signature::Notation::Notation()
-  : d( 0 ), sidx( 0 ), nidx( 0 ) {}
-
-GpgME::Signature::Notation::Notation( const Notation & other )
-  : d( other.d ), sidx( other.sidx ), nidx( other.nidx )
+GpgME::Notation::Notation( gpgme_sig_notation_t nota )
+  : d( new Private( nota ) )
 {
-  if ( d )
-    d->ref();
+
 }
 
-GpgME::Signature::Notation::~Notation() {
-  if ( d )
-    d->unref();
+GpgME::Notation::Notation() : d( 0 ) {}
+
+GpgME::Notation::Notation( const Notation & other )
+  : d( other.d ? new Private( *other.d ) : 0 )
+{
+
 }
 
-bool GpgME::Signature::Notation::isNull() const {
-  return !d || sidx >= d->nota.size() || nidx >= d->nota[sidx].size() ;
+GpgME::Notation::~Notation() {
+  delete d; d = 0;
+}
+
+bool GpgME::Notation::isNull() const {
+    if ( !d )
+	return true;
+    if ( d->d )
+	return d->sidx >= d->d->nota.size() || d->nidx >= d->d->nota[d->sidx].size() ;
+    return !d->nota;
 }
 
 
-const char * GpgME::Signature::Notation::name() const {
-  return isNull() ? 0 : d->nota[sidx][nidx].name ;
+const char * GpgME::Notation::name() const {
+    return
+	isNull() ? 0 :
+	d->d ? d->d->nota[d->sidx][d->nidx].name :
+	d->nota ? d->nota->name : 0 ;
 }
 
-const char * GpgME::Signature::Notation::value() const {
-  return isNull() ? 0 : d->nota[sidx][nidx].value ;
+const char * GpgME::Notation::value() const {
+    return
+	isNull() ? 0 :
+	d->d ? d->d->nota[d->sidx][d->nidx].value :
+	d->nota ? d->nota->value : 0 ;
 }
 
+GpgME::Notation::Flags GpgME::Notation::flags() const {
+    return
+      convert_from_gpgme_sig_notation_flags_t(
+        isNull() ? 0 :
+        d->d ? d->d->nota[d->sidx][d->nidx].flags :
+        d->nota ? d->nota->flags : 0 );
+}
+
+bool GpgME::Notation::isHumanReadable() const {
+    return flags() & HumanReadable;
+}
+
+bool GpgME::Notation::isCritical() const {
+    return flags() & Critical;
+}

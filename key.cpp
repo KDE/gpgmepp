@@ -710,8 +710,16 @@ namespace GpgME {
     return d->sig ? gpgme_strerror( d->sig->status ) : 0 ;
   }
 
-  UserID::Signature::Notation UserID::Signature::notation( unsigned int idx ) const {
-    return Notation( d->key, d->uid, d->sig, idx );
+  GpgME::Notation UserID::Signature::notation( unsigned int idx ) const {
+    if ( !d->sig )
+      return GpgME::Notation();
+#ifdef HAVE_GPGME_KEY_SIG_NOTATIONS
+    for ( gpgme_sig_notation_t nota = d->sig->notations ; nota ; nota = nota->next )
+      if ( nota->name )
+	  if ( idx-- == 0 )
+	      return GpgME::Notation( nota );
+#endif
+    return GpgME::Notation();
   }
 
   unsigned int UserID::Signature::numNotations() const {
@@ -725,15 +733,15 @@ namespace GpgME {
     return count;
   }
 
-  vector<UserID::Signature::Notation> UserID::Signature::notations() const {
+  vector<Notation> UserID::Signature::notations() const {
     if ( !d->sig )
-      return vector<Notation>();
-    vector<Notation> v;
+      return vector<GpgME::Notation>();
+    vector<GpgME::Notation> v;
 #ifdef HAVE_GPGME_KEY_SIG_NOTATIONS
     v.reserve( numNotations() );
     for ( gpgme_sig_notation_t nota = d->sig->notations ; nota ; nota = nota->next )
       if ( nota->name )
-	v.push_back( Notation( d->key, d->uid, d->sig, nota ) );
+	v.push_back( GpgME::Notation( nota ) );
 #endif
     return v;
   }
@@ -748,162 +756,5 @@ namespace GpgME {
 #endif
     return 0;
   }
-
-
-
-  //
-  //
-  // class Notation
-  //
-  //
-
-  class UserID::Signature::Notation::Private {
-  public:
-    Private( gpgme_key_t aKey, gpgme_user_id_t aUid,
-	     gpgme_key_sig_t aSig, unsigned int idx )
-      : key( aKey ), uid( 0 ), sig( 0 ), nota( 0 )
-    {
-      if ( key )
-	for ( gpgme_user_id_t u = key->uids ; u ; u = u->next )
-	  if ( u == aUid ) {
-	    uid = u;
-	    for ( gpgme_key_sig_t s = uid->signatures ; s ; s = s->next )
-	      if ( s == aSig ) {
-		sig = s;
-#ifdef HAVE_GPGME_KEY_SIG_NOTATIONS
-		for ( nota = sig->notations ; nota && idx > 0; nota = nota->next, --idx )
-		    ;
-#else
-		(void)idx;
-#endif
-		break;
-	      }
-	    break;
-	  }
-      if ( !uid || !sig || !nota ) {
-	uid = 0;
-	sig = 0;
-	key = 0;
-	nota = 0;
-      }
-    }
-
-    Private( gpgme_key_t aKey, gpgme_user_id_t aUid,
-	     gpgme_key_sig_t aSig, gpgme_sig_notation_t aNota )
-      : key( aKey ), uid( 0 ), sig( 0 ), nota( 0 )
-    {
-      if ( key )
-	for ( gpgme_user_id_t u = key->uids ; u ; u = u->next )
-	  if ( u == aUid ) {
-	    uid = u;
-	    for ( gpgme_key_sig_t s = uid->signatures ; s ; s = s->next )
-	      if ( s == aSig ) {
-		sig = s;
-#ifdef HAVE_GPGME_KEY_SIG_NOTATIONS
-		for ( gpgme_sig_notation_t n = sig->notations ; n ; n = n->next )
-		  if ( n == aNota ) {
-		    nota = n;
-		    break;
-		  }
-#else
-		(void)aNota;
-#endif
-		break;
-	      }
-	    break;
-	  }
-      if ( !uid || !sig || !nota ) {
-	uid = 0;
-	sig = 0;
-	key = 0;
-	nota = 0;
-      }
-    }
-
-    gpgme_key_t key;
-    gpgme_user_id_t uid;
-    gpgme_key_sig_t sig;
-    gpgme_sig_notation_t nota;
-  };
-
-  UserID::Signature::Notation::Notation( gpgme_key_t key, gpgme_user_id_t uid,
-					 gpgme_key_sig_t sig, unsigned int idx ) {
-    d = new Private( key, uid, sig, idx );
-    if ( d->key )
-      gpgme_key_ref( d->key );
-  }
-
-  UserID::Signature::Notation::Notation( gpgme_key_t key, gpgme_user_id_t uid,
-					 gpgme_key_sig_t sig, gpgme_sig_notation_t nota ) {
-    d = new Private( key, uid, sig, nota );
-    if ( d->key )
-      gpgme_key_ref( d->key );
-  }
-
-  UserID::Signature::Notation::Notation( const Notation & other ) {
-    d = new Private( other.d->key, other.d->uid, other.d->sig, other.d->nota );
-    if ( d->key )
-      gpgme_key_ref( d->key );
-  }
-
-  UserID::Signature::Notation::~Notation() {
-    if ( d->key )
-      gpgme_key_unref( d->key );
-    delete d; d = 0;
-  }
-
-  bool UserID::Signature::Notation::isNull() const {
-    return !d || !d->key || !d->uid || !d->sig || !d->nota;
-  }
-
-  UserID::Signature UserID::Signature::Notation::parent() const {
-    return Signature( d->key, d->uid, d->sig );
-  }
-
-  const char * UserID::Signature::Notation::name() const {
-    return d->nota ? d->nota->name : 0 ;
-  }
-
-  const char * UserID::Signature::Notation::value() const {
-    return d->nota ? d->nota->value : 0 ;
-  }
-
-#ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
-    static inline UserID::Signature::Notation::Flags convert_from_gpgme_sig_notation_flags_t( unsigned int flags ) {
-	unsigned long result = 0;
-#ifdef HAVE_GPGME_SIG_NOTATION_HUMAN_READABLE
-	if ( flags & GPGME_SIG_NOTATION_HUMAN_READABLE ) result |= UserID::Signature::Notation::HumanReadable ;
-#endif
-#ifdef HAVE_GPGME_SIG_NOTATION_CRITICAL
-	if ( flags & GPGME_SIG_NOTATION_CRITICAL ) result |= UserID::Signature::Notation::Critical ;
-#endif
-	return static_cast<UserID::Signature::Notation::Flags>( result );
-    }
-#endif
-
-
-  UserID::Signature::Notation::Flags UserID::Signature::Notation::flags() const {
-#ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
-      if ( d->nota )
-	  return convert_from_gpgme_sig_notation_flags_t( d->nota->flags );
-#endif
-      return NoFlags;
-  }      
-
-    bool UserID::Signature::Notation::isHumanReadable() const {
-#ifdef HAVE_GPGME_SIG_NOTATION_HUMAN_READABLE
-	return d->nota && d->nota->human_readable ;
-#else
-	return false;
-#endif
-    }
-
-    bool UserID::Signature::Notation::isCritical() const {
-#ifdef HAVE_GPGME_SIG_NOTATION_CRITICAL
-	return d->nota && d->nota->critical ;
-#else
-	return false;
-#endif
-    }
 
 } // namespace GpgME
