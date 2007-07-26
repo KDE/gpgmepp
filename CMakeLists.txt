@@ -29,8 +29,8 @@ kde4_add_library(gpgmepp SHARED ${gpgme_LIB_SRCS})
 target_link_libraries(gpgmepp ${GPGME_LIBRARIES})
 
 set_target_properties(gpgmepp PROPERTIES
-    VERSION ${GENERIC_LIB_VERSION}
-    SOVERSION ${GENERIC_LIB_SOVERSION}
+    VERSION     1.0.0
+    SOVERSION   1.0.0
     OUTPUT_NAME gpgme++
  )
 install(TARGETS gpgmepp  DESTINATION ${LIB_INSTALL_DIR})
