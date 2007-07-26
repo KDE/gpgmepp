@@ -24,15 +24,16 @@ set(gpgme_LIB_SRCS
 )
 
 
-kde4_add_library(gpgme++ SHARED ${gpgme_LIB_SRCS})
+kde4_add_library(gpgmepp SHARED ${gpgme_LIB_SRCS})
 
-target_link_libraries(gpgme++ ${GPGME_LIBRARIES})
+target_link_libraries(gpgmepp ${GPGME_LIBRARIES})
 
-set_target_properties(gpgme++ PROPERTIES
+set_target_properties(gpgmepp PROPERTIES
     VERSION ${GENERIC_LIB_VERSION}
     SOVERSION ${GENERIC_LIB_SOVERSION}
+    OUTPUT_NAME gpgme++
  )
-install(TARGETS gpgme++ DESTINATION ${LIB_INSTALL_DIR})
+install(TARGETS gpgmepp  DESTINATION ${LIB_INSTALL_DIR})
 
 
 ########### install files ###############
