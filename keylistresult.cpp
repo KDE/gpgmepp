@@ -20,6 +20,8 @@
   Boston, MA 02110-1301, USA.
 */
 
+#include <gpgme++/config-gpgme++.h>
+
 #include <gpgme++/keylistresult.h>
 #include "shared.h"
 #include "result_p.h"

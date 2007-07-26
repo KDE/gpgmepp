@@ -20,6 +20,8 @@
   Boston, MA 02110-1301, USA.
 */
 
+#include <gpgme++/config-gpgme++.h>
+
 #include "engineinfo.h"
 #include "shared.h"
 
