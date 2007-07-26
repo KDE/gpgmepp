@@ -30,3 +30,6 @@
 
 /* Define to 1 if your gpgme has the gpgme_ctx_{get,set}_engine_info() functions */
 #cmakedefine HAVE_GPGME_CTX_GETSET_ENGINE_INFO 1
+
+/* Define to 1 if your gpgme has the gpgme_sig_notation_{clear,add,get}() functions */
+#cmakedefine HAVE_GPGME_SIG_NOTATION_CLEARADDGET 1

@@ -123,6 +123,32 @@ check_cxx_source_compiles ("
 " HAVE_GPGME_CTX_GETSET_ENGINE_INFO
 )
 
+# missing, but not needed yet (only for edit interaction)
+#+    GPGME_STATUS_SIG_SUBPACKET,
+#+    GPGME_STATUS_NEED_PASSPHRASE_PIN,
+#+    GPGME_STATUS_SC_OP_FAILURE,
+#+    GPGME_STATUS_SC_OP_SUCCESS,
+#+    GPGME_STATUS_CARDCTRL,
+#+    GPGME_STATUS_BACKUP_KEY_CREATED,
+#+    GPGME_STATUS_PKA_TRUST_BAD,
+#+    GPGME_STATUS_PKA_TRUST_GOOD,
+#+
+#+    GPGME_STATUS_PLAINTEXT
+
+# check if gpgme has gpgme_sig_notation_{clear,add,get}
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_ctx_t ctx = 0;
+    const gpgme_sig_notation_t nota = gpgme_sig_notation_get( ctx );
+    const char * const name = 0;
+    const char * const value = 0;
+    const gpgme_sig_notation_flags_t flags = 0;
+    const gpgme_error_t err = gpgme_sig_notation_add( ctx, name, value, flags );
+    gpgme_sig_notation_clear( ctx );
+  }
+" HAVE_GPGME_SIG_NOTATION_CLEARADDGET
+)
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
-
