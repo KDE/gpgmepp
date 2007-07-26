@@ -33,3 +33,9 @@
 
 /* Define to 1 if your gpgme has the gpgme_sig_notation_{clear,add,get}() functions */
 #cmakedefine HAVE_GPGME_SIG_NOTATION_CLEARADDGET 1
+
+/* Define to 1 if your gpgme's gpgme_decrypt_result_t has the file_name member */
+#cmakedefine HAVE_GPGME_DECRYPT_RESULT_T_FILE_NAME
+
+/* Define to 1 if your gpgme's gpgme_decrypt_result_t has the recipients member */
+#cmakedefine HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS

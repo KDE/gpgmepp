@@ -55,4 +55,7 @@ typedef struct _gpgme_engine_info * gpgme_engine_info_t;
 struct _gpgme_op_keylist_result;
 typedef struct _gpgme_op_keylist_result * gpgme_keylist_result_t;
 
+struct _gpgme_recipient;
+typedef struct _gpgme_recipient * gpgme_recipient_t;
+
 #endif // __GPGMEPP_GPGMEFW_H__

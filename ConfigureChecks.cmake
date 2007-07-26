@@ -150,5 +150,31 @@ check_cxx_source_compiles ("
 " HAVE_GPGME_SIG_NOTATION_CLEARADDGET
 )
 
+# check if gpgme has gpgme_decrypt_result_t->file_name
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_decrypt_result_t res = 0;
+    const char * const fn = res->file_name;
+    (void)fn;
+  }
+" HAVE_GPGME_DECRYPT_RESULT_T_FILE_NAME
+)
+
+# check if gpgme has gpgme_recipient_t and gpgme_decrypt_result_t->recipients
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_decrypt_result_t res = 0;
+    gpgme_recipient_t r = res->recipients;
+    const char * kid = r->keyid;
+    r = r->next;
+    const gpgme_pubkey_algo_t algo = r->pubkey_algo;
+    const gpgme_error_t err = r->status;
+  }
+" HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
+)
+    
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)

@@ -27,6 +27,8 @@
 #include <gpgme++/result.h>
 #include <gpgme++/gpgme++_export.h>
 
+#include <vector>
+
 namespace GpgME {
 
   class Error;
@@ -55,6 +57,45 @@ namespace GpgME {
 
     GPGMEPP_DEPRECATED bool wrongKeyUsage() const { return isWrongKeyUsage(); }
     bool isWrongKeyUsage() const;
+
+    const char * fileName() const;
+
+    class Recipient;
+
+    unsigned int numRecipients() const;
+    Recipient recipient( unsigned int idx ) const;
+    std::vector<Recipient> recipients() const;
+
+  private:
+    class Private;
+    Private * d;
+  };
+
+  class DecryptionResult::Recipient {
+  public:
+      explicit Recipient( gpgme_recipient_t reci=0 );
+      Recipient( const Recipient & other );
+      ~Recipient();
+
+      const Recipient & operator=( Recipient other ) {
+	  swap( other );
+	  return *this;
+      }
+
+      void swap( Recipient & other ) {
+	  using std::swap;
+	  swap( this->d, other.d );
+      }
+
+      bool isNull() const;
+
+      const char * keyID() const;
+      const char * shortKeyID() const;
+
+      unsigned int publicKeyAlgorithm() const;
+      const char * publicKeyAlgorithmAsString() const;
+
+      Error status() const;
 
   private:
     class Private;
