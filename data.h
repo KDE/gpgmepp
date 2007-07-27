@@ -36,7 +36,9 @@ namespace GpgME {
   class Error;
 
   class GPGMEPP_EXPORT Data {
+    struct Null {};
   public:
+    /* implicit */ Data( const Null & );
     Data();
     explicit Data( gpgme_data_t data );
     Data( const Data & other );
@@ -54,7 +56,7 @@ namespace GpgME {
 
     virtual ~Data();
 
-    static Data null;
+    static Null null;
 
     const Data & operator=( Data other ) {
 	swap( other );

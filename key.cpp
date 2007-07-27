@@ -30,7 +30,7 @@
 
 #include <string.h>
 
-GpgME::Key GpgME::Key::null;
+GpgME::Key::Null GpgME::Key::null;
 
 namespace GpgME {
 
@@ -46,6 +46,8 @@ namespace GpgME {
   Key::Key() {
     d = new Private( 0 );
   }
+
+  Key::Key( const Null & ) : d( new Private( 0 ) ) {}
 
   Key::Key( gpgme_key_t key, bool ref ) {
     d = new Private( key );

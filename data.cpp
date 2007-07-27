@@ -37,12 +37,18 @@ GpgME::Data::Private::~Private()  {
     gpgme_data_release( data );
 }
 
-GpgME::Data GpgME::Data::null( (gpgme_data_t)0 );
+GpgME::Data::Null GpgME::Data::null;
 
 GpgME::Data::Data() {
   gpgme_data_t data;
   const gpgme_error_t e = gpgme_data_new( &data );
   d = new Private( e ? 0 : data );
+  d->ref();
+}
+
+GpgME::Data::Data( const Null & )
+  : d( new Private( 0 ) )
+{
   d->ref();
 }
 

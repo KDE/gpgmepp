@@ -44,13 +44,15 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT Key {
     friend class Context;
+    struct Null {};
   public:
     Key();
+    /* implicit */ Key( const Null & );
     Key( gpgme_key_t key, bool acquireRef );
     Key( const Key & key );
     ~Key();
 
-    static Key null;
+    static Null null;
 
     const Key & operator=( Key other ) {
 	swap( other );
