@@ -74,8 +74,8 @@ static inline unsigned int convert_from_gpgme_keylist_mode_t( unsigned int mode 
   return result;
 }
 
-#ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
 static inline GpgME::Notation::Flags convert_from_gpgme_sig_notation_flags_t( unsigned int flags ) {
+#ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
     unsigned int result = 0;
 #ifdef HAVE_GPGME_SIG_NOTATION_HUMAN_READABLE
     if ( flags & GPGME_SIG_NOTATION_HUMAN_READABLE ) result |= GpgME::Notation::HumanReadable ;
@@ -84,8 +84,10 @@ static inline GpgME::Notation::Flags convert_from_gpgme_sig_notation_flags_t( un
     if ( flags & GPGME_SIG_NOTATION_CRITICAL ) result |= GpgME::Notation::Critical ;
 #endif
     return static_cast<GpgME::Notation::Flags>( result );
-}
+#else
+    return GpgME::Notation::NoFlags;
 #endif
+}
 
 static inline gpgme_sig_notation_flags_t  add_to_gpgme_sig_notation_flags_t( unsigned int oldflags, unsigned int newflags ) {
     unsigned int result = oldflags;
