@@ -153,13 +153,13 @@ namespace GpgME {
     }
   }
 
-  Context::Protocol Key::protocol() const {
+  Protocol Key::protocol() const {
     if ( !d->key )
-      return Context::Unknown;
+      return UnknownProtocol;
     switch ( d->key->protocol ) {
-    case GPGME_PROTOCOL_CMS:     return Context::CMS;
-    case GPGME_PROTOCOL_OpenPGP: return Context::OpenPGP;
-    default:                     return Context::Unknown;
+    case GPGME_PROTOCOL_CMS:     return CMS;
+    case GPGME_PROTOCOL_OpenPGP: return OpenPGP;
+    default:                     return UnknownProtocol;
     }
   }
 

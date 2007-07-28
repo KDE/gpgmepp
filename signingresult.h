@@ -23,10 +23,8 @@
 #ifndef __GPGMEPP_SIGNINGRESULT_H__
 #define __GPGMEPP_SIGNINGRESULT_H__
 
-#include <gpgme++/gpgmefw.h>
+#include <gpgme++/global.h>
 #include <gpgme++/result.h>
-#include <gpgme++/context.h>
-#include <gpgme++/gpgme++_export.h>
 
 #include <time.h>
 
@@ -124,7 +122,7 @@ namespace GpgME {
 
     time_t creationTime() const;
 
-    Context::SignatureMode mode() const;
+    SignatureMode mode() const;
 
     unsigned int publicKeyAlgorithm() const;
     const char * publicKeyAlgorithmAsString() const;

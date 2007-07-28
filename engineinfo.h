@@ -23,9 +23,7 @@
 #ifndef __GPGMEPP_ENGINEINFO_H__
 #define __GPGMEPP_ENGINEINFO_H__
 
-#include <gpgme++/gpgmefw.h>
-#include <gpgme++/context.h>
-#include <gpgme++/gpgme++_export.h>
+#include <gpgme++/global.h>
 
 #include <algorithm>
 
@@ -50,7 +48,7 @@ namespace GpgME {
 
     bool isNull() const;
 
-    Context::Protocol protocol() const;
+    Protocol protocol() const;
     const char * fileName() const;
     const char * version() const;
     const char * requiredVersion() const;

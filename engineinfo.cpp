@@ -62,14 +62,14 @@ bool GpgME::EngineInfo::isNull() const {
   return !d || !d->info;
 }
 
-GpgME::Context::Protocol GpgME::EngineInfo::protocol() const {
+GpgME::Protocol GpgME::EngineInfo::protocol() const {
   if ( isNull() )
-    return Context::Unknown;
+    return UnknownProtocol;
   switch( d->info->protocol ) {
-  case GPGME_PROTOCOL_OpenPGP: return Context::OpenPGP;
-  case GPGME_PROTOCOL_CMS:     return Context::CMS;
+  case GPGME_PROTOCOL_OpenPGP: return OpenPGP;
+  case GPGME_PROTOCOL_CMS:     return CMS;
   default:
-    return Context::Unknown;
+    return UnknownProtocol;
   }
 }
 

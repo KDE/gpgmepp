@@ -24,8 +24,7 @@
 #ifndef __GPGMEPP_CONTEXT_H__
 #define __GPGMEPP_CONTEXT_H__
 
-#include <gpgme++/gpgmefw.h>
-#include <gpgme++/gpgme++_export.h>
+#include <gpgme++/global.h>
 
 #include <gpgme++/error.h>
 #include <gpgme++/verificationresult.h> // for Signature::Notation
@@ -55,7 +54,7 @@ namespace GpgME {
   class GPGMEPP_EXPORT Context {
     explicit Context( gpgme_ctx_t );
   public:
-    enum Protocol { OpenPGP, CMS, Unknown };
+    //using GpgME::Protocol;
 
     //
     // Creation and destruction:
@@ -86,13 +85,7 @@ namespace GpgME {
     void setIncludeCertificates( int which );
     int includeCertificates() const;
 
-    enum KeyListMode {
-      Local = 0x1,
-      Extern = 0x2,
-      Signatures = 0x4,
-      SignatureNotations = 0x8,
-      Validate = 0x10
-    };
+    //using GpgME::KeyListMode;
     void setKeyListMode( unsigned int keyListMode );
     void addKeyListMode( unsigned int keyListMode );
     unsigned int keyListMode() const;
@@ -226,7 +219,7 @@ namespace GpgME {
     Notation signatureNotation( unsigned int index ) const;
     std::vector<Notation> signatureNotations() const;
 
-    enum SignatureMode { Normal, Detached, Clearsigned };
+    //using GpgME::SignatureMode;
     SigningResult sign( const Data & plainText, Data & signature, SignatureMode mode );
     GpgME::Error startSigning( const Data & plainText, Data & signature, SignatureMode mode );
     SigningResult signingResult() const;
@@ -271,23 +264,6 @@ namespace GpgME {
     const Context & operator=( const Context & );
   };
 
-  //
-  //
-  // Globals
-  //
-  //
-
-  GPGMEPP_EXPORT GpgME::Error setDefaultLocale( int category, const char * value );
-
-  GPGMEPP_EXPORT Context * wait( GpgME::Error & e, bool hang=true );
-  typedef void (*IdleFunction)(void);
-  GPGMEPP_EXPORT IdleFunction registerIdleFunction( IdleFunction idleFunction );
-
-  typedef void (*IOCallback)( void * data, int fd );
-
-  GPGMEPP_EXPORT EngineInfo engineInfo( Context::Protocol proto );
-
-  GPGMEPP_EXPORT GpgME::Error checkEngine( Context::Protocol proto );
 
 } // namespace GpgME
 

@@ -116,12 +116,12 @@ namespace GpgME {
   //
   //
 
-  Context::Protocol Context::protocol() const {
+  Protocol Context::protocol() const {
     gpgme_protocol_t p = gpgme_get_protocol( d->ctx );
     switch ( p ) {
     case GPGME_PROTOCOL_OpenPGP: return OpenPGP;
     case GPGME_PROTOCOL_CMS:     return CMS;
-    default:                     return Unknown;
+    default:                     return UnknownProtocol;
     }
   }
 
@@ -528,12 +528,12 @@ namespace GpgME {
     return result;
   }
 
-  static gpgme_sig_mode_t sigmode2sigmode( Context::SignatureMode mode ) {
+  static gpgme_sig_mode_t sigmode2sigmode( SignatureMode mode ) {
     switch ( mode ) {
     default:
-    case Context::Normal:      return GPGME_SIG_MODE_NORMAL;
-    case Context::Detached:    return GPGME_SIG_MODE_DETACH;
-    case Context::Clearsigned: return GPGME_SIG_MODE_CLEAR;
+    case NormalSignatureMode: return GPGME_SIG_MODE_NORMAL;
+    case Detached:            return GPGME_SIG_MODE_DETACH;
+    case Clearsigned:         return GPGME_SIG_MODE_CLEAR;
     }
   }
 
@@ -675,12 +675,12 @@ GpgME::Error GpgME::setDefaultLocale( int cat, const char * val ) {
   return Error( gpgme_set_locale( 0, cat, val ) );
 }
 
-GpgME::EngineInfo GpgME::engineInfo( Context::Protocol proto ) {
+GpgME::EngineInfo GpgME::engineInfo( GpgME::Protocol proto ) {
   gpgme_engine_info_t ei = 0;
   if ( gpgme_get_engine_info( &ei ) )
     return EngineInfo();
 
-  const gpgme_protocol_t p = proto == Context::CMS ? GPGME_PROTOCOL_CMS : GPGME_PROTOCOL_OpenPGP ;
+  const gpgme_protocol_t p = proto == CMS ? GPGME_PROTOCOL_CMS : GPGME_PROTOCOL_OpenPGP ;
 
   for ( gpgme_engine_info_t i = ei ; i ; i = i->next )
     if ( i->protocol == p )
@@ -689,8 +689,8 @@ GpgME::EngineInfo GpgME::engineInfo( Context::Protocol proto ) {
   return EngineInfo();
 }
 
-GpgME::Error GpgME::checkEngine( Context::Protocol proto ) {
-  const gpgme_protocol_t p = proto == Context::CMS ? GPGME_PROTOCOL_CMS : GPGME_PROTOCOL_OpenPGP ;
+GpgME::Error GpgME::checkEngine( GpgME::Protocol proto ) {
+  const gpgme_protocol_t p = proto == CMS ? GPGME_PROTOCOL_CMS : GPGME_PROTOCOL_OpenPGP ;
 
   return Error( gpgme_engine_check_version( p ) );
 }

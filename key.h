@@ -24,9 +24,8 @@
 #ifndef __GPGMEPP_KEY_H__
 #define __GPGMEPP_KEY_H__
 
-#include <gpgme++/gpgmefw.h>
-#include <gpgme++/context.h>
-#include <gpgme++/gpgme++_export.h>
+#include <gpgme++/global.h>
+#include <gpgme++/notation.h>
 
 #include <sys/time.h>
 
@@ -34,6 +33,8 @@
 #include <algorithm>
 
 namespace GpgME {
+
+  class Context;
 
   class Subkey;
   class UserID;
@@ -102,7 +103,6 @@ namespace GpgME {
     OwnerTrust ownerTrust() const;
     char ownerTrustAsString() const;
 
-    typedef Context::Protocol Protocol;
     Protocol protocol() const;
     const char * protocolAsString() const;
 
@@ -114,7 +114,6 @@ namespace GpgME {
     const char * shortKeyID() const;
     const char * primaryFingerprint() const;
 
-    typedef Context::KeyListMode KeyListMode;
     unsigned int keyListMode() const;
 
   private:

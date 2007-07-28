@@ -180,14 +180,14 @@ time_t GpgME::CreatedSignature::creationTime() const {
   return static_cast<time_t>( isNull() ? 0 : d->created[idx]->timestamp );
 }
 
-GpgME::Context::SignatureMode GpgME::CreatedSignature::mode() const {
+GpgME::SignatureMode GpgME::CreatedSignature::mode() const {
   if ( isNull() )
-    return Context::Normal;
+    return NormalSignatureMode;
   switch ( d->created[idx]->type ) {
   default:
-  case GPGME_SIG_MODE_NORMAL: return Context::Normal;
-  case GPGME_SIG_MODE_DETACH: return Context::Detached;
-  case GPGME_SIG_MODE_CLEAR:  return Context::Clearsigned;
+  case GPGME_SIG_MODE_NORMAL: return NormalSignatureMode;
+  case GPGME_SIG_MODE_DETACH: return Detached;
+  case GPGME_SIG_MODE_CLEAR:  return Clearsigned;
   }
 }
 
