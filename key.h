@@ -234,7 +234,7 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT UserID::Signature {
   public:
-    typedef GpgME::Notation Notation GPGMEPP_DEPRECATED;
+    typedef GPGMEPP_DEPRECATED GpgME::Notation Notation;
 
     explicit Signature( gpgme_key_t key=0, gpgme_user_id_t uid=0, gpgme_key_sig_t sig=0 );
     Signature( gpgme_key_t key, gpgme_user_id_t uid, unsigned int idx );

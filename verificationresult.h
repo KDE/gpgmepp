@@ -72,7 +72,7 @@ namespace GpgME {
     friend class VerificationResult;
     Signature( VerificationResult::Private * parent, unsigned int index );
   public:
-    typedef GpgME::Notation Notation GPGMEPP_DEPRECATED;
+    typedef GPGMEPP_DEPRECATED GpgME::Notation Notation;
 
     Signature();
     Signature( const Signature & other );
