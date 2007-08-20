@@ -492,7 +492,7 @@ namespace GpgME {
   }
 
   GpgME::Error Context::addSignatureNotation( const char * name, const char * value, unsigned int flags ) {
-#ifdef HAVE_GPGME_SIG_NOTATION_CLEARADDGET && HAVE_GPGME_SIG_NOTATION_FLAGS_T
+#ifdef HAVE_GPGME_SIG_NOTATION_CLEARADDGET
     return Error( gpgme_sig_notation_add( d->ctx, name, value, add_to_gpgme_sig_notation_flags_t( 0, flags ) ) );
 #else
     (void)name; (void)value; (void)flags;
