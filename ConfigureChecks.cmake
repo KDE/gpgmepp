@@ -208,6 +208,15 @@ check_cxx_source_compiles ("
 " HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS
 )
 
+# check if gpgme have gpgme_signature_t->chain_model
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_signature_t sig = 0;
+    unsigned int cm = sig->chain_model;
+  }
+" HAVE_GPGME_SIGNATURE_T_CHAIN_MODEL
+)
 
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)

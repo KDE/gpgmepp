@@ -118,6 +118,7 @@ namespace GpgME {
 
     GPGMEPP_DEPRECATED bool wrongKeyUsage() const { return isWrongKeyUsage(); }
     bool isWrongKeyUsage() const;
+    bool isVerifiedUsingChainModel() const;
 
     enum PKAStatus {
 	UnknownPKAStatus, PKAVerificationFailed, PKAVerificationSucceeded

@@ -208,6 +208,14 @@ bool GpgME::Signature::isWrongKeyUsage() const {
   return !isNull() && d->sigs[idx]->wrong_key_usage;
 }
 
+bool GpgME::Signature::isVerifiedUsingChainModel() const {
+#ifdef HAVE_GPGME_SIGNATURE_T_CHAIN_MODEL
+  return !isNull() && d->sigs[idx]->chain_model;
+#else
+  return false;
+#endif
+}
+
 GpgME::Signature::PKAStatus GpgME::Signature::pkaStatus() const {
 #ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
   if ( !isNull() )
