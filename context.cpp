@@ -510,7 +510,7 @@ namespace GpgME {
   }
 
   const char * Context::signaturePolicyURL() const {
-#ifdef HAVE_GPGME_CTX_GETSET_ENGINE_INFO
+#ifdef HAVE_GPGME_SIG_NOTATION_CLEARADDGET
     for ( gpgme_sig_notation_t n = gpgme_sig_notation_get( d->ctx ) ; n ; n = n->next )
       if ( !n->name )
         return n->value;
@@ -519,7 +519,7 @@ namespace GpgME {
   }
 
   Notation Context::signatureNotation( unsigned int idx ) const {
-#ifdef HAVE_GPGME_CTX_GETSET_ENGINE_INFO
+#ifdef HAVE_GPGME_SIG_NOTATION_CLEARADDGET
     for ( gpgme_sig_notation_t n = gpgme_sig_notation_get( d->ctx ) ; n ; n = n->next )
       if ( n->name )
         if ( idx-- == 0 )
@@ -530,7 +530,7 @@ namespace GpgME {
 
   std::vector<Notation> Context::signatureNotations() const {
     std::vector<Notation> result;
-#ifdef HAVE_GPGME_CTX_GETSET_ENGINE_INFO
+#ifdef HAVE_GPGME_SIG_NOTATION_CLEARADDGET
     for ( gpgme_sig_notation_t n = gpgme_sig_notation_get( d->ctx ) ; n ; n = n->next )
       if ( n->name )
         result.push_back( Notation( n ) );
