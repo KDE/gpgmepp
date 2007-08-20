@@ -89,7 +89,7 @@ static inline GpgME::Notation::Flags convert_from_gpgme_sig_notation_flags_t( un
     return GpgME::Notation::NoFlags;
 #endif
 }
-
+#ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
 static inline gpgme_sig_notation_flags_t  add_to_gpgme_sig_notation_flags_t( unsigned int oldflags, unsigned int newflags ) {
     unsigned int result = oldflags;
     if ( newflags & GpgME::Notation::HumanReadable ) {
@@ -108,6 +108,6 @@ static inline gpgme_sig_notation_flags_t  add_to_gpgme_sig_notation_flags_t( uns
     }
     return static_cast<gpgme_sig_notation_flags_t>( result );
 }
-
+#endif
 
 #endif // __GPGMEPP_UTIL_H__

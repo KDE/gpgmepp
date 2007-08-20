@@ -59,7 +59,11 @@ public:
 	    purls.back() = strdup( in->value ); // policy url
 	  continue;
 	}
+#ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
 	Nota n = { 0, 0, in->flags };
+#else
+        Nota n = { 0, 0 };
+#endif
 	n.name = strdup( in->name );
 	if ( in->value )
 	  n.value = strdup( in->value );
@@ -83,7 +87,9 @@ public:
   struct Nota {
     char * name;
     char * value;
+#ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
     gpgme_sig_notation_flags_t flags;
+#endif
   };
 
   std::vector<gpgme_signature_t> sigs;
@@ -394,9 +400,13 @@ const char * GpgME::Notation::value() const {
 GpgME::Notation::Flags GpgME::Notation::flags() const {
     return
       convert_from_gpgme_sig_notation_flags_t(
-        isNull() ? 0 :
+#ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
+        isNull() ? 0 : 
         d->d ? d->d->nota[d->sidx][d->nidx].flags :
         d->nota ? d->nota->flags : 0 );
+#else
+        0 );
+#endif
 }
 
 bool GpgME::Notation::isHumanReadable() const {
