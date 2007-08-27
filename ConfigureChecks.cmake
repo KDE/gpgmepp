@@ -1,4 +1,5 @@
 # gpgme configure checks
+include(CheckFunctionExists)
 
 set(CMAKE_REQUIRED_INCLUDES ${GPGME_INCLUDES})
 set(CMAKE_REQUIRED_LIBRARIES ${GPGME_LIBRARIES})
