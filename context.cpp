@@ -705,3 +705,23 @@ GpgME::Error GpgME::checkEngine( GpgME::Protocol proto ) {
   return Error( gpgme_engine_check_version( p ) );
 }
 
+GIOChannel * GpgME::getGIOChannel( int fd ) {
+#ifdef HAVE_GPGME_GET_GIOCHANNEL
+    extern "C" GIOChannel * gpgme_get_giochannel( int );
+    return gpgme_get_giochannel( fd );
+#else
+    (void)fd;
+    return 0;
+#endif
+}
+
+QIODevice * GpgME::getQIODevice( int fd ) {
+#ifdef HAVE_GPGME_GET_QIODEVICE
+    extern "C" QIODevice * gpgme_get_qiodevice( int );
+    return gpgme_get_qiodevice( fd );
+#else
+    (void)fd;
+    return 0;
+#endif
+}
+

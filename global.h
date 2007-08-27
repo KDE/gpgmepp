@@ -33,6 +33,10 @@ namespace GpgME {
     class Context;
 }
 
+struct _GIOChannel;
+typedef struct _GIOChannel      GIOChannel;
+class QIODevice;
+
 namespace GpgME {
 
     enum Protocol { OpenPGP, CMS, UnknownProtocol };
@@ -60,6 +64,9 @@ namespace GpgME {
     GPGMEPP_EXPORT EngineInfo engineInfo( Protocol proto );
 
     GPGMEPP_EXPORT Error checkEngine( Protocol proto );
+
+    GPGMEPP_EXPORT GIOChannel * getGIOChannel( int fd );
+    GPGMEPP_EXPORT QIODevice  * getQIODevice( int fd );
 
 } // namespace GpgME
 
