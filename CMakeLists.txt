@@ -44,7 +44,7 @@ if ( GPGME_GLIB_FOUND )
    set_target_properties( gpgmepp-glib PROPERTIES
     VERSION     ${_gpgmepp_version}
     SOVERSION   ${_gpgmepp_version}
-    OUTPUT_NAME gpgme++-glib
+    OUTPUT_NAME gpgme++-glib DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    install(TARGETS gpgmepp-glib  DESTINATION ${LIB_INSTALL_DIR})
    set( _any_gpgme_found true )
@@ -56,7 +56,7 @@ if ( GPGME_QT_FOUND )
    set_target_properties( gpgmepp-qt PROPERTIES
     VERSION     ${_gpgmepp_version}
     SOVERSION   ${_gpgmepp_version}
-    OUTPUT_NAME gpgme++-qt
+    OUTPUT_NAME gpgme++-qt DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    install(TARGETS gpgmepp-qt  DESTINATION ${LIB_INSTALL_DIR})
    set( _any_gpgme_found true )
@@ -68,7 +68,7 @@ if ( GPGME_PTHREAD_FOUND )
    set_target_properties( gpgmepp-pthread PROPERTIES
     VERSION     ${_gpgmepp_version}
     SOVERSION   ${_gpgmepp_version}
-    OUTPUT_NAME gpgme++-pthread
+    OUTPUT_NAME gpgme++-pthread DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    install(TARGETS gpgmepp-pthread  DESTINATION ${LIB_INSTALL_DIR})
    set( _any_gpgme_found true )
@@ -80,7 +80,7 @@ if ( GPGME_PTH_FOUND )
    set_target_properties( gpgmepp-pth PROPERTIES
     VERSION     ${_gpgmepp_version}
     SOVERSION   ${_gpgmepp_version}
-    OUTPUT_NAME gpgme++-pth
+    OUTPUT_NAME gpgme++-pth DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    install(TARGETS gpgmepp-pth  DESTINATION ${LIB_INSTALL_DIR})
    set( _any_gpgme_found true )
