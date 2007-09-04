@@ -39,7 +39,6 @@ namespace GpgME {
   class TrustItem;
   class ProgressProvider;
   class PassphraseProvider;
-  class EventLoopInteractor;
 
   class KeyListResult;
   class KeyGenerationResult;
