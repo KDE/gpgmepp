@@ -80,7 +80,7 @@ namespace GpgME {
   };
 
   class GPGMEPP_EXPORT Import {
-    friend class ImportResult;
+    friend class ::GpgME::ImportResult;
     Import( ImportResult::Private * parent, unsigned int idx );
   public:
     Import();

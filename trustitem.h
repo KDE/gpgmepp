@@ -35,7 +35,7 @@ namespace GpgME {
   class Context;
 
   class GPGMEPP_EXPORT TrustItem {
-    friend class Context;
+    friend class ::GpgME::Context;
   public:
     explicit TrustItem( gpgme_trust_item_t item=0 );
     TrustItem( const TrustItem & other );

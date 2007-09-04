@@ -65,7 +65,7 @@ namespace GpgME {
   };
 
   class GPGMEPP_EXPORT InvalidRecipient {
-    friend class EncryptionResult;
+    friend class ::GpgME::EncryptionResult;
     InvalidRecipient( EncryptionResult::Private * parent, unsigned int index );
   public:
     InvalidRecipient();

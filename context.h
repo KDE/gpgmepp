@@ -39,6 +39,7 @@ namespace GpgME {
   class TrustItem;
   class ProgressProvider;
   class PassphraseProvider;
+  class EventLoopInteractor;
 
   class KeyListResult;
   class KeyGenerationResult;
@@ -105,7 +106,7 @@ namespace GpgME {
     GpgME::Error setEngineHomeDirectory( const char * filename );
 
   private:
-    friend class EventLoopInteractor;
+    friend class ::GpgME::EventLoopInteractor;
     void installIOCallbacks( gpgme_io_cbs * iocbs );
     void uninstallIOCallbacks();
 

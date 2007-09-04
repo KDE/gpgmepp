@@ -69,7 +69,7 @@ namespace GpgME {
   };
 
   class GPGMEPP_EXPORT Signature {
-    friend class VerificationResult;
+    friend class ::GpgME::VerificationResult;
     Signature( VerificationResult::Private * parent, unsigned int index );
   public:
     typedef GPGMEPP_DEPRECATED GpgME::Notation Notation;

@@ -44,7 +44,7 @@ namespace GpgME {
   //
 
   class GPGMEPP_EXPORT Key {
-    friend class Context;
+    friend class ::GpgME::Context;
     struct Null {};
   public:
     Key();

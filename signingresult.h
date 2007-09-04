@@ -68,7 +68,7 @@ namespace GpgME {
   };
 
   class GPGMEPP_EXPORT InvalidSigningKey {
-    friend class SigningResult;
+    friend class ::GpgME::SigningResult;
     InvalidSigningKey( SigningResult::Private * parent, unsigned int index );
   public:
     InvalidSigningKey();
@@ -97,7 +97,7 @@ namespace GpgME {
   };
 
   class GPGMEPP_EXPORT CreatedSignature {
-    friend class SigningResult;
+    friend class ::GpgME::SigningResult;
     CreatedSignature( SigningResult::Private * parent, unsigned int index );
   public:
 

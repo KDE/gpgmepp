@@ -30,7 +30,7 @@
 namespace GpgME {
 
   class GPGMEPP_EXPORT Notation {
-    friend class Signature;
+    friend class ::GpgME::Signature;
     Notation( VerificationResult::Private * parent, unsigned int sindex, unsigned int nindex );
   public:
     Notation();
