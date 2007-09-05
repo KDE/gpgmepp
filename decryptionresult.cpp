@@ -79,7 +79,7 @@ GpgME::DecryptionResult::DecryptionResult( gpgme_ctx_t ctx, int error )
 
 make_standard_stuff(DecryptionResult)
 
-const char * GpgME::DecryptionResult::unsupportedAlgortihm() const {
+const char * GpgME::DecryptionResult::unsupportedAlgorithm() const {
   return d ? d->res.unsupported_algorithm : 0 ;
 }
 
