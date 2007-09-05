@@ -24,19 +24,17 @@ set(gpgme_LIB_SRCS
 )
 
 set( _gpgmepp_version 1.0.0 )
-set( _any_gpgme_found false )
 
-if ( GPGME_FOUND )
+if ( GPGME_VANILLA_FOUND )
    kde4_add_library( gpgmepp SHARED ${gpgme_LIB_SRCS})
-   target_link_libraries( gpgmepp ${GPGME_LIBRARIES} )
+   target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
    set_target_properties( gpgmepp PROPERTIES
     VERSION     ${_gpgmepp_version}
     SOVERSION   ${_gpgmepp_version}
     OUTPUT_NAME gpgme++
    )
    install(TARGETS gpgmepp  DESTINATION ${LIB_INSTALL_DIR})
-   set( _any_gpgme_found true )
-endif ( GPGME_FOUND )
+endif ( GPGME_VANILLA_FOUND )
 
 if ( GPGME_GLIB_FOUND )
    kde4_add_library( gpgmepp-glib SHARED ${gpgme_LIB_SRCS})
@@ -47,7 +45,6 @@ if ( GPGME_GLIB_FOUND )
     OUTPUT_NAME gpgme++-glib DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    install(TARGETS gpgmepp-glib  DESTINATION ${LIB_INSTALL_DIR})
-   set( _any_gpgme_found true )
 endif ( GPGME_GLIB_FOUND )
 
 if ( GPGME_QT_FOUND )
@@ -59,7 +56,6 @@ if ( GPGME_QT_FOUND )
     OUTPUT_NAME gpgme++-qt DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    install(TARGETS gpgmepp-qt  DESTINATION ${LIB_INSTALL_DIR})
-   set( _any_gpgme_found true )
 endif ( GPGME_QT_FOUND )
 
 if ( GPGME_PTHREAD_FOUND )
@@ -71,7 +67,6 @@ if ( GPGME_PTHREAD_FOUND )
     OUTPUT_NAME gpgme++-pthread DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    install(TARGETS gpgmepp-pthread  DESTINATION ${LIB_INSTALL_DIR})
-   set( _any_gpgme_found true )
 endif ( GPGME_PTHREAD_FOUND )
 
 if ( GPGME_PTH_FOUND )
@@ -83,13 +78,12 @@ if ( GPGME_PTH_FOUND )
     OUTPUT_NAME gpgme++-pth DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    install(TARGETS gpgmepp-pth  DESTINATION ${LIB_INSTALL_DIR})
-   set( _any_gpgme_found true )
 endif ( GPGME_PTH_FOUND )
 
 
 ########### install files ###############
 
-if ( _any_gpgme_found )
+if ( GPGME_FOUND )
 
    add_subdirectory( interfaces )
 
@@ -104,4 +98,4 @@ if ( _any_gpgme_found )
      DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++
    )
 
-endif ( _any_gpgme_found )
+endif ( GPGME_FOUND )
