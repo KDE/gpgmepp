@@ -228,12 +228,8 @@ check_cxx_source_compiles ("
 " HAVE_GPGME_SIGNATURE_T_CHAIN_MODEL
 )
 
-# check if gpgme has gpgme_get_giochannel
-check_function_exists( "gpgme_get_giochannel" HAVE_GPGME_GET_GIOCHANNEL )
-
-# check if gpgme has gpgme_get_giochannel
-check_function_exists( "gpgme_get_qiodevice"  HAVE_GPGME_GET_QIODEVICE  )
-
+# check if gpgme has gpgme_get_fdptr
+check_function_exists( "gpgme_get_fdptr" HAVE_GPGME_GET_FDPTR )
 
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)

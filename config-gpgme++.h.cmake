@@ -48,3 +48,6 @@
 
 /* Define to 1 if your gpgme's gpgme_signature_t has the {hash,pubkey}_algo fields */
 #cmakedefine HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS 1
+
+/* Define to 1 if your gpgme has gpgme_get_fdptr (it won't be in gpgme.h, though!) */
+#cmakedefine HAVE_GPGME_GET_FDPTR 1
