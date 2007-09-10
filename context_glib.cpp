@@ -24,7 +24,7 @@
 
 #include <gpgme++/global.h>
 
-GIOChannel * GpgME::getGIOChannel( int ) {
+GIOChannel * GpgME::getGIOChannel( int fd ) {
 #ifdef HAVE_GPGME_GET_FDPTR
     extern "C" GIOChannel * gpgme_get_fdptr( int );
     return gpgme_get_fdptr( fd );
