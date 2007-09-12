@@ -40,7 +40,8 @@ public:
     if ( !r )
       return;
 #ifdef HAVE_GPGME_VERIFY_RESULT_T_FILE_NAME
-    file_name = r->file_name;
+    if ( r->file_name )
+      file_name = r->file_name;
 #endif
     // copy recursively, using compiler-generated copy ctor.
     // We just need to handle the pointers in the structs:
