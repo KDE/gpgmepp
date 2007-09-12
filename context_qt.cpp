@@ -24,13 +24,16 @@
 
 #include <gpgme++/global.h>
 
+#ifdef HAVE_GPGME_GET_FDPTR
+extern "C" QIODevice * gpgme_get_fdptr( int );
+#endif 
+
 GIOChannel * GpgME::getGIOChannel( int ) {
     return 0;
 }
 
 QIODevice * GpgME::getQIODevice( int fd ) {
 #ifdef HAVE_GPGME_GET_FDPTR
-    extern "C" QIODevice * gpgme_get_fdptr( int );
     return gpgme_get_fdptr( fd );
 #else
     (void)fd;
