@@ -36,6 +36,7 @@ namespace GpgME {
   class Error;
   class Signature;
   class Notation;
+  class Key;
 
   class GPGMEPP_EXPORT VerificationResult : public Result {
   public:
@@ -62,6 +63,9 @@ namespace GpgME {
     unsigned int numSignatures() const;
     Signature signature( unsigned int index ) const;
     std::vector<Signature> signatures() const;
+
+    void setKeys( const std::vector<Key> & );
+    std::vector<Key> keys() const;
 
     class Private;
   private:
