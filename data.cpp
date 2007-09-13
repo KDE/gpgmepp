@@ -77,9 +77,11 @@ GpgME::Data::Data( const char * buffer, size_t size, bool copy ) {
 
 GpgME::Data::Data( const char * filename ) {
   gpgme_data_t data;
-  const gpgme_error_t e = gpgme_data_new_from_file( &data, filename, 1 );
+  const gpgme_error_t e = gpgme_data_new( &data );
   d = new Private( e ? 0 : data );
   d->ref();
+  if ( !e )
+    setFileName( filename );
 }
 
 GpgME::Data::Data( const char * filename, off_t offset, size_t length ) {
