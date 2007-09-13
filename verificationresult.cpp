@@ -23,7 +23,6 @@
 #include <gpgme++/config-gpgme++.h>
 #include <gpgme++/verificationresult.h>
 #include <gpgme++/notation.h>
-#include <gpgme++/key.h>
 #include "shared.h"
 #include "result_p.h"
 #include "util.h"
@@ -98,7 +97,6 @@ public:
   std::vector< std::vector<Nota> > nota;
   std::vector<char*> purls;
   std::string file_name;
-  std::vector<GpgME::Key> keys;
 };
 
 GpgME::VerificationResult::VerificationResult( gpgme_ctx_t ctx, int error )
@@ -135,16 +133,6 @@ std::vector<GpgME::Signature> GpgME::VerificationResult::signatures() const {
   for ( unsigned int i = 0 ; i < d->sigs.size() ; ++i )
     result.push_back( Signature( d, i ) );
   return result;
-}
-
-void GpgME::VerificationResult::setKeys( const std::vector<GpgME::Key> & keys )
-{
-    d->keys = keys;
-}
-
-std::vector<GpgME::Key> GpgME::VerificationResult::keys() const
-{
-    return d->keys;
 }
 
 
