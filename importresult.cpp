@@ -30,6 +30,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <string.h>
+
 class GpgME::ImportResult::Private : public GpgME::Shared {
 public:
   Private( const _gpgme_op_import_result & r ) : Shared(), res( r ) {

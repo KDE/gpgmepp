@@ -31,6 +31,8 @@
 #include <cstring>
 #include <cstdlib>
 
+#include <string.h>
+
 class GpgME::SigningResult::Private : public GpgME::Shared {
 public:
   Private( const gpgme_sign_result_t r ) : Shared() {

@@ -31,6 +31,8 @@
 #include <cstring>
 #include <cstdlib>
 
+#include <string.h>
+
 class GpgME::KeyGenerationResult::Private : public GpgME::Shared {
 public:
   Private( const _gpgme_op_genkey_result & r ) : Shared(), res( r ) {

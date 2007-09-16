@@ -34,6 +34,8 @@
 #include <cstring>
 #include <cstdlib>
 
+#include <string.h>
+
 class GpgME::VerificationResult::Private : public GpgME::Shared {
 public:
   Private( const gpgme_verify_result_t r ) : Shared() {

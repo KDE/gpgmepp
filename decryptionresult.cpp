@@ -33,6 +33,8 @@
 #include <cstring>
 #include <cstdlib>
 
+#include <string.h>
+
 class GpgME::DecryptionResult::Private : public GpgME::Shared {
 public:
   Private( const _gpgme_op_decrypt_result & r ) : Shared(), res( r ) {

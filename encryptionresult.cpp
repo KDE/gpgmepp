@@ -31,6 +31,8 @@
 #include <cstring>
 #include <cstdlib>
 
+#include <string.h>
+
 class GpgME::EncryptionResult::Private : public GpgME::Shared {
 public:
   Private( const gpgme_encrypt_result_t r ) : Shared() {

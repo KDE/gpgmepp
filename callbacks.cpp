@@ -68,7 +68,7 @@ gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const c
     err = makeError( GPG_ERR_CANCELED );
   else
     if ( passphrase && *passphrase ) {
-      size_t passphrase_length = strlen( passphrase );
+      size_t passphrase_length = std::strlen( passphrase );
       size_t written = 0;
       do {
 	ssize_t now_written = write( fd, passphrase + written, passphrase_length - written );
@@ -81,7 +81,7 @@ gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const c
     }
 
   if ( passphrase && *passphrase )
-    wipe( passphrase, strlen( passphrase ) );
+    wipe( passphrase, std::strlen( passphrase ) );
   free( passphrase );
   write( fd, "\n", 1 );
   return err;
