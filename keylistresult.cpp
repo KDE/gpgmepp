@@ -78,7 +78,7 @@ void GpgME::KeyListResult::mergeWith( const KeyListResult & other ) {
     detach();
     d->res.truncated = true;
   }
-  if ( !error() ) // only merge the error when there was none yet.
+  if ( ! bool(error()) ) // only merge the error when there was none yet.
     Result::operator=( other );
 }
 
