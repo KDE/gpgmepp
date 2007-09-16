@@ -47,9 +47,9 @@ namespace GpgME {
     Data( const char * buffer, size_t size, bool copy=true );
     explicit Data( const char * filename );
     Data( const char * filename, off_t offset, size_t length );
-    Data( FILE * fp, off_t offset, size_t length );
+    Data( std::FILE * fp, off_t offset, size_t length );
     // File-Based Data Buffers:
-    explicit Data( FILE * fp );
+    explicit Data( std::FILE * fp );
     explicit Data( int fd );
     // Callback-Based Data Buffers:
     explicit Data( DataProvider * provider );
