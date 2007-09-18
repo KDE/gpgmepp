@@ -72,7 +72,7 @@ namespace GpgME {
     Private * d;
   };
 
-  class DecryptionResult::Recipient {
+  class GPGMEPP_EXPORT DecryptionResult::Recipient {
   public:
       explicit Recipient( gpgme_recipient_t reci=0 );
       Recipient( const Recipient & other );
