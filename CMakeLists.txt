@@ -1,3 +1,5 @@
+project( gpgmepp )
+
 include_directories(  ${GPGME_INCLUDES} )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gpgme++.h )
@@ -88,9 +90,13 @@ if ( GPGME_PTH_FOUND )
 endif ( GPGME_PTH_FOUND )
 
 
+include( CMakeExportBuildSettings )
+# this writes way too much, but do we care?
+EXPORT_LIBRARY_DEPENDENCIES( ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppLibraryDepends.cmake )
+
 ########### install files ###############
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/GpgmeppConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake )
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/GpgmeppConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake @ONLY )
 
 if ( GPGME_FOUND )
 
@@ -107,6 +113,11 @@ if ( GPGME_FOUND )
      DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++
    )
 
-   install( FILES ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake DESTINATION ${LIB_INSTALL_DIR}/Gpgmepp )
+   install(
+     FILES
+     ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake
+     ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppLibraryDepends.cmake
+     DESTINATION
+     ${LIB_INSTALL_DIR}/Gpgmepp )
 
 endif ( GPGME_FOUND )
