@@ -25,6 +25,8 @@ set(gpgme_LIB_SRCS
 
 set( _gpgmepp_version 1.0.0 )
 
+set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} )
+
 if ( GPGME_VANILLA_FOUND )
    kde4_add_library( gpgmepp SHARED ${gpgme_LIB_SRCS} context_vanilla.cpp )
    target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
@@ -33,6 +35,7 @@ if ( GPGME_VANILLA_FOUND )
     SOVERSION   ${_gpgmepp_version}
     OUTPUT_NAME gpgme++
    )
+   get_target_property( GPGMEPP_VANILLA_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp  DESTINATION ${LIB_INSTALL_DIR})
 endif ( GPGME_VANILLA_FOUND )
 
@@ -44,6 +47,7 @@ if ( GPGME_GLIB_FOUND )
     SOVERSION   ${_gpgmepp_version}
     OUTPUT_NAME gpgme++-glib DEFINE_SYMBOL MAKE_GPGME___LIB
    )
+   get_target_property( GPGMEPP_GLIB_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-glib  DESTINATION ${LIB_INSTALL_DIR})
 endif ( GPGME_GLIB_FOUND )
 
@@ -55,6 +59,7 @@ if ( GPGME_QT_FOUND )
     SOVERSION   ${_gpgmepp_version}
     OUTPUT_NAME gpgme++-qt DEFINE_SYMBOL MAKE_GPGME___LIB
    )
+   get_target_property( GPGMEPP_QT_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-qt  DESTINATION ${LIB_INSTALL_DIR})
 endif ( GPGME_QT_FOUND )
 
@@ -66,6 +71,7 @@ if ( GPGME_PTHREAD_FOUND )
     SOVERSION   ${_gpgmepp_version}
     OUTPUT_NAME gpgme++-pthread DEFINE_SYMBOL MAKE_GPGME___LIB
    )
+   get_target_property( GPGMEPP_PTHREAD_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-pthread  DESTINATION ${LIB_INSTALL_DIR})
 endif ( GPGME_PTHREAD_FOUND )
 
@@ -77,11 +83,14 @@ if ( GPGME_PTH_FOUND )
     SOVERSION   ${_gpgmepp_version}
     OUTPUT_NAME gpgme++-pth DEFINE_SYMBOL MAKE_GPGME___LIB
    )
+   get_target_property( GPGMEPP_PTH_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-pth  DESTINATION ${LIB_INSTALL_DIR})
 endif ( GPGME_PTH_FOUND )
 
 
 ########### install files ###############
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/GpgmeppConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake )
 
 if ( GPGME_FOUND )
 
@@ -97,5 +106,7 @@ if ( GPGME_FOUND )
         gpgme++_export.h 
      DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++
    )
+
+   install( FILES ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake DESTINATION ${LIB_INSTALL_DIR}/Gpgmepp )
 
 endif ( GPGME_FOUND )
