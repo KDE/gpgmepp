@@ -31,7 +31,7 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT Error {
   public:
-    explicit Error( int e=0 ) : mErr( e ) {}
+    explicit Error( unsigned int e=0 ) : mErr( e ) {}
 
     const char * source() const;
     const char * asString() const;
@@ -41,7 +41,7 @@ namespace GpgME {
 
     bool isCanceled() const;
 
-    operator int() const { return mErr; }
+    operator unsigned int() const { return mErr; }
 
   private:
     struct __safe_bool_dummy__ { void nonnull(); };
@@ -49,7 +49,7 @@ namespace GpgME {
   public:
     operator unspecified_bool_type() const { return mErr && !isCanceled() ? &__safe_bool_dummy__::nonnull : 0 ; }
   private:
-    int mErr;
+    unsigned int mErr;
   };
 
 } // namespace GpgME
