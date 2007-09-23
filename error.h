@@ -44,7 +44,7 @@ namespace GpgME {
     operator unsigned int() const { return mErr; }
 
   private:
-    struct __safe_bool_dummy__ { void nonnull(); };
+    struct __safe_bool_dummy__ { void nonnull() {} };
     typedef void ( __safe_bool_dummy__::*unspecified_bool_type )();
   public:
     operator unspecified_bool_type() const { return mErr && !isCanceled() ? &__safe_bool_dummy__::nonnull : 0 ; }
