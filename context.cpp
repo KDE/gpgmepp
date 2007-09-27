@@ -480,7 +480,8 @@ namespace GpgME {
 
   std::vector<Key> Context::signingKeys() const {
     std::vector<Key> result;
-    for ( unsigned int i = 0 ; gpgme_key_t key = gpgme_signers_enum( d->ctx, i ) ; ++i )
+    gpgme_key_t key;
+    for ( unsigned int i = 0 ; key = gpgme_signers_enum( d->ctx, i ) ; ++i )
       result.push_back( Key( key, false ) );
     return result;
   }
