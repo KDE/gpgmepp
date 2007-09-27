@@ -135,6 +135,7 @@ namespace GpgME {
     // Event Handler Interface
     //
 
+    virtual void operationStartEvent( Context * context ) = 0;
     virtual void nextTrustItemEvent( Context * context, const TrustItem & item ) = 0;
     virtual void nextKeyEvent( Context * context, const Key & key ) = 0;
     virtual void operationDoneEvent( Context * context, const Error & e ) = 0;

@@ -116,7 +116,8 @@ namespace GpgME {
     switch( type ) {
     case GPGME_EVENT_START:
       {
-	// hmmm, what to do here?
+        instance()->operationStartEvent( ctx );
+	// TODO: what's in type_data?
       }
       break;
     case GPGME_EVENT_DONE:
