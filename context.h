@@ -29,6 +29,7 @@
 #include <gpgme++/error.h>
 #include <gpgme++/verificationresult.h> // for Signature::Notation
 
+#include <memory>
 #include <vector>
 #include <utility>
 
@@ -40,6 +41,7 @@ namespace GpgME {
   class ProgressProvider;
   class PassphraseProvider;
   class EventLoopInteractor;
+  class EditInteractor;
 
   class KeyListResult;
   class KeyGenerationResult;
@@ -162,6 +164,24 @@ namespace GpgME {
 
     GpgME::Error deleteKey( const Key & key, bool allowSecretKeyDeletion=false );
     GpgME::Error startKeyDeletion( const Key & key, bool allowSecretKeyDeletion=false );
+
+    //
+    // Key Editing
+    //
+
+    GpgME::Error edit( const Key & key, std::auto_ptr<EditInteractor> function, Data & out );
+    GpgME::Error startEditing( const Key & key, std::auto_ptr<EditInteractor> function, Data & out );
+
+    EditInteractor * lastEditInteractor() const;
+
+    //
+    // SmartCard Editing
+    //
+
+    GpgME::Error cardEdit( const Key & key, std::auto_ptr<EditInteractor> function, Data & out );
+    GpgME::Error startCardEditing( const Key & key, std::auto_ptr<EditInteractor> function, Data & out );
+
+    EditInteractor * lastCardEditInteractor() const;
 
     //
     // Trust Item Management

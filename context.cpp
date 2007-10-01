@@ -1,6 +1,6 @@
 /*
   context.cpp - wraps a gpgme key context
-  Copyright (C) 2003 Klarälvdalens Datakonsult AB
+  Copyright (C) 2003, 2007 Klarälvdalens Datakonsult AB
 
   This file is part of GPGME++.
 
@@ -33,6 +33,7 @@
 #include <gpgme++/signingresult.h>
 #include <gpgme++/encryptionresult.h>
 #include <gpgme++/engineinfo.h>
+#include <gpgme++/editinteractor.h>
 
 #include "callbacks.h"
 #include "data_p.h"
@@ -108,6 +109,30 @@ namespace GpgME {
     }
 
     return new Context( ctx );
+  }
+
+  //
+  //
+  // Context::Private
+  //
+  //
+
+  Context::Private::Private( gpgme_ctx_t c )
+      : ctx( c ),
+        iocbs( 0 ),
+        lastop( None ),
+        lasterr( GPG_ERR_NO_ERROR ),
+        lastEditInteractor(),
+        lastCardEditInteractor()
+  {
+
+  }
+
+  Context::Private::~Private() {
+      if ( ctx )
+          gpgme_release( ctx );
+      ctx = 0;
+      delete iocbs;
   }
 
   //
@@ -367,6 +392,50 @@ namespace GpgME {
   Error Context::startKeyDeletion( const Key & key, bool allowSecretKeyDeletion ) {
     d->lastop = Private::Delete;
     return Error( d->lasterr = gpgme_op_delete_start( d->ctx, key.impl(), int( allowSecretKeyDeletion ) ) );
+  }
+
+  Error Context::edit( const Key & key, std::auto_ptr<EditInteractor> func, Data & data ) {
+      d->lastop = Private::Edit;
+      d->lastEditInteractor = func;
+      Data::Private * const dp = data.impl();
+      return Error( d->lasterr = gpgme_op_edit( d->ctx, key.impl(),
+                                                d->lastEditInteractor.get() ? edit_interactor_callback : 0,
+                                                d->lastEditInteractor.get(), dp ? dp->data : 0 ) );
+  }
+
+  Error Context::startEditing( const Key & key, std::auto_ptr<EditInteractor> func, Data & data ) {
+      d->lastop = Private::Edit;
+      d->lastEditInteractor = func;
+      Data::Private * const dp = data.impl();
+      return Error( d->lasterr = gpgme_op_edit_start( d->ctx, key.impl(),
+                                                      d->lastEditInteractor.get() ? edit_interactor_callback : 0,
+                                                      d->lastEditInteractor.get(), dp ? dp->data : 0 ) );
+  }
+
+  EditInteractor * Context::lastEditInteractor() const {
+      return d->lastEditInteractor.get();
+  }
+
+  Error Context::cardEdit( const Key & key, std::auto_ptr<EditInteractor> func, Data & data ) {
+      d->lastop = Private::CardEdit;
+      d->lastCardEditInteractor = func;
+      Data::Private * const dp = data.impl();
+      return Error( d->lasterr = gpgme_op_card_edit( d->ctx, key.impl(),
+                                                     d->lastCardEditInteractor.get() ? edit_interactor_callback : 0,
+                                                     d->lastCardEditInteractor.get(), dp ? dp->data : 0 ) );
+  }
+
+  Error Context::startCardEditing( const Key & key, std::auto_ptr<EditInteractor> func, Data & data ) {
+      d->lastop = Private::CardEdit;
+      d->lastCardEditInteractor = func;
+      Data::Private * const dp = data.impl();
+      return Error( d->lasterr = gpgme_op_card_edit_start( d->ctx, key.impl(),
+                                                           d->lastCardEditInteractor.get() ? edit_interactor_callback : 0,
+                                                           d->lastCardEditInteractor.get(), dp ? dp->data : 0 ) );
+  }
+
+  EditInteractor * Context::lastCardEditInteractor() const {
+      return d->lastCardEditInteractor.get();
   }
 
   Error Context::startTrustItemListing( const char * pattern, int maxLevel ) {

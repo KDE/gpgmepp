@@ -1,6 +1,6 @@
 /*
-  context_p.h - wraps a gpgme key context (private part)
-  Copyright (C) 2003 Klarälvdalens Datakonsult AB
+  context_p.h - wraps a gpgme context (private part)
+  Copyright (C) 2003, 2007 Klarälvdalens Datakonsult AB
 
   This file is part of GPGME++.
 
@@ -49,27 +49,21 @@ namespace GpgME {
 
       KeyGen    = 0x080,
       KeyList   = 0x100,
-      TrustList = 0x200 // gpgme_trustlist_result_t, but nevertheless...
+      TrustList = 0x200, // no gpgme_trustlist_result_t, but nevertheless...
+
+      Edit      = 0x400, // no gpgme_edit_result_t, but nevertheless...
+      CardEdit  = 0x800, // no gpgme_card_edit_result_t, but nevertheless...
     };
 
-    Private( gpgme_ctx_t c=0 )
-      : ctx( c ),
-	 iocbs( 0 ),
-	 lastop( None ),
-	 lasterr( GPG_ERR_NO_ERROR ) {}
-    ~Private() {
-      if ( ctx ) {
-	gpgme_release( ctx );
-	ctx = 0;
-      }
-      delete iocbs;
-    }
+    Private( gpgme_ctx_t c=0 );
+    ~Private();
+
 
     gpgme_ctx_t ctx;
     gpgme_io_cbs * iocbs;
-    //EditInteractor * edit;
     Operation lastop;
     gpgme_error_t lasterr;
+    std::auto_ptr<EditInteractor> lastEditInteractor, lastCardEditInteractor;
   };
 
 } // namespace GpgME

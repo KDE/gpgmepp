@@ -37,16 +37,14 @@
 
 using namespace GpgME;
 
+static gpgme_error_t edit_interactor_callback( void * opaque, gpgme_status_code_t status, const char * args, int fd );
+
 class EditInteractor::Private {
     friend class ::GpgME::EditInteractor;
     EditInteractor * const q;
 public:
     explicit Private( EditInteractor * qq );
     ~Private();
-
-private:
-    unsigned int state;
-    Error error;
 
     friend gpgme_error_t ::edit_interactor_callback( void * opaque, gpgme_status_code_t status, const char * args, int fd ) {
         Private * ei = (Private*)opaque;
@@ -76,7 +74,13 @@ private:
 
         return 0;
     }
+
+private:
+    unsigned int state;
+    Error error;
 };
+
+gpgme_edit_cb_t GpgME::edit_interactor_callback = ::edit_interactor_callback;
 
 EditInteractor::Private::Private( EditInteractor * qq )
     : q( qq ),
