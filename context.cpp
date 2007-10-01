@@ -481,7 +481,7 @@ namespace GpgME {
   std::vector<Key> Context::signingKeys() const {
     std::vector<Key> result;
     gpgme_key_t key;
-    for ( unsigned int i = 0 ; key = gpgme_signers_enum( d->ctx, i ) ; ++i )
+    for ( unsigned int i = 0 ; ( key = gpgme_signers_enum( d->ctx, i ) ) ; ++i )
       result.push_back( Key( key, false ) );
     return result;
   }
