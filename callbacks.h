@@ -34,6 +34,8 @@ extern "C" {
 			  int type, int current, int total );
   gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint,
 				     const char * desc, int prev_was_bad, int fd );
+
+  gpgme_error_t edit_interactor_callback( void * opaque, gpgme_status_code_t status, const char * args, int fd );
 }
 
 extern gpgme_data_cbs data_provider_callbacks;

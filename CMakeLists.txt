@@ -1,6 +1,7 @@
 project( gpgmepp )
 
 include_directories(  ${GPGME_INCLUDES} )
+add_definitions( ${KDE4_ENABLE_EXCEPTIONS} )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gpgme++.h )
 
@@ -15,6 +16,7 @@ set(gpgme_LIB_SRCS
 	data.cpp 
 	callbacks.cpp 
 	eventloopinteractor.cpp 
+        editinteractor.cpp
 	keylistresult.cpp            
 	keygenerationresult.cpp 
 	importresult.cpp
@@ -105,7 +107,7 @@ if ( GPGME_FOUND )
    install(
      FILES
         global.h error.h context.h key.h trustitem.h 
-        eventloopinteractor.h data.h gpgmefw.h result.h
+        eventloopinteractor.h editinteractor.h data.h gpgmefw.h result.h
         keylistresult.h keygenerationresult.h 
         importresult.h decryptionresult.h verificationresult.h
         signingresult.h encryptionresult.h notation.h engineinfo.h
