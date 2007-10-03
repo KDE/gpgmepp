@@ -51,11 +51,10 @@ using std::endl;
 
 #include <cassert>
 
-static inline GpgME::Error makeError( gpg_err_code_t code ) {
-  return GpgME::Error( gpg_err_make( (gpg_err_source_t)22, code ) );
-}
-
 namespace GpgME {
+  static inline Error makeError( gpg_err_code_t code ) {
+    return Error( gpg_err_make( (gpg_err_source_t)22, code ) );
+  }
 
   const char * Error::source() const {
     return gpgme_strsource( (gpgme_error_t)mErr );
