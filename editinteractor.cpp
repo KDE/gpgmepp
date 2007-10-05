@@ -110,3 +110,19 @@ Error EditInteractor::lastError() const {
     return d->error;
 }
 
+bool EditInteractor::needsNoResponse( unsigned int status ) const {
+    switch ( status ) {
+    case GPGME_STATUS_EOF:
+    case GPGME_STATUS_GOT_IT:
+    case GPGME_STATUS_NEED_PASSPHRASE:
+    case GPGME_STATUS_NEED_PASSPHRASE_SYM:
+    case GPGME_STATUS_GOOD_PASSPHRASE:
+    case GPGME_STATUS_BAD_PASSPHRASE:
+    case GPGME_STATUS_USERID_HINT:
+    case GPGME_STATUS_SIGEXPIRED:
+    case GPGME_STATUS_KEYEXPIRED:
+        return true;
+    default:
+        return false;
+    }
+}

@@ -48,6 +48,7 @@ namespace GpgME {
 
         unsigned int state() const;
         Error lastError() const;
+        bool needsNoResponse( unsigned int statusCode ) const;
 
     private:
         class Private;
