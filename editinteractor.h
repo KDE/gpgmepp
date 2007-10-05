@@ -28,8 +28,10 @@
 namespace GpgME {
 
     class Error;
+    class Context;
 
     class GPGMEPP_EXPORT EditInteractor {
+        friend class ::GpgME::Context;
         EditInteractor( const EditInteractor & );
         EditInteractor & operator=( const EditInteractor & );
     public:

@@ -400,7 +400,8 @@ namespace GpgME {
       Data::Private * const dp = data.impl();
       return Error( d->lasterr = gpgme_op_edit( d->ctx, key.impl(),
                                                 d->lastEditInteractor.get() ? edit_interactor_callback : 0,
-                                                d->lastEditInteractor.get(), dp ? dp->data : 0 ) );
+                                                d->lastEditInteractor.get() ? d->lastEditInteractor->d : 0,
+                                                dp ? dp->data : 0 ) );
   }
 
   Error Context::startEditing( const Key & key, std::auto_ptr<EditInteractor> func, Data & data ) {
@@ -409,7 +410,8 @@ namespace GpgME {
       Data::Private * const dp = data.impl();
       return Error( d->lasterr = gpgme_op_edit_start( d->ctx, key.impl(),
                                                       d->lastEditInteractor.get() ? edit_interactor_callback : 0,
-                                                      d->lastEditInteractor.get(), dp ? dp->data : 0 ) );
+                                                      d->lastEditInteractor.get() ? d->lastEditInteractor->d : 0,
+                                                      dp ? dp->data : 0 ) );
   }
 
   EditInteractor * Context::lastEditInteractor() const {
@@ -422,7 +424,8 @@ namespace GpgME {
       Data::Private * const dp = data.impl();
       return Error( d->lasterr = gpgme_op_card_edit( d->ctx, key.impl(),
                                                      d->lastCardEditInteractor.get() ? edit_interactor_callback : 0,
-                                                     d->lastCardEditInteractor.get(), dp ? dp->data : 0 ) );
+                                                     d->lastCardEditInteractor.get() ? d->lastCardEditInteractor->d : 0,
+                                                     dp ? dp->data : 0 ) );
   }
 
   Error Context::startCardEditing( const Key & key, std::auto_ptr<EditInteractor> func, Data & data ) {
@@ -431,7 +434,8 @@ namespace GpgME {
       Data::Private * const dp = data.impl();
       return Error( d->lasterr = gpgme_op_card_edit_start( d->ctx, key.impl(),
                                                            d->lastCardEditInteractor.get() ? edit_interactor_callback : 0,
-                                                           d->lastCardEditInteractor.get(), dp ? dp->data : 0 ) );
+                                                           d->lastCardEditInteractor.get() ? d->lastCardEditInteractor->d : 0,
+                                                           dp ? dp->data : 0 ) );
   }
 
   EditInteractor * Context::lastCardEditInteractor() const {
