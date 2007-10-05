@@ -25,6 +25,7 @@ set(gpgme_LIB_SRCS
 	signingresult.cpp 
 	encryptionresult.cpp 
 	engineinfo.cpp
+        gpgsetexpirytime.cpp
 )
 
 set( _gpgmepp_version 1.1.0 )
@@ -111,6 +112,7 @@ if ( GPGME_FOUND )
         keylistresult.h keygenerationresult.h 
         importresult.h decryptionresult.h verificationresult.h
         signingresult.h encryptionresult.h notation.h engineinfo.h
+        gpgsetexpirytime.h
         gpgme++_export.h 
      DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++
    )
