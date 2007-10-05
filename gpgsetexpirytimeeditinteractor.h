@@ -1,5 +1,5 @@
 /*
-  gpgsetexpirytime.h - Edit Interactor to change the expiry time of an OpenPGP key
+  gpgsetexpirytimeeditinteractor.h - Edit Interactor to change the expiry time of an OpenPGP key
   Copyright (C) 2007 Klarälvdalens Datakonsult AB
 
   This file is part of GPGME++.
@@ -20,8 +20,8 @@
   Boston, MA 02110-1301, USA.
 */
 
-#ifndef __GPGMEPP_GPGSETEXPIRYTIME_H__
-#define __GPGMEPP_GPGSETEXPIRYTIME_H__
+#ifndef __GPGMEPP_GPGSETEXPIRYTIMEEDITINTERACTOR_H__
+#define __GPGMEPP_GPGSETEXPIRYTIMEEDITINTERACTOR_H__
 
 #include <gpgme++/editinteractor.h>
 
@@ -29,10 +29,10 @@
 
 namespace GpgME {
 
-    class GPGMEPP_EXPORT GpgSetExpiryTime : public EditInteractor {
+    class GPGMEPP_EXPORT GpgSetExpiryTimeEditInteractor : public EditInteractor {
     public:
-        explicit GpgSetExpiryTime( const std::string & timeString="0" );
-        ~GpgSetExpiryTime();
+        explicit GpgSetExpiryTimeEditInteractor( const std::string & timeString="0" );
+        ~GpgSetExpiryTimeEditInteractor();
 
     private:
         /* reimp */ const char * action() const;
@@ -44,4 +44,4 @@ namespace GpgME {
 
 } // namespace GpgME
 
-#endif // __GPGMEPP_EDITINTERACTOR_H__
+#endif // __GPGMEPP_GPGSETEXPIRYTIMEEDITINTERACTOR_H___

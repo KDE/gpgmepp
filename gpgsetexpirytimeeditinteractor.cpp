@@ -1,5 +1,5 @@
 /*
-  gpgsetexpirytime.cpp - Edit Interactor to change the expiry time of an OpenPGP key
+  gpgsetexpirytimeeditinteractor.cpp - Edit Interactor to change the expiry time of an OpenPGP key
   Copyright (C) 2007 Klarälvdalens Datakonsult AB
 
   This file is part of GPGME++.
@@ -20,21 +20,21 @@
   Boston, MA 02110-1301, USA.
 */
 
-#include "gpgsetexpirytime.h"
+#include "gpgsetexpirytimeeditinteractor.h"
 #include "error.h"
 
 #include <gpgme.h>
 
 using namespace GpgME;
 
-GpgSetExpiryTime::GpgSetExpiryTime( const std::string & t )
+GpgSetExpiryTimeEditInteractor::GpgSetExpiryTimeEditInteractor( const std::string & t )
     : EditInteractor(),
       m_strtime( t )
 {
 
 }
 
-GpgSetExpiryTime::~GpgSetExpiryTime() {}
+GpgSetExpiryTimeEditInteractor::~GpgSetExpiryTimeEditInteractor() {}
 
 enum {
     START = EditInteractor::StartState,
@@ -46,7 +46,7 @@ enum {
     ERROR = EditInteractor::ErrorState
 };
 
-const char * GpgSetExpiryTime::action() const {
+const char * GpgSetExpiryTimeEditInteractor::action() const {
     switch ( state() ) {
     case COMMAND:
         return "expire";
@@ -64,7 +64,7 @@ const char * GpgSetExpiryTime::action() const {
     }
 }
 
-unsigned int GpgSetExpiryTime::nextState( unsigned int status, const char * args ) const {
+unsigned int GpgSetExpiryTimeEditInteractor::nextState( unsigned int status, const char * args ) const {
 
     static const Error GENERAL_ERROR(  gpg_error( GPG_ERR_GENERAL  ) );
     static const Error INV_TIME_ERROR( gpg_error( GPG_ERR_INV_TIME ) );
