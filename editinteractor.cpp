@@ -51,28 +51,28 @@ public:
 
         try {
             // advance to next state based on input:
+            const unsigned int oldState = ei->state;
             ei->state = ei->q->nextState( status, args );
+            
+            if ( ei->state != oldState &&
+                 // if there was an error from before, we stop here (### this looks weird, can this happen at all?)
+                 gpg_err_code( ei->error ) == GPG_ERR_NO_ERROR ) {
 
-            // if there was an error from before, we stop here (### this looks weird, can this happen at all?)
-            if ( gpg_err_code( ei->error ) != GPG_ERR_NO_ERROR )
-                return ei->error;
-
-            // if there's a result, write it:
-            if ( const char * const result = ei->q->action() ) {
-                if ( *result )
-                    write( fd, result, std::strlen( result ) );
-                write( fd, "\n", 1 );
+                // successful state change -> call action
+                if ( const char * const result = ei->q->action() ) {
+                    // if there's a result, write it:
+                    if ( *result )
+                        write( fd, result, std::strlen( result ) );
+                    write( fd, "\n", 1 );
+                }
             }
-
-            return 0;
 
         } catch ( const Error & err ) {
             ei->error = err;
             ei->state = EditInteractor::ErrorState;
-            return err;
         }
 
-        return 0;
+        return ei->error;
     }
 
 private:
