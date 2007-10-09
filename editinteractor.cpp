@@ -93,7 +93,7 @@ public:
 private:
     unsigned int state;
     Error error;
-    FILE * debug;
+    std::FILE * debug;
 };
 
 static gpgme_error_t edit_interactor_callback( void * opaque, gpgme_status_code_t status, const char * args, int fd )
