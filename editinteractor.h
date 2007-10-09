@@ -25,6 +25,8 @@
 
 #include <gpgme++/gpgme++_export.h>
 
+#include <cstdio>
+
 namespace GpgME {
 
     class Error;
@@ -49,6 +51,8 @@ namespace GpgME {
         unsigned int state() const;
         Error lastError() const;
         bool needsNoResponse( unsigned int statusCode ) const;
+
+        void setDebugChannel( std::FILE * file );
 
     private:
         class Private;

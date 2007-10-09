@@ -53,6 +53,9 @@ public:
             // advance to next state based on input:
             const unsigned int oldState = ei->state;
             ei->state = ei->q->nextState( status, args );
+            if ( ei->debug )
+                std::fprintf( ei->debug, "EditInteractor: %u -> nextState( %u, %s ) -> %u\n",
+                              oldState, (unsigned int)status, args ? args : "<null>", ei->state );
             
             if ( ei->state != oldState &&
                  // if there was an error from before, we stop here (### this looks weird, can this happen at all?)
@@ -60,11 +63,19 @@ public:
 
                 // successful state change -> call action
                 if ( const char * const result = ei->q->action() ) {
+                    if ( ei->debug )
+                        std::fprintf( ei->debug, "EditInteractor: action result \"%s\"\n", result );
                     // if there's a result, write it:
                     if ( *result )
                         write( fd, result, std::strlen( result ) );
                     write( fd, "\n", 1 );
+                } else {
+                    if ( ei->debug )
+                        std::fprintf( ei->debug, "EditInteractor: no action result\n" );
                 }
+            } else {
+                if ( ei->debug )
+                    std::fprintf( ei->debug, "EditInteractor: no action executed\n" );
             }
 
         } catch ( const Error & err ) {
@@ -72,12 +83,17 @@ public:
             ei->state = EditInteractor::ErrorState;
         }
 
+        if ( ei->debug )
+            std::fprintf( ei->debug, "EditInteractor: error now %u (%s)\n",
+                          (unsigned int)ei->error, gpg_strerror( ei->error ) );
+
         return ei->error;
     }
 
 private:
     unsigned int state;
     Error error;
+    FILE * debug;
 };
 
 static gpgme_error_t edit_interactor_callback( void * opaque, gpgme_status_code_t status, const char * args, int fd )
@@ -130,4 +146,8 @@ bool EditInteractor::needsNoResponse( unsigned int status ) const {
     default:
         return false;
     }
+}
+
+void EditInteractor::setDebugChannel( std::FILE * debug ) {
+    d->debug = debug;
 }
