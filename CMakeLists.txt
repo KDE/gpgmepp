@@ -11,6 +11,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURREN
 ## We're building corresponding gpgme++ flavours
 
 set(gpgme_LIB_SRCS 
+        exception.cpp
 	context.cpp key.cpp 
 	trustitem.cpp 
 	data.cpp 
@@ -128,7 +129,7 @@ if ( GPGME_FOUND )
 
    install(
      FILES
-        global.h error.h context.h key.h trustitem.h 
+        global.h error.h exception.h context.h key.h trustitem.h 
         eventloopinteractor.h editinteractor.h data.h gpgmefw.h result.h
         keylistresult.h keygenerationresult.h 
         importresult.h decryptionresult.h verificationresult.h
