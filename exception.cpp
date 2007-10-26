@@ -25,7 +25,7 @@
 
 #include <gpg-error.h>
 
-#include <cstdio>
+#include <sstream>
 
 using namespace GpgME;
 using namespace std; // only safe b/c it's so small a file!
@@ -34,22 +34,14 @@ Exception::~Exception() throw() {}
 
 // static
 string Exception::make_message( const Error & err, const string & msg ) {
-    char buf[128];
-    buf[0] = '\0';
-    gpg_strerror_r( err, buf, sizeof buf );
-    buf[sizeof buf - 1] = '\0';
-    char result_buf[256];
-    int numChars = 0;
-    if ( msg.empty() )
-        numChars = snprintf( result_buf, sizeof result_buf, "%lu %s: %s",
-                             static_cast<unsigned long>(err), gpg_strsource( err ), buf  );
-    else
-        numChars = snprintf( result_buf, sizeof result_buf, "%lu %s: %s - %s",
-                             static_cast<unsigned long>(err), gpg_strsource( err ), buf, msg.c_str() );
-    result_buf[sizeof result_buf - 1] = '\0';
-    if ( numChars < 0 )
-        numChars = 0; // error - truncate string
-    if ( numChars > static_cast<int>(sizeof result_buf) )
-        numChars = sizeof result_buf;
-    return string( result_buf, numChars );
+    char error_string[128];
+    error_string[0] = '\0';
+    gpg_strerror_r( err, error_string, sizeof error_string );
+    error_string[sizeof error_string - 1] = '\0';
+    stringstream ss;
+    ss << gpg_strsource( err ) << ": ";
+    if ( !msg.empty() )
+        ss << msg << ": ";
+    ss << error_string << " (" << static_cast<unsigned long>( err ) << ')';
+    return ss.str();
 }
