@@ -97,8 +97,8 @@ namespace GpgME {
   }
 
   void EventLoopInteractor::Private::removeIOCb( void * tag ) {
-    assert( instance() ); assert( instance()->d );
 
+    if ( !instance() || !instance()->d ) return;
     for ( vector<OneFD*>::iterator it = instance()->d->mCallbacks.begin() ;
 	 it != instance()->d->mCallbacks.end() ; ++it ) {
       if ( *it == tag ) {
