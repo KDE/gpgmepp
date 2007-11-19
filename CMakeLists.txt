@@ -113,12 +113,11 @@ if ( GPGME_FOUND )
      DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++
    )
 
-   set( DESTINATION_DIR ${LIB_INSTALL_DIR}/Gpgmepp )
    install(
      FILES
      ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake
      ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppLibraryDepends.cmake
      DESTINATION
-     ${DESTINATION_DIR} )
+     ${LIB_INSTALL_DIR}/gpgmepp )
 
 endif ( GPGME_FOUND )
