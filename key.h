@@ -88,7 +88,7 @@ namespace GpgME {
     bool isQualified() const;
 
     bool hasSecret() const;
-    bool isSecret() const { return hasSecret(); }
+    GPGMEPP_DEPRECATED bool isSecret() const { return hasSecret(); }
 
     /*!
       @return true if this is a X.509 root certificate (currently
