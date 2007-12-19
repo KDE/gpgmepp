@@ -25,6 +25,11 @@
 
 #include <gpgme.h>
 
+// avoid conflict (msvc)
+#ifdef ERROR
+# undef ERROR
+#endif
+
 using namespace GpgME;
 
 GpgSetOwnerTrustEditInteractor::GpgSetOwnerTrustEditInteractor( Key::OwnerTrust ot )
