@@ -33,7 +33,7 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT KeyGenerationResult : public Result {
   public:
-    explicit KeyGenerationResult( gpgme_ctx_t ctx=0, int error=0 );
+    explicit KeyGenerationResult( gpgme_ctx_t ctx=0, const Error & err = Error() );
     explicit KeyGenerationResult( const Error & err );
     KeyGenerationResult( const KeyGenerationResult & other );
     ~KeyGenerationResult();

@@ -36,12 +36,12 @@ Exception::~Exception() throw() {}
 string Exception::make_message( const Error & err, const string & msg ) {
     char error_string[128];
     error_string[0] = '\0';
-    gpg_strerror_r( err, error_string, sizeof error_string );
+    gpg_strerror_r( err.encodedError(), error_string, sizeof error_string );
     error_string[sizeof error_string - 1] = '\0';
     stringstream ss;
-    ss << gpg_strsource( err ) << ": ";
+    ss << gpg_strsource( err.encodedError() ) << ": ";
     if ( !msg.empty() )
         ss << msg << ": ";
-    ss << error_string << " (" << static_cast<unsigned long>( err ) << ')';
+    ss << error_string << " (" << static_cast<unsigned long>( err.encodedError() ) << ')';
     return ss.str();
 }

@@ -59,7 +59,7 @@ public:
             
             if ( ei->state != oldState &&
                  // if there was an error from before, we stop here (### this looks weird, can this happen at all?)
-                 gpg_err_code( ei->error ) == GPG_ERR_NO_ERROR ) {
+                 gpg_err_code( ei->error.code() ) == GPG_ERR_NO_ERROR ) {
 
                 // successful state change -> call action
                 if ( const char * const result = ei->q->action() ) {
@@ -85,9 +85,9 @@ public:
 
         if ( ei->debug )
             std::fprintf( ei->debug, "EditInteractor: error now %u (%s)\n",
-                          (unsigned int)ei->error, gpg_strerror( ei->error ) );
+                          ei->error.encodedError(), gpg_strerror( ei->error.encodedError() ) );
 
-        return ei->error;
+        return ei->error.encodedError();
     }
 
 private:

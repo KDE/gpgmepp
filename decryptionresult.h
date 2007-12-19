@@ -35,7 +35,7 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT DecryptionResult : public Result {
   public:
-    explicit DecryptionResult( gpgme_ctx_t ctx=0, int error=0 );
+    explicit DecryptionResult( gpgme_ctx_t ctx=0, const Error & err = Error() );
     explicit DecryptionResult( const Error & err );
     DecryptionResult( const DecryptionResult & other );
     ~DecryptionResult();

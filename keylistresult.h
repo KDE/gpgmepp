@@ -33,7 +33,7 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT KeyListResult : public Result {
   public:
-    explicit KeyListResult( gpgme_ctx_t ctx=0, int error=0 );
+    explicit KeyListResult( gpgme_ctx_t ctx=0, const Error & err = Error() );
     explicit KeyListResult( const Error & err );
     KeyListResult( const Error & err, const _gpgme_op_keylist_result & res );
     KeyListResult( const KeyListResult & other );

@@ -56,10 +56,10 @@ public:
   std::vector<gpgme_import_status_t> imports;
 };
 
-GpgME::ImportResult::ImportResult( gpgme_ctx_t ctx, int error )
-  : GpgME::Result( error ), d( 0 )
+GpgME::ImportResult::ImportResult( gpgme_ctx_t ctx, const Error & err )
+  : GpgME::Result( err ), d( 0 )
 {
-  if ( error || !ctx )
+  if ( err.encodedError() || !ctx )
     return;
   gpgme_import_result_t res = gpgme_op_import_result( ctx );
   if ( !res )

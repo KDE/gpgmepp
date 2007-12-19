@@ -38,7 +38,7 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT SigningResult : public Result {
   public:
-    explicit SigningResult( gpgme_ctx_t ctx=0, int error=0 );
+    explicit SigningResult( gpgme_ctx_t ctx=0, const Error & err = Error() );
     explicit SigningResult( const Error & err );
     SigningResult( const SigningResult & other );
     ~SigningResult();

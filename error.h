@@ -41,7 +41,7 @@ namespace GpgME {
 
     bool isCanceled() const;
 
-    operator unsigned int() const { return mErr; }
+    unsigned int encodedError() const { return mErr; }
 
   private:
     struct __safe_bool_dummy__ { void nonnull() {} };

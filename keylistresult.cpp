@@ -38,10 +38,10 @@ public:
   _gpgme_op_keylist_result res;
 };
 
-GpgME::KeyListResult::KeyListResult( gpgme_ctx_t ctx, int error )
-  : GpgME::Result( error ), d( 0 )
+GpgME::KeyListResult::KeyListResult( gpgme_ctx_t ctx, const Error & err )
+  : GpgME::Result( err ), d( 0 )
 {
-  if ( error || !ctx )
+  if ( err.encodedError() || !ctx )
     return;
   gpgme_keylist_result_t res = gpgme_op_keylist_result( ctx );
   if ( !res )

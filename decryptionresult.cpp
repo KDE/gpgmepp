@@ -67,10 +67,10 @@ public:
 #endif
 };
 
-GpgME::DecryptionResult::DecryptionResult( gpgme_ctx_t ctx, int error )
-  : GpgME::Result( error ), d( 0 )
+GpgME::DecryptionResult::DecryptionResult( gpgme_ctx_t ctx, const Error & err )
+  : GpgME::Result( err ), d( 0 )
 {
-  if ( error || !ctx )
+  if ( err.encodedError() || !ctx )
     return;
   gpgme_decrypt_result_t res = gpgme_op_decrypt_result( ctx );
   if ( !res )
