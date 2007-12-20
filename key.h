@@ -60,6 +60,8 @@ namespace GpgME {
 	return *this;
     }
 
+    const Key & merge( const Key & other );
+
     void swap( Key & other ) {
 	using std::swap;
 	swap( this->d, other.d );
