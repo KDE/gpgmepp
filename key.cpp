@@ -276,8 +276,9 @@ namespace GpgME {
       me->can_certify      |= him->can_certify;
       me->secret           |= him->secret;
       me->can_authenticate |= him->can_authenticate;
+#ifdef HAVE_GPGME_KEY_T_IS_QUALIFIED
       me->is_qualified     |= him->is_qualified;
-
+#endif
       me->keylist_mode     |= him->keylist_mode;
 
       return *this;
