@@ -350,6 +350,7 @@ public:
       if ( nota ) {
         std::free( nota->name );  nota->name = 0;
         std::free( nota->value ); nota->value = 0;
+        delete nota;
       }
     }
 
