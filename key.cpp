@@ -254,6 +254,36 @@ namespace GpgME {
     return d->key ? convert_from_gpgme_keylist_mode_t( d->key->keylist_mode ) : 0 ;
   }
 
+  const Key & Key::mergeWith( const Key & other ) {
+      // ### incomplete. Just merges has* and can*, nothing else atm
+
+      if ( !this->primaryFingerprint() || !other.primaryFingerprint()
+           || strcasecmp( this->primaryFingerprint(), other.primaryFingerprint() ) != 0 )
+          return *this; // only merge the Key object which describe the same key
+
+      const gpgme_key_t me = impl();
+      const gpgme_key_t him = other.impl();
+
+      if ( !me || !him )
+          return *this;
+
+      me->revoked          |= him->revoked;
+      me->expired          |= him->expired;
+      me->disabled         |= him->disabled;
+      me->invalid          |= him->invalid;
+      me->can_encrypt      |= him->can_encrypt;
+      me->can_sign         |= him->can_sign;
+      me->can_certify      |= him->can_certify;
+      me->secret           |= him->secret;
+      me->can_authenticate |= him->can_authenticate;
+#ifdef HAVE_GPGME_KEY_T_IS_QUALIFIED
+      me->is_qualified     |= him->is_qualified;
+#endif
+      me->keylist_mode     |= him->keylist_mode;
+
+      return *this;
+  }
+
   //
   //
   // class Subkey

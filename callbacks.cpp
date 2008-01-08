@@ -129,7 +129,7 @@ static void data_release_callback( void * opaque ) {
     provider->release();
 }
 
-gpgme_data_cbs data_provider_callbacks = {
+gpgme_data_cbs GpgME::data_provider_callbacks = {
   &data_read_callback,
   &data_write_callback,
   &data_seek_callback,

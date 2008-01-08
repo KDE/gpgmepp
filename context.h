@@ -29,6 +29,7 @@
 #include <gpgme++/error.h>
 #include <gpgme++/verificationresult.h> // for Signature::Notation
 
+#include <memory>
 #include <vector>
 #include <utility>
 
@@ -40,6 +41,7 @@ namespace GpgME {
   class ProgressProvider;
   class PassphraseProvider;
   class EventLoopInteractor;
+  class EditInteractor;
 
   class KeyListResult;
   class KeyGenerationResult;
@@ -164,6 +166,24 @@ namespace GpgME {
     GpgME::Error startKeyDeletion( const Key & key, bool allowSecretKeyDeletion=false );
 
     //
+    // Key Editing
+    //
+
+    GpgME::Error edit( const Key & key, std::auto_ptr<EditInteractor> function, Data & out );
+    GpgME::Error startEditing( const Key & key, std::auto_ptr<EditInteractor> function, Data & out );
+
+    EditInteractor * lastEditInteractor() const;
+
+    //
+    // SmartCard Editing
+    //
+
+    GpgME::Error cardEdit( const Key & key, std::auto_ptr<EditInteractor> function, Data & out );
+    GpgME::Error startCardEditing( const Key & key, std::auto_ptr<EditInteractor> function, Data & out );
+
+    EditInteractor * lastCardEditInteractor() const;
+
+    //
     // Trust Item Management
     //
 
@@ -241,6 +261,18 @@ namespace GpgME {
     std::pair<SigningResult,EncryptionResult> signAndEncrypt( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags );
     GpgME::Error startCombinedSigningAndEncryption( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags );
     // use encryptionResult() and signingResult() to retrieve the result objects...
+
+    //
+    //
+    // Audit Log
+    //
+    //
+    enum AuditLogFlags {
+        HtmlAuditLog = 1,
+        AuditLogWithHelp = 128
+    };
+    GpgME::Error startGetAuditLog( Data & output, unsigned int flags=0 );
+    GpgME::Error getAuditLog( Data & output, unsigned int flags=0 );
 
     //
     //

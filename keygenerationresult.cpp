@@ -53,6 +53,18 @@ GpgME::KeyGenerationResult::KeyGenerationResult( gpgme_ctx_t ctx, int error )
 {
   if ( error || !ctx )
     return;
+  init( ctx );
+}
+
+GpgME::KeyGenerationResult::KeyGenerationResult( gpgme_ctx_t ctx, const Error & error )
+  : GpgME::Result( error ), d( 0 )
+{
+  if ( error || !ctx )
+    return;
+  init( ctx );
+}
+
+void GpgME::KeyGenerationResult::init( gpgme_ctx_t ctx ) {
   gpgme_genkey_result_t res = gpgme_op_genkey_result( ctx );
   if ( !res )
     return;

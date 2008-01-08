@@ -1,6 +1,7 @@
 project( gpgmepp )
 
 include_directories(  ${GPGME_INCLUDES} )
+add_definitions( ${KDE4_ENABLE_EXCEPTIONS} )
 
 if (WIN32)
 # overriding LIB_INSTALL_DIR specific for win32 to archieve 
@@ -10,7 +11,6 @@ if (WIN32)
 # There must be a way to only patch install(TARGETS) 
     set (LIB_INSTALL_DIR lib)
 endif (WIN32)
-    
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gpgme++.h )
 
@@ -20,11 +20,13 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURREN
 ## We're building corresponding gpgme++ flavours
 
 set(gpgme_LIB_SRCS 
+        exception.cpp
 	context.cpp key.cpp 
 	trustitem.cpp 
 	data.cpp 
 	callbacks.cpp 
 	eventloopinteractor.cpp 
+        editinteractor.cpp
 	keylistresult.cpp            
 	keygenerationresult.cpp 
 	importresult.cpp
@@ -33,9 +35,11 @@ set(gpgme_LIB_SRCS
 	signingresult.cpp 
 	encryptionresult.cpp 
 	engineinfo.cpp
+        gpgsetexpirytimeeditinteractor.cpp
+        gpgsetownertrusteditinteractor.cpp
 )
 
-set( _gpgmepp_version 1.0.0 )
+set( _gpgmepp_version 1.1.0 )
 
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} )
 
@@ -114,11 +118,13 @@ if ( GPGME_FOUND )
 
    install(
      FILES
-        global.h error.h context.h key.h trustitem.h 
-        eventloopinteractor.h data.h gpgmefw.h result.h
+        global.h error.h exception.h context.h key.h trustitem.h 
+        eventloopinteractor.h editinteractor.h data.h gpgmefw.h result.h
         keylistresult.h keygenerationresult.h 
         importresult.h decryptionresult.h verificationresult.h
         signingresult.h encryptionresult.h notation.h engineinfo.h
+        gpgsetexpirytimeeditinteractor.h
+        gpgsetownertrusteditinteractor.h
         gpgme++_export.h 
      DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++
    )

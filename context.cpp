@@ -1,6 +1,6 @@
 /*
   context.cpp - wraps a gpgme key context
-  Copyright (C) 2003 Klarälvdalens Datakonsult AB
+  Copyright (C) 2003, 2007 Klarälvdalens Datakonsult AB
 
   This file is part of GPGME++.
 
@@ -33,6 +33,7 @@
 #include <gpgme++/signingresult.h>
 #include <gpgme++/encryptionresult.h>
 #include <gpgme++/engineinfo.h>
+#include <gpgme++/editinteractor.h>
 
 #include "callbacks.h"
 #include "data_p.h"
@@ -52,8 +53,8 @@ using std::endl;
 #include <cassert>
 
 namespace GpgME {
-  static inline Error makeError( gpg_err_code_t code ) {
-    return Error( gpg_err_make( (gpg_err_source_t)22, code ) );
+  static inline gpgme_error_t makeError( gpg_err_code_t code ) {
+    return gpg_err_make( (gpg_err_source_t)22, code );
   }
 
   const char * Error::source() const {
@@ -107,6 +108,30 @@ namespace GpgME {
     }
 
     return new Context( ctx );
+  }
+
+  //
+  //
+  // Context::Private
+  //
+  //
+
+  Context::Private::Private( gpgme_ctx_t c )
+      : ctx( c ),
+        iocbs( 0 ),
+        lastop( None ),
+        lasterr( GPG_ERR_NO_ERROR ),
+        lastEditInteractor(),
+        lastCardEditInteractor()
+  {
+
+  }
+
+  Context::Private::~Private() {
+      if ( ctx )
+          gpgme_release( ctx );
+      ctx = 0;
+      delete iocbs;
   }
 
   //
@@ -241,7 +266,7 @@ namespace GpgME {
       const char * const home_dir = engineInfo().homeDirectory();
       return Error( gpgme_ctx_set_engine_info( d->ctx, gpgme_get_protocol( d->ctx ), filename, home_dir ) );
 #else
-      return makeError( GPG_ERR_NOT_IMPLEMENTED );
+      return Error( makeError( GPG_ERR_NOT_IMPLEMENTED ) );
 #endif
   }
 
@@ -250,7 +275,7 @@ namespace GpgME {
       const char * const filename = engineInfo().fileName();
       return Error( gpgme_ctx_set_engine_info( d->ctx, gpgme_get_protocol( d->ctx ), filename, home_dir ) );
 #else
-      return makeError( GPG_ERR_NOT_IMPLEMENTED );
+      return Error( makeError( GPG_ERR_NOT_IMPLEMENTED ) );
 #endif
   }
 
@@ -283,7 +308,7 @@ namespace GpgME {
   }
 
   KeyListResult Context::keyListResult() const {
-    return KeyListResult( d->ctx, d->lasterr );
+    return KeyListResult( d->ctx, Error(d->lasterr) );
   }
 
   Key Context::key( const char * fingerprint, GpgME::Error & e , bool secret /*, bool forceUpdate*/ ) {
@@ -297,7 +322,7 @@ namespace GpgME {
     d->lastop = Private::KeyGen;
     Data::Private * const dp = pubKey.impl();
     d->lasterr = gpgme_op_genkey( d->ctx, parameters, dp ? dp->data : 0, 0 );
-    return KeyGenerationResult( d->ctx, d->lasterr );
+    return KeyGenerationResult( d->ctx, Error(d->lasterr) );
   }
 
   Error Context::startKeyGeneration( const char * parameters, Data & pubKey ) {
@@ -308,7 +333,7 @@ namespace GpgME {
 
   KeyGenerationResult Context::keyGenerationResult() const {
     if ( d->lastop & Private::KeyGen )
-      return KeyGenerationResult( d->ctx, d->lasterr );
+      return KeyGenerationResult( d->ctx, Error(d->lasterr) );
     else
       return KeyGenerationResult();
   }
@@ -342,7 +367,7 @@ namespace GpgME {
     d->lastop = Private::Import;
     const Data::Private * const dp = data.impl();
     d->lasterr = gpgme_op_import( d->ctx, dp ? dp->data : 0 );
-    return ImportResult( d->ctx, d->lasterr );
+    return ImportResult( d->ctx, Error(d->lasterr) );
   }
 
   Error Context::startKeyImport( const Data & data ) {
@@ -353,7 +378,7 @@ namespace GpgME {
 
   ImportResult Context::importResult() const {
     if ( d->lastop & Private::Import )
-      return ImportResult( d->ctx, d->lasterr );
+      return ImportResult( d->ctx, Error(d->lasterr) );
     else
       return ImportResult();
   }
@@ -366,6 +391,54 @@ namespace GpgME {
   Error Context::startKeyDeletion( const Key & key, bool allowSecretKeyDeletion ) {
     d->lastop = Private::Delete;
     return Error( d->lasterr = gpgme_op_delete_start( d->ctx, key.impl(), int( allowSecretKeyDeletion ) ) );
+  }
+
+  Error Context::edit( const Key & key, std::auto_ptr<EditInteractor> func, Data & data ) {
+      d->lastop = Private::Edit;
+      d->lastEditInteractor = func;
+      Data::Private * const dp = data.impl();
+      return Error( d->lasterr = gpgme_op_edit( d->ctx, key.impl(),
+                                                d->lastEditInteractor.get() ? edit_interactor_callback : 0,
+                                                d->lastEditInteractor.get() ? d->lastEditInteractor->d : 0,
+                                                dp ? dp->data : 0 ) );
+  }
+
+  Error Context::startEditing( const Key & key, std::auto_ptr<EditInteractor> func, Data & data ) {
+      d->lastop = Private::Edit;
+      d->lastEditInteractor = func;
+      Data::Private * const dp = data.impl();
+      return Error( d->lasterr = gpgme_op_edit_start( d->ctx, key.impl(),
+                                                      d->lastEditInteractor.get() ? edit_interactor_callback : 0,
+                                                      d->lastEditInteractor.get() ? d->lastEditInteractor->d : 0,
+                                                      dp ? dp->data : 0 ) );
+  }
+
+  EditInteractor * Context::lastEditInteractor() const {
+      return d->lastEditInteractor.get();
+  }
+
+  Error Context::cardEdit( const Key & key, std::auto_ptr<EditInteractor> func, Data & data ) {
+      d->lastop = Private::CardEdit;
+      d->lastCardEditInteractor = func;
+      Data::Private * const dp = data.impl();
+      return Error( d->lasterr = gpgme_op_card_edit( d->ctx, key.impl(),
+                                                     d->lastCardEditInteractor.get() ? edit_interactor_callback : 0,
+                                                     d->lastCardEditInteractor.get() ? d->lastCardEditInteractor->d : 0,
+                                                     dp ? dp->data : 0 ) );
+  }
+
+  Error Context::startCardEditing( const Key & key, std::auto_ptr<EditInteractor> func, Data & data ) {
+      d->lastop = Private::CardEdit;
+      d->lastCardEditInteractor = func;
+      Data::Private * const dp = data.impl();
+      return Error( d->lasterr = gpgme_op_card_edit_start( d->ctx, key.impl(),
+                                                           d->lastCardEditInteractor.get() ? edit_interactor_callback : 0,
+                                                           d->lastCardEditInteractor.get() ? d->lastCardEditInteractor->d : 0,
+                                                           dp ? dp->data : 0 ) );
+  }
+
+  EditInteractor * Context::lastCardEditInteractor() const {
+      return d->lastCardEditInteractor.get();
   }
 
   Error Context::startTrustItemListing( const char * pattern, int maxLevel ) {
@@ -388,7 +461,7 @@ namespace GpgME {
     const Data::Private * const cdp = cipherText.impl();
     Data::Private * const pdp = plainText.impl();
     d->lasterr = gpgme_op_decrypt( d->ctx, cdp ? cdp->data : 0, pdp ? pdp->data : 0 );
-    return DecryptionResult( d->ctx, d->lasterr );
+    return DecryptionResult( d->ctx, Error(d->lasterr) );
   }
 
   Error Context::startDecryption( const Data & cipherText, Data & plainText ) {
@@ -400,7 +473,7 @@ namespace GpgME {
 
   DecryptionResult Context::decryptionResult() const {
     if ( d->lastop & Private::Decrypt )
-      return DecryptionResult( d->ctx, d->lasterr );
+      return DecryptionResult( d->ctx, Error(d->lasterr) );
     else
       return DecryptionResult();
   }
@@ -412,7 +485,7 @@ namespace GpgME {
     const Data::Private * const sdp = signature.impl();
     const Data::Private * const tdp = signedText.impl();
     d->lasterr = gpgme_op_verify( d->ctx, sdp ? sdp->data : 0, tdp ? tdp->data : 0, 0 );
-    return VerificationResult( d->ctx, d->lasterr );
+    return VerificationResult( d->ctx, Error(d->lasterr) );
   }
 
   VerificationResult Context::verifyOpaqueSignature( const Data & signedData, Data & plainText ) {
@@ -420,7 +493,7 @@ namespace GpgME {
     const Data::Private * const sdp = signedData.impl();
     Data::Private * const pdp = plainText.impl();
     d->lasterr = gpgme_op_verify( d->ctx, sdp ? sdp->data : 0, 0, pdp ? pdp->data : 0 );
-    return VerificationResult( d->ctx, d->lasterr );
+    return VerificationResult( d->ctx, Error(d->lasterr) );
   }
 
   Error Context::startDetachedSignatureVerification( const Data & signature, const Data & signedText ) {
@@ -439,7 +512,7 @@ namespace GpgME {
 
   VerificationResult Context::verificationResult() const {
     if ( d->lastop & Private::Verify )
-      return VerificationResult( d->ctx, d->lasterr );
+      return VerificationResult( d->ctx, Error(d->lasterr) );
     else
       return VerificationResult();
   }
@@ -450,8 +523,8 @@ namespace GpgME {
     const Data::Private * const cdp = cipherText.impl();
     Data::Private * const pdp = plainText.impl();
     d->lasterr = gpgme_op_decrypt_verify( d->ctx, cdp ? cdp->data : 0, pdp ? pdp->data : 0 );
-    return std::make_pair( DecryptionResult( d->ctx, d->lasterr ),
-			   VerificationResult( d->ctx, d->lasterr ) );
+    return std::make_pair( DecryptionResult( d->ctx, Error(d->lasterr) ),
+                           VerificationResult( d->ctx, Error(d->lasterr) ) );
   }
 
   Error Context::startCombinedDecryptionAndVerification( const Data & cipherText, Data & plainText ) {
@@ -461,8 +534,39 @@ namespace GpgME {
     return Error( d->lasterr = gpgme_op_decrypt_verify_start( d->ctx, cdp ? cdp->data : 0, pdp ? pdp->data : 0 ) );
   }
 
+#ifdef HAVE_GPGME_OP_GETAUDITLOG
+  unsigned int to_auditlog_flags( unsigned int flags ) {
+      unsigned int result = 0;
+      if ( flags & Context::HtmlAuditLog )
+          result |= GPGME_AUDITLOG_HTML;
+      if ( flags & Context::AuditLogWithHelp )
+          result |= GPGME_AUDITLOG_WITH_HELP;
+      return result;
+  }
+#endif // HAVE_GPGME_OP_GETAUDITLOG
 
 
+  Error Context::startGetAuditLog( Data & output, unsigned int flags ) {
+    d->lastop = Private::GetAuditLog;
+#ifdef HAVE_GPGME_OP_GETAUDITLOG
+    Data::Private * const odp = output.impl();
+    return Error( d->lasterr = gpgme_op_getauditlog_start( d->ctx, odp ? odp->data : 0, to_auditlog_flags( flags ) ) );
+#else
+    (void)output; (void)flags;
+    return Error( d->lasterr = makeError( GPG_ERR_NOT_IMPLEMENTED ) );
+#endif
+  }
+
+  Error Context::getAuditLog( Data & output, unsigned int flags ) {
+    d->lastop = Private::GetAuditLog;
+#ifdef HAVE_GPGME_OP_GETAUDITLOG
+    Data::Private * const odp = output.impl();
+    return Error( d->lasterr = gpgme_op_getauditlog( d->ctx, odp ? odp->data : 0, to_auditlog_flags( flags ) ) );
+#else
+    (void)output; (void)flags;
+    return Error( d->lasterr = makeError( GPG_ERR_NOT_IMPLEMENTED ) );
+#endif
+  }
 
   void Context::clearSigningKeys() {
     gpgme_signers_clear( d->ctx );
@@ -496,7 +600,7 @@ namespace GpgME {
     return Error( gpgme_sig_notation_add( d->ctx, name, value, add_to_gpgme_sig_notation_flags_t( 0, flags ) ) );
 #else
     (void)name; (void)value; (void)flags;
-    return makeError( GPG_ERR_NOT_IMPLEMENTED );
+    return Error( makeError( GPG_ERR_NOT_IMPLEMENTED ) );
 #endif
   }
 
@@ -505,7 +609,7 @@ namespace GpgME {
     return Error( gpgme_sig_notation_add( d->ctx, 0, url, critical ? GPGME_SIG_NOTATION_CRITICAL : 0 ) );
 #else
     (void)url; (void)critical;
-    return makeError( GPG_ERR_NOT_IMPLEMENTED );
+    return Error( makeError( GPG_ERR_NOT_IMPLEMENTED ) );
 #endif
   }
 
@@ -552,7 +656,7 @@ namespace GpgME {
     const Data::Private * const pdp = plainText.impl();
     Data::Private * const sdp = signature.impl();
     d->lasterr = gpgme_op_sign( d->ctx, pdp ? pdp->data : 0, sdp ? sdp->data : 0, sigmode2sigmode( mode ) );
-    return SigningResult( d->ctx, d->lasterr );
+    return SigningResult( d->ctx, Error(d->lasterr) );
   }
 
 
@@ -565,7 +669,7 @@ namespace GpgME {
 
   SigningResult Context::signingResult() const {
     if ( d->lastop & Private::Sign )
-      return SigningResult( d->ctx, d->lasterr );
+      return SigningResult( d->ctx, Error(d->lasterr) );
     else
       return SigningResult();
   }
@@ -585,7 +689,7 @@ namespace GpgME {
 				   flags & AlwaysTrust ? GPGME_ENCRYPT_ALWAYS_TRUST : (gpgme_encrypt_flags_t)0,
 				   pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
-    return EncryptionResult( d->ctx, d->lasterr );
+    return EncryptionResult( d->ctx, Error(d->lasterr) );
   }
 
   Error Context::encryptSymmetrically( const Data & plainText, Data & cipherText ) {
@@ -615,7 +719,7 @@ namespace GpgME {
 
   EncryptionResult Context::encryptionResult() const {
     if ( d->lastop & Private::Encrypt )
-      return EncryptionResult( d->ctx, d->lasterr );
+      return EncryptionResult( d->ctx, Error(d->lasterr) );
     else
       return EncryptionResult();
   }
@@ -634,8 +738,8 @@ namespace GpgME {
 					flags & AlwaysTrust ? GPGME_ENCRYPT_ALWAYS_TRUST : (gpgme_encrypt_flags_t)0,
 					pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
-    return std::make_pair( SigningResult( d->ctx, d->lasterr ),
-			   EncryptionResult( d->ctx, d->lasterr ) );
+    return std::make_pair( SigningResult( d->ctx, Error(d->lasterr) ),
+                           EncryptionResult( d->ctx, Error(d->lasterr) ) );
   }
 
   Error Context::startCombinedSigningAndEncryption( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags ) {

@@ -43,6 +43,18 @@ GpgME::KeyListResult::KeyListResult( gpgme_ctx_t ctx, int error )
 {
   if ( error || !ctx )
     return;
+  init( ctx );
+}
+
+GpgME::KeyListResult::KeyListResult( gpgme_ctx_t ctx, const Error & error )
+  : GpgME::Result( error ), d( 0 )
+{
+  if ( error || !ctx )
+    return;
+  init( ctx );
+}
+
+void GpgME::KeyListResult::init( gpgme_ctx_t ctx ) {
   gpgme_keylist_result_t res = gpgme_op_keylist_result( ctx );
   if ( !res )
     return;

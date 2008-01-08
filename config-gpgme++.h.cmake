@@ -51,3 +51,6 @@
 
 /* Define to 1 if your gpgme has gpgme_get_fdptr (it won't be in gpgme.h, though!) */
 #cmakedefine HAVE_GPGME_GET_FDPTR 1
+
+/* Define to 1 if your gpgme has the gpgme_op_getauditlog function */
+#cmakedefine HAVE_GPGME_OP_GETAUDITLOG 1

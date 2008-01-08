@@ -36,6 +36,7 @@ namespace GpgME {
   class GPGMEPP_EXPORT DecryptionResult : public Result {
   public:
     explicit DecryptionResult( gpgme_ctx_t ctx=0, int error=0 );
+    explicit DecryptionResult( gpgme_ctx_t ctx, const Error & err );
     explicit DecryptionResult( const Error & err );
     DecryptionResult( const DecryptionResult & other );
     ~DecryptionResult();
@@ -69,6 +70,7 @@ namespace GpgME {
 
   private:
     class Private;
+    void init( gpgme_ctx_t ctx );
     Private * d;
   };
 

@@ -36,6 +36,9 @@ extern "C" {
 				     const char * desc, int prev_was_bad, int fd );
 }
 
-extern gpgme_data_cbs data_provider_callbacks;
+namespace GpgME {
+    extern gpgme_data_cbs data_provider_callbacks;
+    extern gpgme_edit_cb_t edit_interactor_callback;
+}
 
 #endif // __GPGME_CALLBACKS_H__

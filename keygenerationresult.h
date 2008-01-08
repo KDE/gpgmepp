@@ -34,6 +34,7 @@ namespace GpgME {
   class GPGMEPP_EXPORT KeyGenerationResult : public Result {
   public:
     explicit KeyGenerationResult( gpgme_ctx_t ctx=0, int error=0 );
+    explicit KeyGenerationResult( gpgme_ctx_t ctx, const Error & error );
     explicit KeyGenerationResult( const Error & err );
     KeyGenerationResult( const KeyGenerationResult & other );
     ~KeyGenerationResult();
@@ -59,6 +60,7 @@ namespace GpgME {
 
   private:
     class Private;
+    void init( gpgme_ctx_t ctx );
     Private * d;
   };
 

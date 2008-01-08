@@ -231,6 +231,9 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_get_fdptr
 check_function_exists( "gpgme_get_fdptr" HAVE_GPGME_GET_FDPTR )
 
+# check if gpgme has gpgme_op_getauditlog
+check_function_exists ("gpgme_op_getauditlog" HAVE_GPGME_OP_GETAUDITLOG )
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 

@@ -60,6 +60,8 @@ namespace GpgME {
 	return *this;
     }
 
+    const Key & mergeWith( const Key & other );
+
     void swap( Key & other ) {
 	using std::swap;
 	swap( this->d, other.d );
@@ -88,7 +90,7 @@ namespace GpgME {
     bool isQualified() const;
 
     bool hasSecret() const;
-    bool isSecret() const { return hasSecret(); }
+    GPGMEPP_DEPRECATED bool isSecret() const { return hasSecret(); }
 
     /*!
       @return true if this is a X.509 root certificate (currently

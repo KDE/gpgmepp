@@ -32,7 +32,9 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT Result {
   protected:
-    explicit Result( int error=0 ) : mError( error ) {}
+    explicit Result() : mError() {}
+    explicit Result( int error ) : mError( error ) {}
+    explicit Result( const Error & error ) : mError( error ) {}
 
     void swap( Result & other ) { std::swap( other.mError, mError ); }
 
