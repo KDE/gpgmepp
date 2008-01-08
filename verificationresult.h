@@ -39,7 +39,8 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT VerificationResult : public Result {
   public:
-    explicit VerificationResult( gpgme_ctx_t ctx=0, const Error & err = Error() );
+    explicit VerificationResult( gpgme_ctx_t ctx=0, int error=0 );
+    explicit VerificationResult( gpgme_ctx_t ctx, const Error & error );
     explicit VerificationResult( const Error & err );
     VerificationResult( const VerificationResult & other );
     ~VerificationResult();
@@ -65,6 +66,7 @@ namespace GpgME {
 
     class Private;
   private:
+    void init( gpgme_ctx_t ctx );
     Private * d;
   };
 

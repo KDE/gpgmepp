@@ -56,11 +56,23 @@ public:
   std::vector<gpgme_invalid_key_t> invalid;
 };
 
-GpgME::EncryptionResult::EncryptionResult( gpgme_ctx_t ctx, const Error & err )
-  : GpgME::Result( err ), d( 0 )
+GpgME::EncryptionResult::EncryptionResult( gpgme_ctx_t ctx, int error )
+  : GpgME::Result( error ), d( 0 )
 {
-  if ( err.encodedError() || !ctx )
+  if ( error || !ctx )
     return;
+  init( ctx );
+}
+
+GpgME::EncryptionResult::EncryptionResult( gpgme_ctx_t ctx, const Error & error )
+  : GpgME::Result( error ), d( 0 )
+{
+  if ( error || !ctx )
+    return;
+  init( ctx );
+}
+
+void GpgME::EncryptionResult::init( gpgme_ctx_t ctx ) {
   gpgme_encrypt_result_t res = gpgme_op_encrypt_result( ctx );
   if ( !res )
     return;

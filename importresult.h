@@ -36,7 +36,8 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT ImportResult : public Result {
   public:
-    explicit ImportResult( gpgme_ctx_t ctx=0, const Error & err = Error() );
+    explicit ImportResult( gpgme_ctx_t ctx=0, int error=0 );
+    explicit ImportResult( gpgme_ctx_t ctx, const Error & error );
     explicit ImportResult( const Error & error );
     ImportResult( const ImportResult & other );
     ~ImportResult();
@@ -76,6 +77,7 @@ namespace GpgME {
 
     class Private;
   private:
+    void init( gpgme_ctx_t ctx );
     Private * d;
   };
 

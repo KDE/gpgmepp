@@ -68,11 +68,23 @@ public:
   std::vector<gpgme_invalid_key_t> invalid;
 };
 
-GpgME::SigningResult::SigningResult( gpgme_ctx_t ctx, const Error & err )
-  : GpgME::Result( err ), d( 0 )
+GpgME::SigningResult::SigningResult( gpgme_ctx_t ctx, int error )
+  : GpgME::Result( error ), d( 0 )
 {
-  if ( err.encodedError() || !ctx )
+  if ( error || !ctx )
     return;
+  init( ctx );
+}
+
+GpgME::SigningResult::SigningResult( gpgme_ctx_t ctx, const Error & error )
+  : GpgME::Result( error ), d( 0 )
+{
+  if ( error || !ctx )
+    return;
+  init( ctx );
+}
+
+void GpgME::SigningResult::init( gpgme_ctx_t ctx ) {
   gpgme_sign_result_t res = gpgme_op_sign_result( ctx );
   if ( !res )
     return;
