@@ -60,7 +60,7 @@ namespace GpgME {
 	return *this;
     }
 
-    const Key & merge( const Key & other );
+    const Key & mergeWith( const Key & other );
 
     void swap( Key & other ) {
 	using std::swap;

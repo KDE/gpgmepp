@@ -254,7 +254,7 @@ namespace GpgME {
     return d->key ? convert_from_gpgme_keylist_mode_t( d->key->keylist_mode ) : 0 ;
   }
 
-  const Key & Key::merge( const Key & other ) {
+  const Key & Key::mergeWith( const Key & other ) {
       // ### incomplete. Just merges has* and can*, nothing else atm
 
       if ( !this->primaryFingerprint() || !other.primaryFingerprint()
