@@ -25,6 +25,8 @@
 
 #include <gpgme.h>
 
+#include <cstring>
+
 // avoid conflict (msvc)
 #ifdef ERROR
 # undef ERROR

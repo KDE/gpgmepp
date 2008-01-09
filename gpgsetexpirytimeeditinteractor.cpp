@@ -25,6 +25,8 @@
 
 #include <gpgme.h>
 
+#include <cstring>
+
 using namespace GpgME;
 
 GpgSetExpiryTimeEditInteractor::GpgSetExpiryTimeEditInteractor( const std::string & t )
