@@ -37,8 +37,6 @@
 
 using namespace GpgME;
 
-static int edit_interactor_callback_impl( void * opaque, gpgme_status_code_t status, const char * args, int fd );
-
 class EditInteractor::Private {
     friend class ::GpgME::EditInteractor;
     EditInteractor * const q;
@@ -46,7 +44,7 @@ public:
     explicit Private( EditInteractor * qq );
     ~Private();
 
-    friend int ::edit_interactor_callback_impl( void * opaque, gpgme_status_code_t status, const char * args, int fd ) {
+    static gpgme_error_t edit_interactor_callback( void * opaque, gpgme_status_code_t status, const char * args, int fd ) {
         Private * ei = (Private*)opaque;
 
         try {
@@ -96,13 +94,6 @@ private:
     std::FILE * debug;
 };
 
-static gpgme_error_t edit_interactor_callback( void * opaque, gpgme_status_code_t status, const char * args, int fd )
-{
-    return edit_interactor_callback_impl( opaque, status, args, fd );
-}
-
-gpgme_edit_cb_t GpgME::edit_interactor_callback = ::edit_interactor_callback;
-
 EditInteractor::Private::Private( EditInteractor * qq )
     : q( qq ),
       state( StartState ),
@@ -150,4 +141,12 @@ bool EditInteractor::needsNoResponse( unsigned int status ) const {
 
 void EditInteractor::setDebugChannel( std::FILE * debug ) {
     d->debug = debug;
+}
+
+gpgme_edit_cb_t EditInteractor::getCallback() {
+    return Private::edit_interactor_callback;
+}
+
+void * EditInteractor::getCallbackArgument() {
+    return d;
 }
