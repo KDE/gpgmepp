@@ -24,15 +24,16 @@
 #define __GPGMEPP_EDITINTERACTOR_H__
 
 #include <gpgme++/gpgme++_export.h>
-#include <gpgme.h>
 
 #include <cstdio>
 
 namespace GpgME {
 
     class Error;
+    class Context;
 
     class GPGMEPP_EXPORT EditInteractor {
+        friend class ::GpgME::Context;
         EditInteractor( const EditInteractor & );
         EditInteractor & operator=( const EditInteractor & );
     public:
@@ -52,9 +53,6 @@ namespace GpgME {
         bool needsNoResponse( unsigned int statusCode ) const;
 
         void setDebugChannel( std::FILE * file );
-
-        gpgme_edit_cb_t getCallback();
-        void * getCallbackArgument();
 
     private:
         class Private;

@@ -398,8 +398,8 @@ namespace GpgME {
       d->lastEditInteractor = func;
       Data::Private * const dp = data.impl();
       return Error( d->lasterr = gpgme_op_edit( d->ctx, key.impl(),
-                                                d->lastEditInteractor.get() ? d->lastCardEditInteractor->getCallback() : 0,
-                                                d->lastEditInteractor.get() ? d->lastCardEditInteractor->getCallbackArgument() : 0,
+                                                d->lastEditInteractor.get() ? edit_interactor_callback : 0,
+                                                d->lastEditInteractor.get() ? d->lastEditInteractor->d : 0,
                                                 dp ? dp->data : 0 ) );
   }
 
@@ -408,8 +408,8 @@ namespace GpgME {
       d->lastEditInteractor = func;
       Data::Private * const dp = data.impl();
       return Error( d->lasterr = gpgme_op_edit_start( d->ctx, key.impl(),
-                                                      d->lastEditInteractor.get() ? d->lastCardEditInteractor->getCallback() : 0,
-                                                      d->lastEditInteractor.get() ? d->lastCardEditInteractor->getCallbackArgument() : 0,
+                                                      d->lastEditInteractor.get() ? edit_interactor_callback : 0,
+                                                      d->lastEditInteractor.get() ? d->lastEditInteractor->d : 0,
                                                       dp ? dp->data : 0 ) );
   }
 
@@ -422,8 +422,8 @@ namespace GpgME {
       d->lastCardEditInteractor = func;
       Data::Private * const dp = data.impl();
       return Error( d->lasterr = gpgme_op_card_edit( d->ctx, key.impl(),
-                                                     d->lastCardEditInteractor.get() ? d->lastCardEditInteractor->getCallback() : 0,
-                                                     d->lastCardEditInteractor.get() ? d->lastCardEditInteractor->getCallbackArgument() : 0,
+                                                     d->lastCardEditInteractor.get() ? edit_interactor_callback : 0,
+                                                     d->lastCardEditInteractor.get() ? d->lastCardEditInteractor->d : 0,
                                                      dp ? dp->data : 0 ) );
   }
 
@@ -432,8 +432,8 @@ namespace GpgME {
       d->lastCardEditInteractor = func;
       Data::Private * const dp = data.impl();
       return Error( d->lasterr = gpgme_op_card_edit_start( d->ctx, key.impl(),
-                                                           d->lastCardEditInteractor.get() ? d->lastCardEditInteractor->getCallback() : 0,
-                                                           d->lastCardEditInteractor.get() ? d->lastCardEditInteractor->getCallbackArgument() : 0,
+                                                           d->lastCardEditInteractor.get() ? edit_interactor_callback : 0,
+                                                           d->lastCardEditInteractor.get() ? d->lastCardEditInteractor->d : 0,
                                                            dp ? dp->data : 0 ) );
   }
 
