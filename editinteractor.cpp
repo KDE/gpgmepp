@@ -37,17 +37,24 @@
 
 using namespace GpgME;
 
-static int edit_interactor_callback_impl( void * opaque, gpgme_status_code_t status, const char * args, int fd );
-
 class EditInteractor::Private {
     friend class ::GpgME::EditInteractor;
+    friend class ::GpgME::CallbackHelper;
     EditInteractor * const q;
 public:
     explicit Private( EditInteractor * qq );
     ~Private();
 
-    friend int ::edit_interactor_callback_impl( void * opaque, gpgme_status_code_t status, const char * args, int fd ) {
-        Private * ei = (Private*)opaque;
+private:
+    unsigned int state;
+    Error error;
+    std::FILE * debug;
+};
+
+class GpgME::CallbackHelper {
+public:
+    static int edit_interactor_callback_impl( void * opaque, gpgme_status_code_t status, const char * args, int fd ) {
+        EditInteractor::Private * ei = (EditInteractor::Private*)opaque;
 
         try {
             // advance to next state based on input:
@@ -89,16 +96,11 @@ public:
 
         return ei->error.encodedError();
     }
-
-private:
-    unsigned int state;
-    Error error;
-    std::FILE * debug;
 };
 
 static gpgme_error_t edit_interactor_callback( void * opaque, gpgme_status_code_t status, const char * args, int fd )
 {
-    return edit_interactor_callback_impl( opaque, status, args, fd );
+    return CallbackHelper::edit_interactor_callback_impl( opaque, status, args, fd );
 }
 
 gpgme_edit_cb_t GpgME::edit_interactor_callback = ::edit_interactor_callback;

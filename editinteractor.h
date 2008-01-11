@@ -31,9 +31,11 @@ namespace GpgME {
 
     class Error;
     class Context;
+    class CallbackHelper;
 
     class GPGMEPP_EXPORT EditInteractor {
         friend class ::GpgME::Context;
+        friend class ::GpgME::CallbackHelper;
         EditInteractor( const EditInteractor & );
         EditInteractor & operator=( const EditInteractor & );
     public:
