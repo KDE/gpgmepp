@@ -69,7 +69,11 @@ endif ( GPGME_GLIB_FOUND )
 
 if ( GPGME_QT_FOUND )
    kde4_add_library( gpgmepp-qt SHARED ${gpgme_LIB_SRCS} context_qt.cpp )
-   target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} )
+   if(WIN32)
+   target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} ${GPGME_VANILLA_LIBRARIES} )
+   ELSE(WIN32)
+    target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} )
+   ENDIF(WIN32)
    set_target_properties( gpgmepp-qt PROPERTIES
     VERSION     ${_gpgmepp_version}
     SOVERSION   ${_gpgmepp_version}
