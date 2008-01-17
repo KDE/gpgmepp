@@ -30,7 +30,7 @@ check_cxx_source_compiles ("
 # check if gpgme has GPGME_INCLUDE_CERTS_DEFAULT
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     int i = GPGME_INCLUDE_CERTS_DEFAULT;
   }
 " HAVE_GPGME_INCLUDE_CERTS_DEFAULT
@@ -39,7 +39,7 @@ check_cxx_source_compiles ("
 # check if gpgme has GPGME_KEYLIST_MODE_SIG_NOTATIONS
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_keylist_mode_t mode = GPGME_KEYLIST_MODE_SIG_NOTATIONS;
   }
 " HAVE_GPGME_KEYLIST_MODE_SIG_NOTATIONS
@@ -48,7 +48,7 @@ check_cxx_source_compiles ("
 # check if gpgme_key_sig_t has notations
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_key_sig_t key_sig = 0;
     gpgme_sig_notation_t notation = key_sig->notations;
   }
@@ -58,7 +58,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_key_t->is_qualified
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int test(gpgme_key_t& key) {
+  void test(gpgme_key_t& key) {
     unsigned int iq;
     iq = key->is_qualified;
   }
@@ -69,7 +69,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_sig_notation_t->critical
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_sig_notation_t sig_notation = 0;
     unsigned int cr1 = sig_notation->critical;
     unsigned int cr2 = GPGME_SIG_NOTATION_CRITICAL;
@@ -80,7 +80,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_sig_notation_t->flags
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_sig_notation_t sig_notation = 0;
     gpgme_sig_notation_flags_t f = sig_notation->flags;
   }
@@ -90,7 +90,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_sig_notation_t->human_readable
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_sig_notation_t sig_notation = 0;
     unsigned int cr1 = sig_notation->human_readable;
     unsigned int cr2 = GPGME_SIG_NOTATION_HUMAN_READABLE;
@@ -101,7 +101,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_subkey_t->is_qualified
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int test(gpgme_subkey_t& subkey) {
+  void test(gpgme_subkey_t& subkey) {
     unsigned int iq;
     iq = subkey->is_qualified;
   }
@@ -112,7 +112,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_engine_info_t->home_dir
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_engine_info_t ei = 0;
     const char * hd = ei->home_dir;
   }
@@ -122,7 +122,7 @@ check_cxx_source_compiles ("
 #check if gpgme has gpgme_ctx_{get,set}_engine_info()
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_ctx_t ctx = 0;
     const gpgme_engine_info_t ei = gpgme_ctx_get_engine_info( ctx );
     const char * filename = 0;
@@ -148,7 +148,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_sig_notation_{clear,add,get}
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_ctx_t ctx = 0;
     const gpgme_sig_notation_t nota = gpgme_sig_notation_get( ctx );
     const char * const name = 0;
@@ -163,7 +163,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_decrypt_result_t->file_name
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_decrypt_result_t res = 0;
     const char * const fn = res->file_name;
     (void)fn;
@@ -174,7 +174,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_recipient_t and gpgme_decrypt_result_t->recipients
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_decrypt_result_t res = 0;
     gpgme_recipient_t r = res->recipients;
     const char * kid = r->keyid;
@@ -188,7 +188,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_verify_result_t->file_name
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_verify_result_t res = 0;
     const char * fn = res->file_name;
     (void)fn;
@@ -199,7 +199,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_signature_t->pka_{trust,address}
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_signature_t sig = 0;
     unsigned int pkat = sig->pka_trust;
     const char * pkaa = sig->pka_address;
@@ -210,7 +210,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_signature_t->{hash,pubkey}_algo
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_signature_t sig = 0;
     gpgme_pubkey_algo_t pk = sig->pubkey_algo;
     gpgme_hash_algo_t h = sig->hash_algo;
@@ -221,7 +221,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_signature_t->chain_model
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  int main() {
+  void main() {
     gpgme_signature_t sig = 0;
     unsigned int cm = sig->chain_model;
   }
