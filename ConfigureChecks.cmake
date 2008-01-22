@@ -30,8 +30,9 @@ check_cxx_source_compiles ("
 # check if gpgme has GPGME_INCLUDE_CERTS_DEFAULT
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     int i = GPGME_INCLUDE_CERTS_DEFAULT;
+    return 0;
   }
 " HAVE_GPGME_INCLUDE_CERTS_DEFAULT
 )
@@ -39,8 +40,9 @@ check_cxx_source_compiles ("
 # check if gpgme has GPGME_KEYLIST_MODE_SIG_NOTATIONS
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_keylist_mode_t mode = GPGME_KEYLIST_MODE_SIG_NOTATIONS;
+    return 0;
   }
 " HAVE_GPGME_KEYLIST_MODE_SIG_NOTATIONS
 )
@@ -48,9 +50,10 @@ check_cxx_source_compiles ("
 # check if gpgme_key_sig_t has notations
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_key_sig_t key_sig = 0;
     gpgme_sig_notation_t notation = key_sig->notations;
+    return 0;
   }
 " HAVE_GPGME_KEY_SIG_NOTATIONS
 )
@@ -69,10 +72,11 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_sig_notation_t->critical
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_sig_notation_t sig_notation = 0;
     unsigned int cr1 = sig_notation->critical;
     unsigned int cr2 = GPGME_SIG_NOTATION_CRITICAL;
+    return 0;
   }
 " HAVE_GPGME_SIG_NOTATION_CRITICAL
 )
@@ -80,9 +84,10 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_sig_notation_t->flags
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_sig_notation_t sig_notation = 0;
     gpgme_sig_notation_flags_t f = sig_notation->flags;
+    return 0;
   }
 " HAVE_GPGME_SIG_NOTATION_FLAGS_T
 )
@@ -90,10 +95,11 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_sig_notation_t->human_readable
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_sig_notation_t sig_notation = 0;
     unsigned int cr1 = sig_notation->human_readable;
     unsigned int cr2 = GPGME_SIG_NOTATION_HUMAN_READABLE;
+    return 0;
   }
 " HAVE_GPGME_SIG_NOTATION_HUMAN_READABLE
 )
@@ -112,9 +118,10 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_engine_info_t->home_dir
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_engine_info_t ei = 0;
     const char * hd = ei->home_dir;
+    return 0;
   }
 " HAVE_GPGME_ENGINE_INFO_T_HOME_DIR
 )
@@ -122,13 +129,14 @@ check_cxx_source_compiles ("
 #check if gpgme has gpgme_ctx_{get,set}_engine_info()
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_ctx_t ctx = 0;
     const gpgme_engine_info_t ei = gpgme_ctx_get_engine_info( ctx );
     const char * filename = 0;
     const char * home_dir = 0;
     const gpgme_error_t e
       = gpgme_ctx_set_engine_info( ctx, GPGME_PROTOCOL_OpenPGP, filename, home_dir );
+    return 0;
   }
 " HAVE_GPGME_CTX_GETSET_ENGINE_INFO
 )
@@ -148,7 +156,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_sig_notation_{clear,add,get}
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_ctx_t ctx = 0;
     const gpgme_sig_notation_t nota = gpgme_sig_notation_get( ctx );
     const char * const name = 0;
@@ -156,6 +164,7 @@ check_cxx_source_compiles ("
     const gpgme_sig_notation_flags_t flags = 0;
     const gpgme_error_t err = gpgme_sig_notation_add( ctx, name, value, flags );
     gpgme_sig_notation_clear( ctx );
+    return 0;
   }
 " HAVE_GPGME_SIG_NOTATION_CLEARADDGET
 )
@@ -163,7 +172,7 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_decrypt_result_t->file_name
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_decrypt_result_t res = 0;
     const char * const fn = res->file_name;
     (void)fn;
@@ -174,13 +183,14 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_recipient_t and gpgme_decrypt_result_t->recipients
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_decrypt_result_t res = 0;
     gpgme_recipient_t r = res->recipients;
     const char * kid = r->keyid;
     r = r->next;
     const gpgme_pubkey_algo_t algo = r->pubkey_algo;
     const gpgme_error_t err = r->status;
+    return 0;
   }
 " HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
 )
@@ -188,10 +198,11 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_verify_result_t->file_name
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_verify_result_t res = 0;
     const char * fn = res->file_name;
     (void)fn;
+    return 0;
   }
 " HAVE_GPGME_VERIFY_RESULT_T_FILE_NAME
 )
@@ -199,10 +210,11 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_signature_t->pka_{trust,address}
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_signature_t sig = 0;
     unsigned int pkat = sig->pka_trust;
     const char * pkaa = sig->pka_address;
+    return 0;
   }
 " HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
 )
@@ -210,10 +222,11 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_signature_t->{hash,pubkey}_algo
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_signature_t sig = 0;
     gpgme_pubkey_algo_t pk = sig->pubkey_algo;
     gpgme_hash_algo_t h = sig->hash_algo;
+    return 0;
   }
 " HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS
 )
@@ -221,9 +234,10 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_signature_t->chain_model
 check_cxx_source_compiles ("
   #include <gpgme.h>
-  void main() {
+  int main() {
     gpgme_signature_t sig = 0;
     unsigned int cm = sig->chain_model;
+    return 0;
   }
 " HAVE_GPGME_SIGNATURE_T_CHAIN_MODEL
 )
