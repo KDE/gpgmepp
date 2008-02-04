@@ -41,6 +41,8 @@ namespace GpgME {
 
     enum Protocol { OpenPGP, CMS, UnknownProtocol };
 
+    enum Engine { GpgEngine, GpgSMEngine, GpgConfEngine, UnknownEngine };
+
     enum KeyListMode {
       Local = 0x1,
       Extern = 0x2,
@@ -62,8 +64,10 @@ namespace GpgME {
     typedef void (*IOCallback)( void * data, int fd );
 
     GPGMEPP_EXPORT EngineInfo engineInfo( Protocol proto );
+    GPGMEPP_EXPORT EngineInfo engineInfo( Engine engine );
 
     GPGMEPP_EXPORT Error checkEngine( Protocol proto );
+    GPGMEPP_EXPORT Error checkEngine( Engine engine );
 
     GPGMEPP_EXPORT GIOChannel * getGIOChannel( int fd );
     GPGMEPP_EXPORT QIODevice  * getQIODevice( int fd );

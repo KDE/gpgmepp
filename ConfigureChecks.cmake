@@ -248,6 +248,16 @@ check_function_exists( "gpgme_get_fdptr" HAVE_GPGME_GET_FDPTR )
 # check if gpgme has gpgme_op_getauditlog
 check_function_exists ("gpgme_op_getauditlog" HAVE_GPGME_OP_GETAUDITLOG )
 
+# check if gpgme has GPGME_PROTOCOL_GPGCONF
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_protocol_t proto = GPGME_PROTOCOL_GPGCONF;
+    return 0;
+  }
+" HAVE_GPGME_PROTOCOL_GPGCONF
+)
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 

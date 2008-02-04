@@ -809,3 +809,39 @@ GpgME::Error GpgME::checkEngine( GpgME::Protocol proto ) {
   return Error( gpgme_engine_check_version( p ) );
 }
 
+static gpgme_protocol_t UNKNOWN_PROTOCOL = static_cast<gpgme_protocol_t>( 255 );
+
+static gpgme_protocol_t engine2protocol( const GpgME::Engine engine ) {
+    switch ( engine ) {
+    case GpgME::GpgEngine:   return GPGME_PROTOCOL_OpenPGP;
+    case GpgME::GpgSMEngine: return GPGME_PROTOCOL_CMS;
+    case GpgME::GpgConfEngine:
+#ifdef HAVE_GPGME_PROTOCOL_GPGCONF
+        return GPGME_PROTOCOL_GPGCONF;
+#endif
+    case GpgME::UnknownEngine:
+        ;
+    }
+    return UNKNOWN_PROTOCOL;
+}
+
+GpgME::EngineInfo GpgME::engineInfo( GpgME::Engine engine ) {
+  gpgme_engine_info_t ei = 0;
+  if ( gpgme_get_engine_info( &ei ) )
+    return EngineInfo();
+
+  const gpgme_protocol_t p = engine2protocol( engine );
+
+  for ( gpgme_engine_info_t i = ei ; i ; i = i->next )
+    if ( i->protocol == p )
+      return EngineInfo( i );
+
+  return EngineInfo();
+}
+
+GpgME::Error GpgME::checkEngine( GpgME::Engine engine ) {
+  const gpgme_protocol_t p = engine2protocol( engine );
+
+  return Error( gpgme_engine_check_version( p ) );
+}
+

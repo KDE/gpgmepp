@@ -54,3 +54,6 @@
 
 /* Define to 1 if your gpgme has the gpgme_op_getauditlog function */
 #cmakedefine HAVE_GPGME_OP_GETAUDITLOG 1
+
+/* Define to 1 if your gpgme has GPGME_PROTOCOL_GPGCONF */
+#cmakedefine HAVE_GPGME_PROTOCOL_GPGCONF 1
