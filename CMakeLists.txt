@@ -3,15 +3,6 @@ project( gpgmepp )
 include_directories(  ${GPGME_INCLUDES} )
 add_definitions( ${KDE4_ENABLE_EXCEPTIONS} )
 
-if (WIN32)
-# overriding LIB_INSTALL_DIR specific for win32 to archieve 
-# propper installation of shared library targets will also be 
-# used in install(FILES ...) which fails with error
-# 'INSTALL FILES given unknown argument "RUNTIME".'
-# There must be a way to only patch install(TARGETS) 
-    set (LIB_INSTALL_DIR lib)
-endif (WIN32)
-
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gpgme++.h )
 
 ## gpgme comes in three flavours on each of the platforms:
