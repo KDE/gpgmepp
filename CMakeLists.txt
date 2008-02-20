@@ -43,7 +43,7 @@ if ( GPGME_VANILLA_FOUND )
     OUTPUT_NAME gpgme++
    )
    get_target_property( GPGMEPP_VANILLA_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp DESTINATION ${LIB_INSTALL_DIR} )
+   install(TARGETS gpgmepp ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_VANILLA_FOUND )
 
 if ( GPGME_GLIB_FOUND )
@@ -55,7 +55,7 @@ if ( GPGME_GLIB_FOUND )
     OUTPUT_NAME gpgme++-glib DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_GLIB_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-glib DESTINATION ${LIB_INSTALL_DIR} )
+   install(TARGETS gpgmepp-glib ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_GLIB_FOUND )
 
 if ( GPGME_QT_FOUND )
@@ -71,7 +71,7 @@ if ( GPGME_QT_FOUND )
     OUTPUT_NAME gpgme++-qt DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_QT_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-qt DESTINATION ${LIB_INSTALL_DIR})
+   install(TARGETS gpgmepp-qt ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_QT_FOUND )
 
 if ( GPGME_PTHREAD_FOUND )
@@ -83,7 +83,7 @@ if ( GPGME_PTHREAD_FOUND )
     OUTPUT_NAME gpgme++-pthread DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_PTHREAD_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-pthread DESTINATION ${LIB_INSTALL_DIR} )
+   install(TARGETS gpgmepp-pthread ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_PTHREAD_FOUND )
 
 if ( GPGME_PTH_FOUND )
@@ -95,7 +95,7 @@ if ( GPGME_PTH_FOUND )
     OUTPUT_NAME gpgme++-pth DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_PTH_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-pth DESTINATION ${LIB_INSTALL_DIR} )
+   install(TARGETS gpgmepp-pth ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_PTH_FOUND )
 
 
@@ -124,6 +124,13 @@ if ( GPGME_FOUND )
      DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++
    )
 
+   # With kdelibs 4.0.x, LIB_INSTALL_DIR includes specific arguments only working with TARGETS ("RUNTIME")
+   # (now in INSTALL_TARGETS_DEFAULT_ARGS), which breaks INSTALL FILES ("RUNTIME" is unknown in FILES context)
+   # TODO, FIXME: remove as soon kdepimlibs requires kdelibs >= 4.1 
+   if (WIN32)
+     set(LIB_INSTALL_DIR lib)
+   endif (WIN32)
+   
    install(
      FILES
      ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake
