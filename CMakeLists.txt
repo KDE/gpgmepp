@@ -12,20 +12,20 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURREN
 
 set(gpgme_LIB_SRCS 
         exception.cpp
-	context.cpp key.cpp 
-	trustitem.cpp 
-	data.cpp 
-	callbacks.cpp 
-	eventloopinteractor.cpp 
+        context.cpp key.cpp 
+        trustitem.cpp 
+        data.cpp 
+        callbacks.cpp 
+        eventloopinteractor.cpp 
         editinteractor.cpp
-	keylistresult.cpp            
-	keygenerationresult.cpp 
-	importresult.cpp
-	decryptionresult.cpp 
-	verificationresult.cpp 
-	signingresult.cpp 
-	encryptionresult.cpp 
-	engineinfo.cpp
+        keylistresult.cpp
+        keygenerationresult.cpp 
+        importresult.cpp
+        decryptionresult.cpp 
+        verificationresult.cpp 
+        signingresult.cpp 
+        encryptionresult.cpp 
+        engineinfo.cpp
         gpgsetexpirytimeeditinteractor.cpp
         gpgsetownertrusteditinteractor.cpp
 )
@@ -38,9 +38,9 @@ if ( GPGME_VANILLA_FOUND )
    kde4_add_library( gpgmepp SHARED ${gpgme_LIB_SRCS} context_vanilla.cpp )
    target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
    set_target_properties( gpgmepp PROPERTIES
-    VERSION     ${_gpgmepp_version}
-    SOVERSION   ${_gpgmepp_version}
-    OUTPUT_NAME gpgme++
+                                  VERSION     ${_gpgmepp_version}
+                                  SOVERSION   ${_gpgmepp_version}
+                                  OUTPUT_NAME gpgme++
    )
    get_target_property( GPGMEPP_VANILLA_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp ${INSTALL_TARGETS_DEFAULT_ARGS} )
@@ -50,37 +50,38 @@ if ( GPGME_GLIB_FOUND )
    kde4_add_library( gpgmepp-glib SHARED ${gpgme_LIB_SRCS} context_glib.cpp )
    target_link_libraries( gpgmepp-glib ${GPGME_GLIB_LIBRARIES} )
    set_target_properties( gpgmepp-glib PROPERTIES
-    VERSION     ${_gpgmepp_version}
-    SOVERSION   ${_gpgmepp_version}
-    OUTPUT_NAME gpgme++-glib DEFINE_SYMBOL MAKE_GPGME___LIB
+                                       VERSION     ${_gpgmepp_version}
+                                       SOVERSION   ${_gpgmepp_version}
+                                       OUTPUT_NAME gpgme++-glib DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_GLIB_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-glib ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_GLIB_FOUND )
 
+
 if ( GPGME_QT_FOUND )
    kde4_add_library( gpgmepp-qt SHARED ${gpgme_LIB_SRCS} context_qt.cpp )
+   target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} )
    if(WIN32)
-   target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} ${GPGME_VANILLA_LIBRARIES} )
-   ELSE(WIN32)
-    target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} )
-   ENDIF(WIN32)
+      target_link_libraries( gpgmepp-qt ${GPGME_VANILLA_LIBRARIES} )
+   endif(WIN32)
    set_target_properties( gpgmepp-qt PROPERTIES
-    VERSION     ${_gpgmepp_version}
-    SOVERSION   ${_gpgmepp_version}
-    OUTPUT_NAME gpgme++-qt DEFINE_SYMBOL MAKE_GPGME___LIB
+                                     VERSION     ${_gpgmepp_version}
+                                     SOVERSION   ${_gpgmepp_version}
+                                     OUTPUT_NAME gpgme++-qt DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_QT_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-qt ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_QT_FOUND )
 
+
 if ( GPGME_PTHREAD_FOUND )
    kde4_add_library( gpgmepp-pthread SHARED ${gpgme_LIB_SRCS} context_vanilla.cpp )
    target_link_libraries( gpgmepp-pthread ${GPGME_PTHREAD_LIBRARIES} )
    set_target_properties( gpgmepp-pthread PROPERTIES
-    VERSION     ${_gpgmepp_version}
-    SOVERSION   ${_gpgmepp_version}
-    OUTPUT_NAME gpgme++-pthread DEFINE_SYMBOL MAKE_GPGME___LIB
+                                          VERSION     ${_gpgmepp_version}
+                                          SOVERSION   ${_gpgmepp_version}
+                                          OUTPUT_NAME gpgme++-pthread DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_PTHREAD_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-pthread ${INSTALL_TARGETS_DEFAULT_ARGS} )
@@ -90,9 +91,9 @@ if ( GPGME_PTH_FOUND )
    kde4_add_library( gpgmepp-pth SHARED ${gpgme_LIB_SRCS} context_vanilla.cpp )
    target_link_libraries( gpgmepp-pth ${GPGME_PTH_LIBRARIES} )
    set_target_properties( gpgmepp-pth PROPERTIES
-    VERSION     ${_gpgmepp_version}
-    SOVERSION   ${_gpgmepp_version}
-    OUTPUT_NAME gpgme++-pth DEFINE_SYMBOL MAKE_GPGME___LIB
+                                      VERSION     ${_gpgmepp_version}
+                                      SOVERSION   ${_gpgmepp_version}
+                                      OUTPUT_NAME gpgme++-pth DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_PTH_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-pth ${INSTALL_TARGETS_DEFAULT_ARGS} )
@@ -111,8 +112,7 @@ if ( GPGME_FOUND )
 
    add_subdirectory( interfaces )
 
-   install(
-     FILES
+   install(FILES
         global.h error.h exception.h context.h key.h trustitem.h 
         eventloopinteractor.h editinteractor.h data.h gpgmefw.h result.h
         keylistresult.h keygenerationresult.h 
@@ -121,16 +121,9 @@ if ( GPGME_FOUND )
         gpgsetexpirytimeeditinteractor.h
         gpgsetownertrusteditinteractor.h
         gpgme++_export.h 
-     DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++
+        DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++ COMPONENT Devel
    )
 
-   # With kdelibs 4.0.x, LIB_INSTALL_DIR includes specific arguments only working with TARGETS ("RUNTIME")
-   # (now in INSTALL_TARGETS_DEFAULT_ARGS), which breaks INSTALL FILES ("RUNTIME" is unknown in FILES context)
-   # TODO, FIXME: remove as soon kdepimlibs requires kdelibs >= 4.1 
-   if (WIN32)
-     set(LIB_INSTALL_DIR lib)
-   endif (WIN32)
-   
    install(
      FILES
      ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake
