@@ -65,7 +65,7 @@ gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const c
   gpgme_error_t err = GPG_ERR_NO_ERROR;
   char * passphrase = provider ? provider->getPassphrase( uid_hint, desc, prev_was_bad, canceled ) : 0 ;
   if ( canceled )
-    err = makeError( GPG_ERR_CANCELED );
+    err = ::makeError( GPG_ERR_CANCELED );
   else
     if ( passphrase && *passphrase ) {
       size_t passphrase_length = std::strlen( passphrase );

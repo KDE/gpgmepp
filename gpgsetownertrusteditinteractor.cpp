@@ -42,18 +42,6 @@ GpgSetOwnerTrustEditInteractor::GpgSetOwnerTrustEditInteractor( Key::OwnerTrust 
 }
 
 GpgSetOwnerTrustEditInteractor::~GpgSetOwnerTrustEditInteractor() {}
-
-enum {
-    START = EditInteractor::StartState,
-    COMMAND,
-    VALUE,
-    REALLY_ULTIMATE,
-    QUIT,
-    SAVE,
-
-    ERROR = EditInteractor::ErrorState
-};
-
 const char * GpgSetOwnerTrustEditInteractor::action() const {
     static const char truststrings[][2] = { "1", "1", "2", "3", "4", "5" };
 
