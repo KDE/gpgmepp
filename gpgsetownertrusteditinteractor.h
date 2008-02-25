@@ -28,6 +28,8 @@
 
 #include <string>
 
+#undef ERROR
+
 namespace GpgME {
 enum {
     START = EditInteractor::StartState,
