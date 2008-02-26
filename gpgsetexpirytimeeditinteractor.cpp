@@ -27,6 +27,11 @@
 
 #include <cstring>
 
+// avoid conflict (msvc)
+#ifdef ERROR
+# undef ERROR
+#endif
+
 using namespace GpgME;
 
 GpgSetExpiryTimeEditInteractor::GpgSetExpiryTimeEditInteractor( const std::string & t )
@@ -38,6 +43,8 @@ GpgSetExpiryTimeEditInteractor::GpgSetExpiryTimeEditInteractor( const std::strin
 
 GpgSetExpiryTimeEditInteractor::~GpgSetExpiryTimeEditInteractor() {}
 
+// work around --enable-final
+namespace GpgSetExpiryTimeEditInteractor_Private {
 enum {
     START = EditInteractor::StartState,
     COMMAND,
@@ -47,8 +54,12 @@ enum {
 
     ERROR = EditInteractor::ErrorState
 };
+}
 
 const char * GpgSetExpiryTimeEditInteractor::action() const {
+
+    using namespace GpgSetExpiryTimeEditInteractor_Private;
+
     switch ( state() ) {
     case COMMAND:
         return "expire";
@@ -73,6 +84,8 @@ unsigned int GpgSetExpiryTimeEditInteractor::nextState( unsigned int status, con
 
     if ( needsNoResponse( status ) )
         return state();
+
+    using namespace GpgSetExpiryTimeEditInteractor_Private;
 
     switch ( state() ) {
     case START:

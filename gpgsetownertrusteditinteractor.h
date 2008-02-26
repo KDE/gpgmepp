@@ -28,20 +28,7 @@
 
 #include <string>
 
-#undef ERROR
-
 namespace GpgME {
-enum {
-    START = EditInteractor::StartState,
-    COMMAND,
-    VALUE,
-    REALLY_ULTIMATE,
-    QUIT,
-    SAVE,
-
-    ERROR = EditInteractor::ErrorState
-};
-
 
     class GPGMEPP_EXPORT GpgSetOwnerTrustEditInteractor : public EditInteractor {
     public:

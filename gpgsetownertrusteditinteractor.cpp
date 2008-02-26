@@ -42,8 +42,25 @@ GpgSetOwnerTrustEditInteractor::GpgSetOwnerTrustEditInteractor( Key::OwnerTrust 
 }
 
 GpgSetOwnerTrustEditInteractor::~GpgSetOwnerTrustEditInteractor() {}
+
+// work around --enable-final
+namespace GpgSetOwnerTrustEditInteractor_Private {
+enum {
+    START = EditInteractor::StartState,
+    COMMAND,
+    VALUE,
+    REALLY_ULTIMATE,
+    QUIT,
+    SAVE,
+
+    ERROR = EditInteractor::ErrorState
+};
+}
+
 const char * GpgSetOwnerTrustEditInteractor::action() const {
     static const char truststrings[][2] = { "1", "1", "2", "3", "4", "5" };
+
+    using namespace GpgSetOwnerTrustEditInteractor_Private;
 
     switch ( state() ) {
     case COMMAND:
@@ -71,6 +88,8 @@ unsigned int GpgSetOwnerTrustEditInteractor::nextState( unsigned int status, con
 
     if ( needsNoResponse( status ) )
         return state();
+
+    using namespace GpgSetOwnerTrustEditInteractor_Private;
 
     switch ( state() ) {
     case START:
