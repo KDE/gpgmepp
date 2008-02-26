@@ -41,11 +41,6 @@ namespace GpgME {
         Error error() const { return m_error; }
         const std::string & message() const { return m_message; }
     private:
-        struct __safe_bool_dummy__ { void nonnull() {} };
-        typedef void ( __safe_bool_dummy__::*unspecified_bool_type )();
-    public:
-        operator unspecified_bool_type() const { return m_error ? &__safe_bool_dummy__::nonnull : 0 ; }
-    private:
         static std::string make_message( const GpgME::Error & err, const std::string & msg );
     private:
         const GpgME::Error m_error;
