@@ -29,6 +29,7 @@
 #include <gpgme.h>
 
 #include <cstring>
+#include <cassert>
 
 class GpgME::KeyListResult::Private : public GpgME::Shared {
 public:
@@ -72,7 +73,7 @@ GpgME::KeyListResult::KeyListResult( const Error & error, const _gpgme_op_keylis
 make_standard_stuff(KeyListResult)
 
 void GpgME::KeyListResult::detach() {
-  if ( isNull() || d->refCount() <= 1 )
+  if ( !d || d->refCount() <= 1 )
     return;
   d->unref();
   d = new Private( *d );
@@ -86,9 +87,13 @@ void GpgME::KeyListResult::mergeWith( const KeyListResult & other ) {
     return;
   }
   // merge the truncated flag (try to keep detaching to a minimum):
-  if ( other.d->res.truncated && !d->res.truncated ) {
+  if ( other.isTruncated() && !this->isTruncated() ) {
+    assert( other.d );
     detach();
-    d->res.truncated = true;
+    if ( !d )
+        d = new Private( *other.d );
+    else
+        d->res.truncated = true;
   }
   if ( ! bool(error()) ) // only merge the error when there was none yet.
     Result::operator=( other );
