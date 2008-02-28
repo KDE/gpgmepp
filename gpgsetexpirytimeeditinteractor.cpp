@@ -27,6 +27,8 @@
 
 #include <cstring>
 
+using std::strcmp;
+
 // avoid conflict (msvc)
 #ifdef ERROR
 # undef ERROR
