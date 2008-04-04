@@ -75,7 +75,7 @@ const char * GpgSetExpiryTimeEditInteractor::action() const {
     case ERROR:
         return 0;
     default:
-        throw gpg_error( GPG_ERR_GENERAL );
+        throw Error( gpg_error( GPG_ERR_GENERAL ) );
     }
 }
 
