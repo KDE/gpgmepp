@@ -35,8 +35,8 @@ namespace GpgME {
         ~GpgSetExpiryTimeEditInteractor();
 
     private:
-        /* reimp */ const char * action() const;
-        /* reimp */ unsigned int nextState( unsigned int statusCode, const char * args ) const;
+        /* reimp */ const char * action( Error & err ) const;
+        /* reimp */ unsigned int nextState( unsigned int statusCode, const char * args, Error & err ) const;
 
     private:
         const std::string m_strtime;

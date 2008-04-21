@@ -56,10 +56,15 @@ public:
     static int edit_interactor_callback_impl( void * opaque, gpgme_status_code_t status, const char * args, int fd ) {
         EditInteractor::Private * ei = (EditInteractor::Private*)opaque;
 
-        try {
+        Error err;
+
             // advance to next state based on input:
             const unsigned int oldState = ei->state;
-            ei->state = ei->q->nextState( status, args );
+            ei->state = ei->q->nextState( status, args, err );
+            if ( err ) {
+                ei->state = oldState;
+                goto error;
+            }
             if ( ei->debug )
                 std::fprintf( ei->debug, "EditInteractor: %u -> nextState( %u, %s ) -> %u\n",
                               oldState, (unsigned int)status, args ? args : "<null>", ei->state );
@@ -69,7 +74,9 @@ public:
                  gpg_err_code( ei->error.code() ) == GPG_ERR_NO_ERROR ) {
 
                 // successful state change -> call action
-                if ( const char * const result = ei->q->action() ) {
+                if ( const char * const result = ei->q->action( err ) ) {
+                    if ( err )
+                        goto error;
                     if ( ei->debug )
                         std::fprintf( ei->debug, "EditInteractor: action result \"%s\"\n", result );
                     // if there's a result, write it:
@@ -77,6 +84,8 @@ public:
                         write( fd, result, std::strlen( result ) );
                     write( fd, "\n", 1 );
                 } else {
+                    if ( err )
+                        goto error;
                     if ( ei->debug )
                         std::fprintf( ei->debug, "EditInteractor: no action result\n" );
                 }
@@ -85,7 +94,9 @@ public:
                     std::fprintf( ei->debug, "EditInteractor: no action executed\n" );
             }
 
-        } catch ( const Error & err ) {
+        
+    error:    
+        if ( err ) {
             ei->error = err;
             ei->state = EditInteractor::ErrorState;
         }
@@ -108,7 +119,8 @@ gpgme_edit_cb_t GpgME::edit_interactor_callback = ::edit_interactor_callback;
 EditInteractor::Private::Private( EditInteractor * qq )
     : q( qq ),
       state( StartState ),
-      error()
+      error(),
+      debug(0)
 {
 
 }

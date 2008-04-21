@@ -47,8 +47,8 @@ namespace GpgME {
             ErrorState = 0xFFFFFFFF
         };
 
-        virtual const char * action() const = 0;
-        virtual unsigned int nextState( unsigned int statusCode, const char * args ) const = 0;
+        virtual const char * action( Error & err ) const = 0;
+        virtual unsigned int nextState( unsigned int statusCode, const char * args, Error & err ) const = 0;
 
         unsigned int state() const;
         Error lastError() const;

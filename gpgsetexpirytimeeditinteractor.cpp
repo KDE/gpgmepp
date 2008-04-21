@@ -58,7 +58,7 @@ enum {
 };
 }
 
-const char * GpgSetExpiryTimeEditInteractor::action() const {
+const char * GpgSetExpiryTimeEditInteractor::action( Error & err ) const {
 
     using namespace GpgSetExpiryTimeEditInteractor_Private;
 
@@ -75,11 +75,12 @@ const char * GpgSetExpiryTimeEditInteractor::action() const {
     case ERROR:
         return 0;
     default:
-        throw Error( gpg_error( GPG_ERR_GENERAL ) );
+        err = Error( gpg_error( GPG_ERR_GENERAL ) );
+        return 0;
     }
 }
 
-unsigned int GpgSetExpiryTimeEditInteractor::nextState( unsigned int status, const char * args ) const {
+unsigned int GpgSetExpiryTimeEditInteractor::nextState( unsigned int status, const char * args, Error & err ) const {
 
     static const Error GENERAL_ERROR(  gpg_error( GPG_ERR_GENERAL  ) );
     static const Error INV_TIME_ERROR( gpg_error( GPG_ERR_INV_TIME ) );
@@ -94,36 +95,39 @@ unsigned int GpgSetExpiryTimeEditInteractor::nextState( unsigned int status, con
         if ( status == GPGME_STATUS_GET_LINE &&
              strcmp( args, "keyedit.prompt" ) == 0 )
             return COMMAND;
-        else
-            throw GENERAL_ERROR;
+        err = GENERAL_ERROR;
+        return ERROR;
     case COMMAND:
         if ( status == GPGME_STATUS_GET_LINE &&
              strcmp( args, "keygen.valid" ) == 0 )
             return DATE;
-        else
-            throw GENERAL_ERROR;
+        err = GENERAL_ERROR;
+        return ERROR;
     case DATE:
         if ( status == GPGME_STATUS_GET_LINE &&
              strcmp( args, "keyedit.prompt" ) == 0 )
             return QUIT;
         else if ( status == GPGME_STATUS_GET_LINE &&
-                  strcmp( args, "keygen.valid" ) )
-            throw INV_TIME_ERROR;
-        else
-            throw GENERAL_ERROR;
+                  strcmp( args, "keygen.valid" ) ) {
+            err = INV_TIME_ERROR;
+            return ERROR;
+        }
+        err = GENERAL_ERROR;
+        return ERROR;
     case QUIT:
         if ( status == GPGME_STATUS_GET_BOOL &&
              strcmp( args, "keyedit.save.okay" ) == 0 )
             return SAVE;
-        else
-            throw GENERAL_ERROR;
+        err = GENERAL_ERROR;
+        return ERROR;
     case ERROR:
         if ( status == GPGME_STATUS_GET_LINE &&
              strcmp( args, "keyedit.prompt" ) == 0 )
             return QUIT;
-        else
-            throw lastError();
+        err = lastError();
+        return ERROR;
     default:
-        throw GENERAL_ERROR;
+        err = GENERAL_ERROR;
+        return ERROR;
     };
 }
