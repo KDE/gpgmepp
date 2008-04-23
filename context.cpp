@@ -292,6 +292,11 @@ namespace GpgME {
 
   Error Context::startKeyListing( const char * patterns[], bool secretOnly ) {
     d->lastop = Private::KeyList;
+#ifndef HAVE_GPGME_EXT_KEYLIST_MODE_EXTERNAL_NONBROKEN
+    if ( !patterns || !patterns[0] || !patterns[1] )
+      // max. one pattern -> use the non-ext version
+      return startKeyListing( patterns ? patterns[0] : 0, secretOnly );
+#endif
     return Error( d->lasterr = gpgme_op_keylist_ext_start( d->ctx, patterns, int( secretOnly ), 0 ) );
   }
 
