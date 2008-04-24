@@ -351,6 +351,11 @@ namespace GpgME {
 
   Error Context::exportPublicKeys( const char * patterns[], Data & keyData ) {
     d->lastop = Private::Export;
+#ifndef HAVE_GPGME_EXT_KEYLIST_MODE_EXTERNAL_NONBROKEN
+    if ( !patterns || !patterns[0] || !patterns[1] )
+      // max. one pattern -> use the non-ext version
+      return exportPublicKeys( patterns ? patterns[0] : 0, keyData );
+#endif
     Data::Private * const dp = keyData.impl();
     return Error( d->lasterr = gpgme_op_export_ext( d->ctx, patterns, 0, dp ? dp->data : 0 ) );
   }
@@ -363,6 +368,11 @@ namespace GpgME {
 
   Error Context::startPublicKeyExport( const char * patterns[], Data & keyData ) {
     d->lastop = Private::Export;
+#ifndef HAVE_GPGME_EXT_KEYLIST_MODE_EXTERNAL_NONBROKEN
+    if ( !patterns || !patterns[0] || !patterns[1] )
+      // max. one pattern -> use the non-ext version
+      return startPublicKeyExport( patterns ? patterns[0] : 0, keyData );
+#endif
     Data::Private * const dp = keyData.impl();
     return Error( d->lasterr = gpgme_op_export_ext_start( d->ctx, patterns, 0, dp ? dp->data : 0 ) );
   }
