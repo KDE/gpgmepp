@@ -296,7 +296,6 @@ namespace GpgME {
     const Context & operator=( const Context & );
   };
 
-
 } // namespace GpgME
 
 #endif // __GPGMEPP_CONTEXT_H__

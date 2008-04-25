@@ -860,3 +860,72 @@ GpgME::Error GpgME::checkEngine( GpgME::Engine engine ) {
   return Error( gpgme_engine_check_version( p ) );
 }
 
+static const unsigned long supported_features = 0
+    | GpgME::ValidatingKeylistModeFeature
+    | GpgME::CancelOperationFeature
+    | GpgME::WrongKeyUsageFeature
+#ifdef HAVE_GPGME_INCLUDE_CERTS_DEFAULT
+    | GpgME::DefaultCertificateInclusingFeature
+#endif
+#ifdef HAVE_GPGME_CTX_GETSET_ENGINE_INFO
+    | GpgME::GetSetEngineInfoFeature
+#endif
+#ifdef HAVE_GPGME_SIG_NOTATION_CLEARADDGET
+    | GpgME::ClearAddGetSignatureNotationsFeature
+#endif
+#ifdef HAVE_GPGME_DATA_SET_FILE_NAME
+    | GpgME::SetDataFileNameFeeature
+#endif
+#ifdef HAVE_GPGME_KEYLIST_MODE_SIG_NOTATIONS
+    | GpgME::SignatureNotationsKeylistModeFeature
+#endif
+#ifdef HAVE_GPGME_KEY_SIG_NOTATIONS
+    | GpgME::KeySignatureNotationsFeature
+#endif
+#ifdef HAVE_GPGME_KEY_T_IS_QUALIFIED
+    | GpgME::KeyIsQualifiedFeature
+#endif
+#ifdef HAVE_GPGME_SIG_NOTATION_CRITICAL
+    | GpgME::SignatureNotationsCriticalFlagFeature
+#endif
+#ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
+    | GpgME::SignatureNotationsFlagsFeature
+#endif
+#ifdef HAVE_GPGME_SIG_NOTATION_HUMAN_READABLE
+    | GpgME::SignatureNotationsHumanReadableFlagFeature
+#endif
+#ifdef HAVE_GPGME_SUBKEY_T_IS_QUALIFIED
+    | GpgME::SubkeyIsQualifiedFeature
+#endif
+#ifdef HAVE_GPGME_ENGINE_INFO_T_HOME_DIR
+    | GpgME::EngineInfoHomeDirFeature
+#endif
+#ifdef HAVE_GPGME_DECRYPT_RESULT_T_FILE_NAME
+    | GpgME::DecryptionResultFileNameFeature
+#endif
+#ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
+    | GpgME::DecryptionResultRecipientsFeature
+#endif
+#ifdef HAVE_GPGME_VERIFY_RESULT_T_FILE_NAME
+    | GpgME::VerificationResultFileNameFeature
+#endif
+#ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
+    | GpgME::SignaturePkaFieldsFeature
+#endif
+#ifdef HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS
+    | GpgME::SignatureAlgorithmFieldsFeature
+#endif
+#ifdef HAVE_GPGME_GET_FDPTR
+    | GpgME::FdPointerFeature
+#endif
+#ifdef HAVE_GPGME_OP_GETAUDITLOG
+    | GpgME::AuditLogFeature
+#endif
+#ifdef HAVE_GPGME_PROTOCOL_GPGCONF
+    | GpgME::GpgConfEngineFeature
+#endif
+    ;
+
+bool GpgME::hasFeature( unsigned long features ) {
+    return features == ( features & supported_features );
+}

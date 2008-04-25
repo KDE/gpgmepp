@@ -72,6 +72,50 @@ namespace GpgME {
     GPGMEPP_EXPORT GIOChannel * getGIOChannel( int fd );
     GPGMEPP_EXPORT QIODevice  * getQIODevice( int fd );
 
+    enum Feature {
+        ValidatingKeylistModeFeature               = 0x00000001,
+        CancelOperationFeature                     = 0x00000002,
+        WrongKeyUsageFeature                       = 0x00000004,
+        DefaultCertificateInclusingFeature         = 0x00000008,
+
+        GetSetEngineInfoFeature                    = 0x00000010,
+        EngineInfoHomeDirFeature                   = 0x00000020,
+        // reserved
+        // reserved
+
+        SetDataFileNameFeeature                    = 0x00000100,
+        VerificationResultFileNameFeature          = 0x00000200,
+        DecryptionResultFileNameFeature            = 0x00000400,
+        DecryptionResultRecipientsFeature          = 0x00000800,
+
+        AuditLogFeature                            = 0x00001000,
+        GpgConfEngineFeature                       = 0x00002000,
+        // reserved
+        // reserved
+
+        ClearAddGetSignatureNotationsFeature       = 0x00010000,
+        SignatureNotationsKeylistModeFeature       = 0x00020000,
+        KeySignatureNotationsFeature               = 0x00040000,
+        SignatureNotationsFlagsFeature             = 0x00080000,
+        SignatureNotationsCriticalFlagFeature      = 0x00100000,
+        SignatureNotationsHumanReadableFlagFeature = 0x00200000,
+        // reserved
+        // reserved
+
+        KeyIsQualifiedFeature                      = 0x01000200,
+        SubkeyIsQualifiedFeature                   = 0x02000000,
+        SignaturePkaFieldsFeature                  = 0x04000000,
+        SignatureAlgorithmFieldsFeature            = 0x08000000,
+
+        FdPointerFeature                           = 0x10000000,
+        // reserved
+        // reserved
+        // unusable (max value)
+
+        FeatureMaxValue                            = 0x80000000
+    };
+    GPGMEPP_EXPORT bool hasFeature( unsigned long feature );
+
 } // namespace GpgME
 
 #endif // __GPGMEPP_GLOBAL_H__

@@ -30,7 +30,7 @@ set(gpgme_LIB_SRCS
         gpgsetownertrusteditinteractor.cpp
 )
 
-set( _gpgmepp_version 1.1.0 )
+set( _gpgmepp_version 1.2.0 )
 
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} )
 
