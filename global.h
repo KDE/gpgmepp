@@ -76,7 +76,7 @@ namespace GpgME {
         ValidatingKeylistModeFeature               = 0x00000001,
         CancelOperationFeature                     = 0x00000002,
         WrongKeyUsageFeature                       = 0x00000004,
-        DefaultCertificateInclusingFeature         = 0x00000008,
+        DefaultCertificateInclusionFeature         = 0x00000008,
 
         GetSetEngineInfoFeature                    = 0x00000010,
         EngineInfoHomeDirFeature                   = 0x00000020,
@@ -108,7 +108,7 @@ namespace GpgME {
         SignatureAlgorithmFieldsFeature            = 0x08000000,
 
         FdPointerFeature                           = 0x10000000,
-        // reserved
+        NoEncryptToFlagFeature                     = 0x20000000,
         // reserved
         // unusable (max value)
 

@@ -258,6 +258,16 @@ check_cxx_source_compiles ("
 " HAVE_GPGME_PROTOCOL_GPGCONF
 )
 
+# check if gpgme has GPGME_ENCRYPT_NO_ENCRYPT_TO
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_encrypt_flags_t flags = GPGME_ENCRYPT_NO_ENCRYPT_TO;
+    return 0;
+  }
+" HAVE_GPGME_NO_ENCRYPT_TO_FLAG
+)
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 

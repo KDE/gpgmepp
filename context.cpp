@@ -689,6 +689,16 @@ namespace GpgME {
       return SigningResult();
   }
 
+  static gpgme_encrypt_flags_t encryptflags2encryptflags( Context::EncryptionFlags flags ) {
+    unsigned int result = 0;
+    if ( flags & Context::AlwaysTrust )
+      result |= GPGME_ENCRYPT_ALWAYS_TRUST;
+#ifdef HAVE_GPGME_NO_ENCRYPT_TO_FLAG
+    if ( flags & Context::NoEncryptTo )
+      result |= GPGME_ENCRYPT_NO_ENCRYPT_TO;
+#endif
+    return static_cast<gpgme_encrypt_flags_t>( result );
+  }
 
   EncryptionResult Context::encrypt( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags ) {
     d->lastop = Private::Encrypt;
@@ -700,8 +710,7 @@ namespace GpgME {
       if ( it->impl() )
 	*keys_it++ = it->impl();
     *keys_it++ = 0;
-    d->lasterr = gpgme_op_encrypt( d->ctx, keys,
-				   flags & AlwaysTrust ? GPGME_ENCRYPT_ALWAYS_TRUST : (gpgme_encrypt_flags_t)0,
+    d->lasterr = gpgme_op_encrypt( d->ctx, keys, encryptflags2encryptflags( flags ),
 				   pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
     return EncryptionResult( d->ctx, Error(d->lasterr) );
@@ -725,8 +734,7 @@ namespace GpgME {
       if ( it->impl() )
 	*keys_it++ = it->impl();
     *keys_it++ = 0;
-    d->lasterr = gpgme_op_encrypt_start( d->ctx, keys,
-					 flags & AlwaysTrust ? GPGME_ENCRYPT_ALWAYS_TRUST : (gpgme_encrypt_flags_t)0,
+    d->lasterr = gpgme_op_encrypt_start( d->ctx, keys, encryptflags2encryptflags( flags ),
 					 pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
     return Error( d->lasterr );
@@ -749,8 +757,7 @@ namespace GpgME {
       if ( it->impl() )
 	*keys_it++ = it->impl();
     *keys_it++ = 0;
-    d->lasterr = gpgme_op_encrypt_sign( d->ctx, keys,
-					flags & AlwaysTrust ? GPGME_ENCRYPT_ALWAYS_TRUST : (gpgme_encrypt_flags_t)0,
+    d->lasterr = gpgme_op_encrypt_sign( d->ctx, keys, encryptflags2encryptflags( flags ),
 					pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
     return std::make_pair( SigningResult( d->ctx, Error(d->lasterr) ),
@@ -767,8 +774,7 @@ namespace GpgME {
       if ( it->impl() )
 	*keys_it++ = it->impl();
     *keys_it++ = 0;
-    d->lasterr = gpgme_op_encrypt_sign_start( d->ctx, keys,
-					      flags & AlwaysTrust ? GPGME_ENCRYPT_ALWAYS_TRUST : (gpgme_encrypt_flags_t)0,
+    d->lasterr = gpgme_op_encrypt_sign_start( d->ctx, keys, encryptflags2encryptflags( flags ),
 					      pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
     return Error( d->lasterr );
@@ -865,7 +871,7 @@ static const unsigned long supported_features = 0
     | GpgME::CancelOperationFeature
     | GpgME::WrongKeyUsageFeature
 #ifdef HAVE_GPGME_INCLUDE_CERTS_DEFAULT
-    | GpgME::DefaultCertificateInclusingFeature
+    | GpgME::DefaultCertificateInclusionFeature
 #endif
 #ifdef HAVE_GPGME_CTX_GETSET_ENGINE_INFO
     | GpgME::GetSetEngineInfoFeature
@@ -923,6 +929,9 @@ static const unsigned long supported_features = 0
 #endif
 #ifdef HAVE_GPGME_PROTOCOL_GPGCONF
     | GpgME::GpgConfEngineFeature
+#endif
+#ifdef HAVE_GPGME_NO_ENCRYPT_TO_FLAG
+    | GpgME::NoEncryptToFlagFeature
 #endif
     ;
 
