@@ -26,11 +26,13 @@
 #include <gpgme++/editinteractor.h>
 
 #include <string>
+#include <vector>
 
 namespace GpgME {
 
     class Key;
-    
+    class UserID;
+
     class GPGMEPP_EXPORT GpgSignKeyEditInteractor : public EditInteractor {
     public:
         enum SigningOption {
@@ -38,12 +40,15 @@ namespace GpgME {
             ExportableSignature
         };
 
-        explicit GpgSignKeyEditInteractor( SigningOption option );
+        GpgSignKeyEditInteractor( const std::vector<UserID> & userIDsToSign,
+                                  const Key & secretKey,
+                                  unsigned int checkLevel,
+                                  SigningOption option );
         ~GpgSignKeyEditInteractor();
 
     private:
         /* reimp */ const char * action( Error & err ) const;
-        /* reimp */ unsigned int nextState( unsigned int statusCode, const char * args, Error & err ) const;
+        /* reimp */ unsigned int nextState( const unsigned int statusCode, const char * args, Error & err ) const;
 
     private:
         class Private;

@@ -28,6 +28,7 @@
 
 #include <string>
 
+#include <cassert>
 #include <cstring>
 
 using std::strcmp;
@@ -41,12 +42,22 @@ using namespace GpgME;
 
 class GpgSignKeyEditInteractor::Private {
 public:
-    Private( GpgSignKeyEditInteractor::SigningOption opt ) : option( opt ), checkLevel( "0" ) {}
+    Private( const std::vector<UserID> & userIDsToSign,
+             const Key & secret,
+             unsigned int check,
+             GpgSignKeyEditInteractor::SigningOption opt ) : option( opt ), secretKey( secret ), userIDs( userIDsToSign ), checkLevel( check ) {
+        assert( checkLevel <= 3 );
+    }
     const GpgSignKeyEditInteractor::SigningOption option;
-    const std::string checkLevel;
+    const Key secretKey;
+    const std::vector<UserID> userIDs;
+    const unsigned int checkLevel;
 };
-GpgSignKeyEditInteractor::GpgSignKeyEditInteractor( SigningOption opt )
-    : EditInteractor(), d( new Private( opt ) )
+GpgSignKeyEditInteractor::GpgSignKeyEditInteractor( const std::vector<UserID> & userIDsToSign,
+                                                    const Key & secretKey,
+                                                    unsigned int checkLevel,
+                                                    SigningOption opt )
+    : EditInteractor(), d( new Private( userIDsToSign, secretKey, checkLevel, opt ) )
 {
 
 }
@@ -72,7 +83,7 @@ enum {
 }
 
 const char * GpgSignKeyEditInteractor::action( Error & err ) const {
-
+    static const char check_level_strings[][2] = { "0", "1", "2", "3" };
     using namespace GpgSignKeyEditInteractor_Private;
 
     switch ( state() ) {
@@ -83,7 +94,7 @@ const char * GpgSignKeyEditInteractor::action( Error & err ) const {
     case SET_EXPIRE:
         return "Y";
     case SET_CHECK_LEVEL:
-        return d->checkLevel.c_str();
+        return check_level_strings[d->checkLevel];
     case CONFIRM:
         return "Y";
     case QUIT:
