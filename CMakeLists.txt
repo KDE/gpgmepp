@@ -28,6 +28,7 @@ set(gpgme_LIB_SRCS
         engineinfo.cpp
         gpgsetexpirytimeeditinteractor.cpp
         gpgsetownertrusteditinteractor.cpp
+        gpgsignkeyeditinteractor.cpp
 )
 
 set( _gpgmepp_version 1.2.0 )
