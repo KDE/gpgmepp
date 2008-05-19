@@ -121,6 +121,7 @@ if ( GPGME_FOUND )
         signingresult.h encryptionresult.h notation.h engineinfo.h
         gpgsetexpirytimeeditinteractor.h
         gpgsetownertrusteditinteractor.h
+        gpgsignkeyeditinteractor.h
         gpgme++_export.h 
         DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++ COMPONENT Devel
    )
