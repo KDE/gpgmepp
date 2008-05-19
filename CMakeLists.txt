@@ -31,7 +31,7 @@ set(gpgme_LIB_SRCS
         gpgsignkeyeditinteractor.cpp
 )
 
-set( _gpgmepp_version 1.2.0 )
+set( _gpgmepp_version 1.3.0 )
 
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} )
 
