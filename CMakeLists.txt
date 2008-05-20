@@ -29,6 +29,7 @@ set(gpgme_LIB_SRCS
         gpgsetexpirytimeeditinteractor.cpp
         gpgsetownertrusteditinteractor.cpp
         gpgsignkeyeditinteractor.cpp
+        gpgadduserideditinteractor.cpp
 )
 
 set( _gpgmepp_version 1.3.0 )
@@ -122,6 +123,7 @@ if ( GPGME_FOUND )
         gpgsetexpirytimeeditinteractor.h
         gpgsetownertrusteditinteractor.h
         gpgsignkeyeditinteractor.h
+        gpgadduserideditinteractor.h
         gpgme++_export.h 
         DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++ COMPONENT Devel
    )
