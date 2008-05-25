@@ -48,7 +48,7 @@ namespace GpgME {
 
     private:
         /* reimp */ const char * action( Error & err ) const;
-        /* reimp */ unsigned int nextState( const unsigned int statusCode, const char * args, Error & err ) const;
+        /* reimp */ unsigned int nextState( unsigned int statusCode, const char * args, Error & err ) const;
 
     private:
         class Private;
