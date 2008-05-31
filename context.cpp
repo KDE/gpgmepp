@@ -42,8 +42,6 @@
 
 #include <gpgme.h>
 
-//#include <string>
-//using std::string;
 #ifndef NDEBUG
 #include <iostream>
 using std::cerr;
@@ -57,12 +55,21 @@ namespace GpgME {
     return gpg_err_make( (gpg_err_source_t)22, code );
   }
 
+  static void format_error( gpgme_error_t err, std::string & str ) {
+    char buffer[ 1024 ];
+    gpgme_strerror_r( err, buffer, sizeof buffer );
+    buffer[ sizeof buffer - 1 ] = '\0';
+    str = buffer;
+  }
+
   const char * Error::source() const {
     return gpgme_strsource( (gpgme_error_t)mErr );
   }
 
   const char * Error::asString() const {
-    return gpgme_strerror( (gpgme_error_t)mErr );
+    if ( mMessage.empty() )
+      format_error( static_cast<gpgme_error_t>( mErr ), mMessage );
+    return mMessage.c_str();
   }
 
   int Error::code() const {

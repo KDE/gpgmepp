@@ -27,11 +27,13 @@
 #include <gpgme++/gpgmefw.h>
 #include <gpgme++/gpgme++_export.h>
 
+#include <string>
+
 namespace GpgME {
 
   class GPGMEPP_EXPORT Error {
   public:
-    explicit Error( unsigned int e=0 ) : mErr( e ) {}
+    explicit Error( unsigned int e=0 ) : mErr( e ), mMessage() {}
 
     const char * source() const;
     const char * asString() const;
@@ -50,6 +52,7 @@ namespace GpgME {
     operator unspecified_bool_type() const { return mErr && !isCanceled() ? &__safe_bool_dummy__::nonnull : 0 ; }
   private:
     unsigned int mErr;
+    mutable std::string mMessage;
   };
 
 } // namespace GpgME
