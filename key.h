@@ -27,10 +27,16 @@
 #include <gpgme++/global.h>
 #include <gpgme++/notation.h>
 
+#include <gpgme++/gpgmefw.h>
+
+#include <boost/shared_ptr.hpp>
+#include <boost/type_traits/remove_pointer.hpp>
+
 #include <sys/time.h>
 
 #include <vector>
 #include <algorithm>
+#include <string>
 
 namespace GpgME {
 
@@ -38,6 +44,8 @@ namespace GpgME {
 
   class Subkey;
   class UserID;
+
+  typedef boost::shared_ptr< boost::remove_pointer<gpgme_key_t>::type > shared_gpgme_key_t;
 
   //
   // class Key
@@ -49,25 +57,24 @@ namespace GpgME {
   public:
     Key();
     /* implicit */ Key( const Null & );
+    Key( const shared_gpgme_key_t & key );
     Key( gpgme_key_t key, bool acquireRef );
-    Key( const Key & key );
-    ~Key();
 
     static Null null;
 
     const Key & operator=( Key other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     const Key & mergeWith( const Key & other );
 
     void swap( Key & other ) {
-	using std::swap;
-	swap( this->d, other.d );
+        using std::swap;
+        swap( this->key, other.key );
     }
 
-    bool isNull() const;
+    bool isNull() const { return !key; }
 
     UserID userID( unsigned int index ) const;
     Subkey subkey( unsigned int index ) const;
@@ -100,7 +107,7 @@ namespace GpgME {
     bool isRoot() const;
 
     enum OwnerTrust { Unknown=0, Undefined=1, Never=2,
-		    Marginal=3, Full=4, Ultimate=5 };
+                    Marginal=3, Full=4, Ultimate=5 };
 
     OwnerTrust ownerTrust() const;
     char ownerTrustAsString() const;
@@ -119,9 +126,8 @@ namespace GpgME {
     unsigned int keyListMode() const;
 
   private:
-    gpgme_key_t impl() const;
-    class Private;
-    Private * d;
+    gpgme_key_t impl() const { return key.get(); }
+    shared_gpgme_key_t key;
   };
 
   //
@@ -130,22 +136,22 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT Subkey {
   public:
-    explicit Subkey( gpgme_key_t key=0, gpgme_sub_key_t subkey=0 );
-    Subkey( gpgme_key_t key, unsigned int idx );
-    Subkey( const Subkey & other );
-    ~Subkey();
+    Subkey();
+    Subkey( const shared_gpgme_key_t & key, gpgme_sub_key_t subkey );
+    Subkey( const shared_gpgme_key_t & key, unsigned int idx );
 
     const Subkey & operator=( Subkey other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( Subkey & other ) {
-	using std::swap;
-	swap( this->d, other.d );
+        using std::swap;
+        swap( this->key, other.key );
+        swap( this->subkey, other.subkey );
     }
 
-    bool isNull() const;
+    bool isNull() const { return !key || !subkey; }
 
     Key parent() const;
 
@@ -175,8 +181,8 @@ namespace GpgME {
     unsigned int length() const;
 
   private:
-    class Private;
-    Private * d;
+    shared_gpgme_key_t key;
+    gpgme_sub_key_t subkey;
   };
 
   //
@@ -187,22 +193,22 @@ namespace GpgME {
   public:
     class Signature;
 
-    explicit UserID( gpgme_key_t key=0, gpgme_user_id_t uid=0 );
-    UserID( gpgme_key_t key, unsigned int idx );
-    UserID( const UserID & other );
-    ~UserID();
+    UserID();
+    UserID( const shared_gpgme_key_t & key, gpgme_user_id_t uid );
+    UserID( const shared_gpgme_key_t & key, unsigned int idx );
 
     const UserID & operator=( UserID other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( UserID & other ) {
-	using std::swap;
-	swap( this->d, other.d );
+        using std::swap;
+        swap( this->key, other.key );
+        swap( this->uid, other.uid );
     }
 
-    bool isNull() const;
+    bool isNull() const { return !key || !uid; }
 
     Key parent() const;
 
@@ -216,7 +222,7 @@ namespace GpgME {
     const char * comment() const;
 
     enum Validity { Unknown=0, Undefined=1, Never=2,
-		    Marginal=3, Full=4, Ultimate=5 };
+                    Marginal=3, Full=4, Ultimate=5 };
 
     Validity validity() const;
     char validityAsString() const;
@@ -225,8 +231,8 @@ namespace GpgME {
     bool isInvalid() const;
 
   private:
-    class Private;
-    Private * d;
+    shared_gpgme_key_t key;
+    gpgme_user_id_t uid;
   };
 
   //
@@ -237,22 +243,23 @@ namespace GpgME {
   public:
     typedef GPGMEPP_DEPRECATED GpgME::Notation Notation;
 
-    explicit Signature( gpgme_key_t key=0, gpgme_user_id_t uid=0, gpgme_key_sig_t sig=0 );
-    Signature( gpgme_key_t key, gpgme_user_id_t uid, unsigned int idx );
-    Signature( const Signature & other );
-    ~Signature();
+    Signature();
+    Signature( const shared_gpgme_key_t & key, gpgme_user_id_t uid, gpgme_key_sig_t sig );
+    Signature( const shared_gpgme_key_t & key, gpgme_user_id_t uid, unsigned int idx );
 
     const Signature & operator=( Signature other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( Signature & other ) {
-	using std::swap;
-	swap( this->d, other.d );
+        using std::swap;
+        swap( this->key, other.key );
+        swap( this->uid, other.uid );
+        swap( this->sig, other.sig );
     }
 
-    bool isNull() const;
+    bool isNull() const { return !sig || !uid || !key ; }
 
     UserID parent() const;
 
@@ -277,9 +284,9 @@ namespace GpgME {
     unsigned int certClass() const;
 
     enum Status { NoError = 0, SigExpired, KeyExpired,
-		  BadSignature, NoPublicKey, GeneralError };
+                  BadSignature, NoPublicKey, GeneralError };
     Status status() const;
-    const char * statusAsString() const;
+    std::string statusAsString() const;
 
     const char * policyURL() const;
 
@@ -288,8 +295,9 @@ namespace GpgME {
     std::vector<GpgME::Notation> notations() const;
 
   private:
-    class Private;
-    Private * d;
+    shared_gpgme_key_t key;
+    gpgme_user_id_t uid;
+    gpgme_key_sig_t sig;
   };
 
 } // namespace GpgME
