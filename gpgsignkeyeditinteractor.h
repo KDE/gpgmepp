@@ -35,16 +35,19 @@ namespace GpgME {
 
     class GPGMEPP_EXPORT GpgSignKeyEditInteractor : public EditInteractor {
     public:
-        enum SigningOption {
-            LocalSignature,
-            ExportableSignature
+        enum SignOption {
+            Exportable=0x1,
+            NonRevocable=0x2,
+            Trust=0x4
         };
 
-        GpgSignKeyEditInteractor( const std::vector<UserID> & userIDsToSign,
-                                  const Key & secretKey,
-                                  unsigned int checkLevel,
-                                  SigningOption option );
+        GpgSignKeyEditInteractor();
         ~GpgSignKeyEditInteractor();
+
+        void setCheckLevel( unsigned int checkLevel );
+        void setSigningKey( const Key & secretKey );
+        void setUserIDsToSign( const std::vector<unsigned int> & userIDsToSign );
+        void setSigningOptions( int options );
 
     private:
         /* reimp */ const char * action( Error & err ) const;
