@@ -102,8 +102,8 @@ GpgSignKeyEditInteractor::Private::Private()
         started( false ),
         options( 0 ),
         userIDs(),
-        nextId(),
         currentId(),
+        nextId(),
         checkLevel( 0 ) {
 }
 
