@@ -700,10 +700,6 @@ namespace GpgME {
     unsigned int result = 0;
     if ( flags & Context::AlwaysTrust )
       result |= GPGME_ENCRYPT_ALWAYS_TRUST;
-#ifdef HAVE_GPGME_NO_ENCRYPT_TO_FLAG
-    if ( flags & Context::NoEncryptTo )
-      result |= GPGME_ENCRYPT_NO_ENCRYPT_TO;
-#endif
     return static_cast<gpgme_encrypt_flags_t>( result );
   }
 
@@ -936,9 +932,6 @@ static const unsigned long supported_features = 0
 #endif
 #ifdef HAVE_GPGME_PROTOCOL_GPGCONF
     | GpgME::GpgConfEngineFeature
-#endif
-#ifdef HAVE_GPGME_NO_ENCRYPT_TO_FLAG
-    | GpgME::NoEncryptToFlagFeature
 #endif
     ;
 

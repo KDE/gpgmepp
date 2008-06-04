@@ -108,7 +108,7 @@ namespace GpgME {
         SignatureAlgorithmFieldsFeature            = 0x08000000,
 
         FdPointerFeature                           = 0x10000000,
-        NoEncryptToFlagFeature                     = 0x20000000,
+        // reserved
         // reserved
         // unusable (max value)
 
