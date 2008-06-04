@@ -27,6 +27,8 @@
 #include <gpgme++/result.h>
 #include <gpgme++/gpgme++_export.h>
 
+#include <boost/shared_ptr.hpp>
+
 #include <vector>
 
 namespace GpgME {
@@ -36,11 +38,10 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT EncryptionResult : public Result {
   public:
-    explicit EncryptionResult( gpgme_ctx_t ctx=0, int error=0 );
-    explicit EncryptionResult( gpgme_ctx_t ctx, const Error & error );
-    explicit EncryptionResult( const Error & err );
-    EncryptionResult( const EncryptionResult & other );
-    ~EncryptionResult();
+    EncryptionResult();
+    EncryptionResult( gpgme_ctx_t ctx, int error );
+    EncryptionResult( gpgme_ctx_t ctx, const Error & error );
+    EncryptionResult( const Error & err );
 
     const EncryptionResult & operator=( EncryptionResult other ) {
 	swap( other );
@@ -63,16 +64,14 @@ namespace GpgME {
     class Private;
   private:
     void init( gpgme_ctx_t ctx );
-    Private * d;
+    boost::shared_ptr<Private> d;
   };
 
   class GPGMEPP_EXPORT InvalidRecipient {
     friend class ::GpgME::EncryptionResult;
-    InvalidRecipient( EncryptionResult::Private * parent, unsigned int index );
+    InvalidRecipient( const boost::shared_ptr<EncryptionResult::Private> & parent, unsigned int index );
   public:
     InvalidRecipient();
-    InvalidRecipient( const InvalidRecipient & other );
-    ~InvalidRecipient();
 
     const InvalidRecipient & operator=( InvalidRecipient other ) {
 	swap( other );
@@ -90,7 +89,7 @@ namespace GpgME {
     Error reason() const;
 
   private:
-    EncryptionResult::Private * d;
+    boost::shared_ptr<EncryptionResult::Private> d;
     unsigned int idx;
   };
 

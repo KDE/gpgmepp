@@ -29,6 +29,8 @@
 
 #include <time.h>
 
+#include <boost/shared_ptr.hpp>
+
 #include <vector>
 
 namespace GpgME {
@@ -39,11 +41,10 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT VerificationResult : public Result {
   public:
-    explicit VerificationResult( gpgme_ctx_t ctx=0, int error=0 );
-    explicit VerificationResult( gpgme_ctx_t ctx, const Error & error );
+    VerificationResult();
+    VerificationResult( gpgme_ctx_t ctx, int error );
+    VerificationResult( gpgme_ctx_t ctx, const Error & error );
     explicit VerificationResult( const Error & err );
-    VerificationResult( const VerificationResult & other );
-    ~VerificationResult();
 
     const VerificationResult & operator=( VerificationResult other ) {
 	swap( other );
@@ -67,18 +68,16 @@ namespace GpgME {
     class Private;
   private:
     void init( gpgme_ctx_t ctx );
-    Private * d;
+    boost::shared_ptr<Private> d;
   };
 
   class GPGMEPP_EXPORT Signature {
     friend class ::GpgME::VerificationResult;
-    Signature( VerificationResult::Private * parent, unsigned int index );
+    Signature( const boost::shared_ptr<VerificationResult::Private> & parent, unsigned int index );
   public:
     typedef GPGMEPP_DEPRECATED GpgME::Notation Notation;
 
     Signature();
-    Signature( const Signature & other );
-    ~Signature();
 
     const Signature & operator=( Signature other ) {
 	swap( other );
@@ -146,7 +145,7 @@ namespace GpgME {
     std::vector<GpgME::Notation> notations() const;
 
   private:
-    VerificationResult::Private * d;
+    boost::shared_ptr<VerificationResult::Private> d;
     unsigned int idx;
   };
 

@@ -23,7 +23,6 @@
 #include <gpgme++/config-gpgme++.h>
 
 #include <gpgme++/signingresult.h>
-#include "shared.h"
 #include "result_p.h"
 
 #include <gpgme.h>
@@ -33,9 +32,9 @@
 
 #include <string.h>
 
-class GpgME::SigningResult::Private : public GpgME::Shared {
+class GpgME::SigningResult::Private {
 public:
-  Private( const gpgme_sign_result_t r ) : Shared() {
+  Private( const gpgme_sign_result_t r ) {
     if ( !r )
       return;
     for ( gpgme_new_signature_t is = r->signatures ; is ; is = is->next ) {
@@ -69,7 +68,7 @@ public:
 };
 
 GpgME::SigningResult::SigningResult( gpgme_ctx_t ctx, int error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
   if ( error || !ctx )
     return;
@@ -77,7 +76,7 @@ GpgME::SigningResult::SigningResult( gpgme_ctx_t ctx, int error )
 }
 
 GpgME::SigningResult::SigningResult( gpgme_ctx_t ctx, const Error & error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
   if ( error || !ctx )
     return;
@@ -88,8 +87,7 @@ void GpgME::SigningResult::init( gpgme_ctx_t ctx ) {
   gpgme_sign_result_t res = gpgme_op_sign_result( ctx );
   if ( !res )
     return;
-  d = new Private( res );
-  d->ref();
+  d.reset( new Private( res ) );
 }
 
 make_standard_stuff(SigningResult)
@@ -126,26 +124,13 @@ std::vector<GpgME::InvalidSigningKey> GpgME::SigningResult::invalidSigningKeys()
 
 
 
-GpgME::InvalidSigningKey::InvalidSigningKey( SigningResult::Private * parent, unsigned int i )
+GpgME::InvalidSigningKey::InvalidSigningKey( const boost::shared_ptr<SigningResult::Private> & parent, unsigned int i )
   : d( parent ), idx( i )
 {
-  if ( d )
-    d->ref();
+
 }
 
-GpgME::InvalidSigningKey::InvalidSigningKey() : d( 0 ), idx( 0 ) {}
-
-GpgME::InvalidSigningKey::InvalidSigningKey( const InvalidSigningKey & other )
-  : d( other.d ), idx( other.idx )
-{
-  if ( d )
-    d->ref();
-}
-
-GpgME::InvalidSigningKey::~InvalidSigningKey() {
-  if ( d )
-    d->unref();
-}
+GpgME::InvalidSigningKey::InvalidSigningKey() : d(), idx( 0 ) {}
 
 bool GpgME::InvalidSigningKey::isNull() const {
   return !d || idx >= d->invalid.size() ;
@@ -161,26 +146,13 @@ GpgME::Error GpgME::InvalidSigningKey::reason() const {
 
 
 
-GpgME::CreatedSignature::CreatedSignature( SigningResult::Private * parent, unsigned int i )
+GpgME::CreatedSignature::CreatedSignature( const boost::shared_ptr<SigningResult::Private> & parent, unsigned int i )
   : d( parent ), idx( i )
 {
-  if ( d )
-    d->ref();
+
 }
 
-GpgME::CreatedSignature::CreatedSignature() : d( 0 ), idx( 0 ) {}
-
-GpgME::CreatedSignature::CreatedSignature( const CreatedSignature & other )
-  : d( other.d ), idx( other.idx )
-{
-  if ( d )
-    d->ref();
-}
-
-GpgME::CreatedSignature::~CreatedSignature() {
-  if ( d )
-    d->unref();
-}
+GpgME::CreatedSignature::CreatedSignature() : d(), idx( 0 ) {}
 
 bool GpgME::CreatedSignature::isNull() const {
   return !d || idx >= d->created.size() ;

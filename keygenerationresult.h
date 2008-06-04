@@ -27,17 +27,18 @@
 #include <gpgme++/result.h>
 #include <gpgme++/gpgme++_export.h>
 
+#include <boost/shared_ptr.hpp>
+
 namespace GpgME {
 
   class Error;
 
   class GPGMEPP_EXPORT KeyGenerationResult : public Result {
   public:
-    explicit KeyGenerationResult( gpgme_ctx_t ctx=0, int error=0 );
-    explicit KeyGenerationResult( gpgme_ctx_t ctx, const Error & error );
+    KeyGenerationResult();
+    KeyGenerationResult( gpgme_ctx_t ctx, int error );
+    KeyGenerationResult( gpgme_ctx_t ctx, const Error & error );
     explicit KeyGenerationResult( const Error & err );
-    KeyGenerationResult( const KeyGenerationResult & other );
-    ~KeyGenerationResult();
 
     const KeyGenerationResult & operator=( KeyGenerationResult other ) {
 	swap( other );
@@ -61,7 +62,7 @@ namespace GpgME {
   private:
     class Private;
     void init( gpgme_ctx_t ctx );
-    Private * d;
+    boost::shared_ptr<Private> d;
   };
 
 }

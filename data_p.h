@@ -24,13 +24,12 @@
 #define __GPGMEPP_DATA_P_H__
 
 #include <gpgme++/data.h>
-#include "shared.h"
 #include "callbacks.h"
 
-class GpgME::Data::Private : public GpgME::Shared {
+class GpgME::Data::Private {
 public:
-  Private( gpgme_data_t d=0 )
-    : Shared(), data( d ), cbs( data_provider_callbacks ) {}
+  explicit Private( gpgme_data_t d=0 )
+    : data( d ), cbs( data_provider_callbacks ) {}
   ~Private();
 
   gpgme_data_t data;

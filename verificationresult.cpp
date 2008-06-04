@@ -23,7 +23,6 @@
 #include <gpgme++/config-gpgme++.h>
 #include <gpgme++/verificationresult.h>
 #include <gpgme++/notation.h>
-#include "shared.h"
 #include "result_p.h"
 #include "util.h"
 
@@ -36,9 +35,9 @@
 
 #include <string.h>
 
-class GpgME::VerificationResult::Private : public GpgME::Shared {
+class GpgME::VerificationResult::Private {
 public:
-  Private( const gpgme_verify_result_t r ) : Shared() {
+  explicit Private( const gpgme_verify_result_t r ) {
     if ( !r )
       return;
 #ifdef HAVE_GPGME_VERIFY_RESULT_T_FILE_NAME
@@ -102,7 +101,7 @@ public:
 };
 
 GpgME::VerificationResult::VerificationResult( gpgme_ctx_t ctx, int error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
   if ( error || !ctx )
     return;
@@ -110,7 +109,7 @@ GpgME::VerificationResult::VerificationResult( gpgme_ctx_t ctx, int error )
 }
 
 GpgME::VerificationResult::VerificationResult( gpgme_ctx_t ctx, const Error & error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
   if ( error || !ctx )
     return;
@@ -121,8 +120,7 @@ void GpgME::VerificationResult::init( gpgme_ctx_t ctx ) {
   gpgme_verify_result_t res = gpgme_op_verify_result( ctx );
   if ( !res )
     return;
-  d = new Private( res );
-  d->ref();
+  d.reset( new Private( res ) );
 }
 
 make_standard_stuff(VerificationResult)
@@ -152,26 +150,13 @@ std::vector<GpgME::Signature> GpgME::VerificationResult::signatures() const {
 
 
 
-GpgME::Signature::Signature( VerificationResult::Private * parent, unsigned int i )
+GpgME::Signature::Signature( const boost::shared_ptr<VerificationResult::Private> & parent, unsigned int i )
   : d( parent ), idx( i )
 {
-  if ( d )
-    d->ref();
+
 }
 
-GpgME::Signature::Signature() : d( 0 ), idx( 0 ) {}
-
-GpgME::Signature::Signature( const Signature & other )
-  : d( other.d ), idx( other.idx )
-{
-  if ( d )
-    d->ref();
-}
-
-GpgME::Signature::~Signature() {
-  if ( d )
-    d->unref();
-}
+GpgME::Signature::Signature() : d(), idx( 0 ) {}
 
 bool GpgME::Signature::isNull() const {
   return !d || idx >= d->sigs.size() ;
@@ -331,15 +316,14 @@ std::vector<GpgME::Notation> GpgME::Signature::notations() const {
 
 class GpgME::Notation::Private {
 public:
-    Private() : d( 0 ), sidx( 0 ), nidx( 0 ), nota( 0 ) {}
-    Private( VerificationResult::Private * priv, unsigned int sindex, unsigned int nindex )
+    Private() : d(), sidx( 0 ), nidx( 0 ), nota( 0 ) {}
+    Private( const boost::shared_ptr<VerificationResult::Private> & priv, unsigned int sindex, unsigned int nindex )
 	: d( priv ), sidx( sindex ), nidx( nindex ), nota( 0 )
     {
-      if ( d )
-        d->ref();
+
     }
     Private( gpgme_sig_notation_t n )
-	: d( 0 ), sidx( 0 ), nidx( 0 ), nota( n ? new _gpgme_sig_notation( *n ) : 0 )
+	: d(), sidx( 0 ), nidx( 0 ), nota( n ? new _gpgme_sig_notation( *n ) : 0 )
     {
       if ( nota && nota->name )
         nota->name = strdup( nota->name );
@@ -349,16 +333,12 @@ public:
     Private( const Private & other )
 	: d( other.d ), sidx( other.sidx ), nidx( other.nidx ), nota( other.nota )
     {
-      if ( d )
-        d->ref();
       if ( nota ) {
         nota->name = strdup( nota->name );
         nota->value = strdup( nota->value );
       }
     }
     ~Private() {
-      if ( d )
-        d->unref();
       if ( nota ) {
         std::free( nota->name );  nota->name = 0;
         std::free( nota->value ); nota->value = 0;
@@ -366,13 +346,13 @@ public:
       }
     }
 
-    VerificationResult::Private * d;
+    boost::shared_ptr<VerificationResult::Private> d;
     unsigned int sidx, nidx;
     gpgme_sig_notation_t nota;
 };
 
 
-GpgME::Notation::Notation( VerificationResult::Private * parent, unsigned int sindex, unsigned int nindex )
+GpgME::Notation::Notation( const boost::shared_ptr<VerificationResult::Private> & parent, unsigned int sindex, unsigned int nindex )
   : d( new Private( parent, sindex, nindex ) )
 {
 
@@ -384,17 +364,7 @@ GpgME::Notation::Notation( gpgme_sig_notation_t nota )
 
 }
 
-GpgME::Notation::Notation() : d( 0 ) {}
-
-GpgME::Notation::Notation( const Notation & other )
-  : d( other.d ? new Private( *other.d ) : 0 )
-{
-
-}
-
-GpgME::Notation::~Notation() {
-  delete d; d = 0;
-}
+GpgME::Notation::Notation() : d() {}
 
 bool GpgME::Notation::isNull() const {
     if ( !d )
@@ -423,7 +393,7 @@ GpgME::Notation::Flags GpgME::Notation::flags() const {
     return
       convert_from_gpgme_sig_notation_flags_t(
 #ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
-        isNull() ? 0 : 
+        isNull() ? 0 :
         d->d ? d->d->nota[d->sidx][d->nidx].flags :
         d->nota ? d->nota->flags : 0 );
 #else

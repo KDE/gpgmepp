@@ -23,7 +23,6 @@
 #include <config-gpgme++.h>
 
 #include <gpgme++/decryptionresult.h>
-#include "shared.h"
 #include "result_p.h"
 
 #include <gpgme.h>
@@ -35,9 +34,9 @@
 
 #include <string.h>
 
-class GpgME::DecryptionResult::Private : public GpgME::Shared {
+class GpgME::DecryptionResult::Private {
 public:
-  Private( const _gpgme_op_decrypt_result & r ) : Shared(), res( r ) {
+  explicit Private( const _gpgme_op_decrypt_result & r ) : res( r ) {
     if ( res.unsupported_algorithm )
       res.unsupported_algorithm = strdup( res.unsupported_algorithm );
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_FILE_NAME
@@ -68,7 +67,7 @@ public:
 };
 
 GpgME::DecryptionResult::DecryptionResult( gpgme_ctx_t ctx, int error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
   if ( error || !ctx )
     return;
@@ -76,7 +75,7 @@ GpgME::DecryptionResult::DecryptionResult( gpgme_ctx_t ctx, int error )
 }
 
 GpgME::DecryptionResult::DecryptionResult( gpgme_ctx_t ctx, const Error & error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
   if ( error || !ctx )
     return;
@@ -87,8 +86,7 @@ void GpgME::DecryptionResult::init( gpgme_ctx_t ctx ) {
   gpgme_decrypt_result_t res = gpgme_op_decrypt_result( ctx );
   if ( !res )
     return;
-  d = new Private( *res );
-  d->ref();
+  d.reset( new Private( *res ) );
 }
 
 make_standard_stuff(DecryptionResult)
@@ -146,34 +144,24 @@ std::vector<GpgME::DecryptionResult::Recipient> GpgME::DecryptionResult::recipie
 
 
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
-class GpgME::DecryptionResult::Recipient::Private : public GpgME::Shared, public _gpgme_recipient {
+class GpgME::DecryptionResult::Recipient::Private : public _gpgme_recipient {
 public:
-  Private( gpgme_recipient_t reci ) : Shared(), _gpgme_recipient( *reci ) {}
+  Private( gpgme_recipient_t reci ) : _gpgme_recipient( *reci ) {}
 };
 #endif
 
+GpgME::DecryptionResult::Recipient::Recipient()
+  : d()
+{
+
+}
+
 GpgME::DecryptionResult::Recipient::Recipient( gpgme_recipient_t r )
-  : d( 0 )
+  : d()
 {
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
-  if ( r ) {
-    d = new Private( r );
-    d->ref();
-  }
-#endif
-}
-
-GpgME::DecryptionResult::Recipient::Recipient( const Recipient & other )
-  : d( other.d )
-{
-#ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
-  if ( d ) d->ref();
-#endif
-}
-
-GpgME::DecryptionResult::Recipient::~Recipient() {
-#ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
-  if ( d ) d->unref();
+  if ( r )
+    d.reset( new Private( r ) );
 #endif
 }
 

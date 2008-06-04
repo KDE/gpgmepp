@@ -23,7 +23,6 @@
 #include <gpgme++/config-gpgme++.h>
 
 #include <gpgme++/importresult.h>
-#include "shared.h"
 #include "result_p.h"
 
 #include <gpgme.h>
@@ -32,9 +31,9 @@
 
 #include <string.h>
 
-class GpgME::ImportResult::Private : public GpgME::Shared {
+class GpgME::ImportResult::Private {
 public:
-  Private( const _gpgme_op_import_result & r ) : Shared(), res( r ) {
+  Private( const _gpgme_op_import_result & r ) : res( r ) {
     // copy recursively, using compiler-generated copy ctor.
     // We just need to handle the pointers in the structs:
     for ( gpgme_import_status_t is = r.imports ; is ; is = is->next ) {
@@ -57,7 +56,7 @@ public:
 };
 
 GpgME::ImportResult::ImportResult( gpgme_ctx_t ctx, int error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
   if ( error || !ctx )
     return;
@@ -65,7 +64,7 @@ GpgME::ImportResult::ImportResult( gpgme_ctx_t ctx, int error )
 }
 
 GpgME::ImportResult::ImportResult( gpgme_ctx_t ctx, const Error & error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
   if ( error || !ctx )
     return;
@@ -76,8 +75,7 @@ void GpgME::ImportResult::init( gpgme_ctx_t ctx ) {
   gpgme_import_result_t res = gpgme_op_import_result( ctx );
   if ( !res )
     return;
-  d = new Private( *res );
-  d->ref();
+  d.reset( new Private( *res ) );
 }
 
 make_standard_stuff(ImportResult)
@@ -153,26 +151,13 @@ std::vector<GpgME::Import> GpgME::ImportResult::imports() const {
 
 
 
-GpgME::Import::Import( ImportResult::Private * parent, unsigned int i )
+GpgME::Import::Import( const boost::shared_ptr<ImportResult::Private> & parent, unsigned int i )
   : d( parent ), idx( i )
 {
-  if ( d )
-    d->ref();
+
 }
 
-GpgME::Import::Import() : d( 0 ), idx( 0 ) {}
-
-GpgME::Import::Import( const Import & other )
-  : d( other.d ), idx( other.idx )
-{
-  if ( d )
-    d->ref();
-}
-
-GpgME::Import::~Import() {
-  if ( d )
-    d->unref();
-}
+GpgME::Import::Import() : d(), idx( 0 ) {}
 
 bool GpgME::Import::isNull() const {
   return !d || idx >= d->imports.size() ;

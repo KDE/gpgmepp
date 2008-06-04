@@ -27,18 +27,19 @@
 #include <gpgme++/result.h>
 #include <gpgme++/gpgme++_export.h>
 
+#include <boost/shared_ptr.hpp>
+
 namespace GpgME {
 
   class Error;
 
   class GPGMEPP_EXPORT KeyListResult : public Result {
   public:
-    explicit KeyListResult( gpgme_ctx_t ctx=0, int error=0 );
-    explicit KeyListResult( gpgme_ctx_t ctx, const Error & error );
+    KeyListResult();
+    KeyListResult( gpgme_ctx_t ctx, int error );
+    KeyListResult( gpgme_ctx_t ctx, const Error & error );
     explicit KeyListResult( const Error & err );
     KeyListResult( const Error & err, const _gpgme_op_keylist_result & res );
-    KeyListResult( const KeyListResult & other );
-    ~KeyListResult();
 
     const KeyListResult & operator=( KeyListResult other ) {
 	swap( other );
@@ -65,7 +66,7 @@ namespace GpgME {
     void detach();
     void init( gpgme_ctx_t ctx );
     class Private;
-    Private * d;
+    boost::shared_ptr<Private> d;
   };
 
 }

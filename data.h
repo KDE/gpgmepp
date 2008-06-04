@@ -26,6 +26,8 @@
 #include <gpgme++/gpgmefw.h>
 #include <gpgme++/gpgme++_export.h>
 
+#include <boost/shared_ptr.hpp>
+
 #include <sys/types.h> // for size_t, off_t
 #include <cstdio> // FILE
 #include <algorithm>
@@ -41,7 +43,6 @@ namespace GpgME {
     /* implicit */ Data( const Null & );
     Data();
     explicit Data( gpgme_data_t data );
-    Data( const Data & other );
 
     // Memory-Based Data Buffers:
     Data( const char * buffer, size_t size, bool copy=true );
@@ -53,8 +54,6 @@ namespace GpgME {
     explicit Data( int fd );
     // Callback-Based Data Buffers:
     explicit Data( DataProvider * provider );
-
-    virtual ~Data();
 
     static Null null;
 
@@ -87,10 +86,10 @@ namespace GpgME {
     off_t seek( off_t offset, int whence );
 
     class Private;
-    Private * impl() { return d; }
-    const Private * impl() const { return d; }
+    Private * impl() { return d.get(); }
+    const Private * impl() const { return d.get(); }
   private:
-    Private * d;
+    boost::shared_ptr<Private> d;
   };
 
 }
