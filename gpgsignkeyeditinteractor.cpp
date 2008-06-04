@@ -183,6 +183,7 @@ static GpgSignKeyEditInteractor_Private::TransitionMap makeTable() {
 const char * GpgSignKeyEditInteractor::action( Error & err ) const {
     static const char check_level_strings[][2] = { "0", "1", "2", "3" };
     using namespace GpgSignKeyEditInteractor_Private;
+    using namespace std;
 
     switch ( state() ) {
     case COMMAND:
@@ -191,7 +192,8 @@ const char * GpgSignKeyEditInteractor::action( Error & err ) const {
         return answer( d->signAll() );
     case UIDS_LIST_SEPARATELY:
         static char buf[255];
-        std::snprintf( buf, sizeof(buf) - 1, "%d", d->nextUserID() );
+        snprintf( buf, sizeof(buf) - 1, "%d", d->nextUserID() );
+        buf[sizeof( buf ) - 1] = '\0';
         return buf;
     case UIDS_LIST_SEPARATELY_DONE:
         return d->command();
