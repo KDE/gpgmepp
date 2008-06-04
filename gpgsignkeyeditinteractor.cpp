@@ -43,6 +43,11 @@ using std::strcmp;
 # undef ERROR
 #endif
 
+#ifdef _MSC_VER
+#undef snprintf
+#define snprintf _snprintf
+#endif
+
 using namespace boost;
 using namespace GpgME;
 
