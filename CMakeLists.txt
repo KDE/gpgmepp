@@ -39,6 +39,9 @@ set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} )
 if ( GPGME_VANILLA_FOUND )
    kde4_add_library( gpgmepp SHARED ${gpgme_LIB_SRCS} context_vanilla.cpp )
    target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
+   if(WIN32)
+      target_link_libraries( gpgmepp ${KDEWIN32_LIBRARIES} )
+   endif(WIN32)
    set_target_properties( gpgmepp PROPERTIES
                                   VERSION     ${_gpgmepp_version}
                                   SOVERSION   ${_gpgmepp_version}
@@ -65,7 +68,7 @@ if ( GPGME_QT_FOUND )
    kde4_add_library( gpgmepp-qt SHARED ${gpgme_LIB_SRCS} context_qt.cpp )
    target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} )
    if(WIN32)
-      target_link_libraries( gpgmepp-qt ${GPGME_VANILLA_LIBRARIES} )
+      target_link_libraries( gpgmepp-qt ${GPGME_VANILLA_LIBRARIES} ${KDEWIN32_LIBRARIES} )
    endif(WIN32)
    set_target_properties( gpgmepp-qt PROPERTIES
                                      VERSION     ${_gpgmepp_version}
