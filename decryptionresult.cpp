@@ -44,6 +44,8 @@ public:
       res.file_name = strdup( res.file_name );
 #endif
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
+    //FIXME: copying gpgme_recipient_t objects invalidates the keyid member,
+    //thus we use _keyid for now (internal API)
     for ( gpgme_recipient_t r = res.recipients ; r ; r = r->next )
       recipients.push_back( *r );
     res.recipients = 0;
@@ -169,16 +171,18 @@ bool GpgME::DecryptionResult::Recipient::isNull() const {
 
 const char * GpgME::DecryptionResult::Recipient::keyID() const {
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
+  //_keyid is internal API, but the public keyid is invalid after copying (see above)
   if ( d )
-    return d->keyid;
+    return d->_keyid;
 #endif
   return 0;
 }
 
 const char * GpgME::DecryptionResult::Recipient::shortKeyID() const {
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
-  if ( d && d->keyid )
-    return d->keyid + 8;
+  //_keyid is internal API, but the public keyid is invalid after copying (see above)
+  if ( d )
+    return d->_keyid + 8;
 #endif
   return 0;
 }
