@@ -70,20 +70,18 @@ public:
 GpgME::SigningResult::SigningResult( gpgme_ctx_t ctx, int error )
   : GpgME::Result( error ), d()
 {
-  if ( error || !ctx )
-    return;
   init( ctx );
 }
 
 GpgME::SigningResult::SigningResult( gpgme_ctx_t ctx, const Error & error )
   : GpgME::Result( error ), d()
 {
-  if ( error || !ctx )
-    return;
   init( ctx );
 }
 
 void GpgME::SigningResult::init( gpgme_ctx_t ctx ) {
+  if ( !ctx )
+    return;
   gpgme_sign_result_t res = gpgme_op_sign_result( ctx );
   if ( !res )
     return;

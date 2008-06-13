@@ -69,20 +69,18 @@ public:
 GpgME::DecryptionResult::DecryptionResult( gpgme_ctx_t ctx, int error )
   : GpgME::Result( error ), d()
 {
-  if ( error || !ctx )
-    return;
   init( ctx );
 }
 
 GpgME::DecryptionResult::DecryptionResult( gpgme_ctx_t ctx, const Error & error )
   : GpgME::Result( error ), d()
 {
-  if ( error || !ctx )
-    return;
   init( ctx );
 }
 
 void GpgME::DecryptionResult::init( gpgme_ctx_t ctx ) {
+  if ( !ctx )
+      return;
   gpgme_decrypt_result_t res = gpgme_op_decrypt_result( ctx );
   if ( !res )
     return;
