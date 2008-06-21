@@ -23,7 +23,6 @@
 #include <gpgme++/config-gpgme++.h>
 
 #include <gpgme++/keygenerationresult.h>
-#include "shared.h"
 #include "result_p.h"
 
 #include <gpgme.h>
@@ -33,9 +32,9 @@
 
 #include <string.h>
 
-class GpgME::KeyGenerationResult::Private : public GpgME::Shared {
+class GpgME::KeyGenerationResult::Private {
 public:
-  Private( const _gpgme_op_genkey_result & r ) : Shared(), res( r ) {
+  Private( const _gpgme_op_genkey_result & r ) : res( r ) {
     if ( res.fpr )
       res.fpr = strdup( res.fpr );
   }
@@ -49,7 +48,7 @@ public:
 };
 
 GpgME::KeyGenerationResult::KeyGenerationResult( gpgme_ctx_t ctx, int error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
   if ( error || !ctx )
     return;
@@ -57,7 +56,7 @@ GpgME::KeyGenerationResult::KeyGenerationResult( gpgme_ctx_t ctx, int error )
 }
 
 GpgME::KeyGenerationResult::KeyGenerationResult( gpgme_ctx_t ctx, const Error & error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
   if ( error || !ctx )
     return;
@@ -68,8 +67,7 @@ void GpgME::KeyGenerationResult::init( gpgme_ctx_t ctx ) {
   gpgme_genkey_result_t res = gpgme_op_genkey_result( ctx );
   if ( !res )
     return;
-  d = new Private( *res );
-  d->ref();
+  d.reset( new Private( *res ) );
 }
 
 make_standard_stuff(KeyGenerationResult)

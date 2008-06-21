@@ -28,6 +28,8 @@
 
 #include <time.h>
 
+#include <boost/shared_ptr.hpp>
+
 #include <vector>
 
 namespace GpgME {
@@ -38,11 +40,10 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT SigningResult : public Result {
   public:
-    explicit SigningResult( gpgme_ctx_t ctx=0, int error=0 );
-    explicit SigningResult( gpgme_ctx_t ctx, const Error & error );
+    SigningResult();
+    SigningResult( gpgme_ctx_t ctx, int error );
+    SigningResult( gpgme_ctx_t ctx, const Error & error );
     explicit SigningResult( const Error & err );
-    SigningResult( const SigningResult & other );
-    ~SigningResult();
 
     const SigningResult & operator=( SigningResult other ) {
 	swap( other );
@@ -66,16 +67,14 @@ namespace GpgME {
     class Private;
   private:
     void init( gpgme_ctx_t ctx );
-    Private * d;
+    boost::shared_ptr<Private> d;
   };
 
   class GPGMEPP_EXPORT InvalidSigningKey {
     friend class ::GpgME::SigningResult;
-    InvalidSigningKey( SigningResult::Private * parent, unsigned int index );
+    InvalidSigningKey( const boost::shared_ptr<SigningResult::Private> & parent, unsigned int index );
   public:
     InvalidSigningKey();
-    InvalidSigningKey( const InvalidSigningKey & other );
-    ~InvalidSigningKey();
 
     const InvalidSigningKey & operator=( InvalidSigningKey other ) {
 	swap( other );
@@ -94,18 +93,16 @@ namespace GpgME {
     Error reason() const;
 
   private:
-    SigningResult::Private * d;
+    boost::shared_ptr<SigningResult::Private> d;
     unsigned int idx;
   };
 
   class GPGMEPP_EXPORT CreatedSignature {
     friend class ::GpgME::SigningResult;
-    CreatedSignature( SigningResult::Private * parent, unsigned int index );
+    CreatedSignature( const boost::shared_ptr<SigningResult::Private> & parent, unsigned int index );
   public:
 
     CreatedSignature();
-    CreatedSignature( const CreatedSignature & other );
-    ~CreatedSignature();
 
     const CreatedSignature & operator=( CreatedSignature other ) {
 	swap( other );
@@ -135,7 +132,7 @@ namespace GpgME {
     unsigned int signatureClass() const;
 
   private:
-    SigningResult::Private * d;
+    boost::shared_ptr<SigningResult::Private> d;
     unsigned int idx;
   };
 

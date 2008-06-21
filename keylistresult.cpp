@@ -23,7 +23,6 @@
 #include <gpgme++/config-gpgme++.h>
 
 #include <gpgme++/keylistresult.h>
-#include "shared.h"
 #include "result_p.h"
 
 #include <gpgme.h>
@@ -31,16 +30,16 @@
 #include <cstring>
 #include <cassert>
 
-class GpgME::KeyListResult::Private : public GpgME::Shared {
+class GpgME::KeyListResult::Private {
 public:
-  Private( const _gpgme_op_keylist_result & r ) : Shared(), res( r ) {}
-  Private( const Private & other ) : Shared(), res( other.res ) {}
+  Private( const _gpgme_op_keylist_result & r ) : res( r ) {}
+  Private( const Private & other ) : res( other.res ) {}
 
   _gpgme_op_keylist_result res;
 };
 
 GpgME::KeyListResult::KeyListResult( gpgme_ctx_t ctx, int error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
   if ( error || !ctx )
     return;
@@ -48,7 +47,7 @@ GpgME::KeyListResult::KeyListResult( gpgme_ctx_t ctx, int error )
 }
 
 GpgME::KeyListResult::KeyListResult( gpgme_ctx_t ctx, const Error & error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
   if ( error || !ctx )
     return;
@@ -59,24 +58,21 @@ void GpgME::KeyListResult::init( gpgme_ctx_t ctx ) {
   gpgme_keylist_result_t res = gpgme_op_keylist_result( ctx );
   if ( !res )
     return;
-  d = new Private( *res );
-  d->ref();
+  d.reset( new Private( *res ) );
 }
 
 GpgME::KeyListResult::KeyListResult( const Error & error, const _gpgme_op_keylist_result & res )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d( new Private( res ) )
 {
-  d = new Private( res );
-  d->ref();
+
 }
 
 make_standard_stuff(KeyListResult)
 
 void GpgME::KeyListResult::detach() {
-  if ( !d || d->refCount() <= 1 )
+  if ( !d || d.unique() )
     return;
-  d->unref();
-  d = new Private( *d );
+  d.reset( new Private( *d ) );
 }
 
 void GpgME::KeyListResult::mergeWith( const KeyListResult & other ) {
@@ -91,7 +87,7 @@ void GpgME::KeyListResult::mergeWith( const KeyListResult & other ) {
     assert( other.d );
     detach();
     if ( !d )
-        d = new Private( *other.d );
+        d.reset( new Private( *other.d ) );
     else
         d->res.truncated = true;
   }

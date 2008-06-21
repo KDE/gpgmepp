@@ -23,7 +23,6 @@
 #include <gpgme++/config-gpgme++.h>
 
 #include <gpgme++/encryptionresult.h>
-#include "shared.h"
 #include "result_p.h"
 
 #include <gpgme.h>
@@ -33,9 +32,9 @@
 
 #include <string.h>
 
-class GpgME::EncryptionResult::Private : public GpgME::Shared {
+class GpgME::EncryptionResult::Private {
 public:
-  Private( const gpgme_encrypt_result_t r ) : Shared() {
+  explicit Private( const gpgme_encrypt_result_t r ) {
     if ( !r )
       return;
     for ( gpgme_invalid_key_t ik = r->invalid_recipients ; ik ; ik = ik->next ) {
@@ -57,27 +56,24 @@ public:
 };
 
 GpgME::EncryptionResult::EncryptionResult( gpgme_ctx_t ctx, int error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
-  if ( error || !ctx )
-    return;
   init( ctx );
 }
 
 GpgME::EncryptionResult::EncryptionResult( gpgme_ctx_t ctx, const Error & error )
-  : GpgME::Result( error ), d( 0 )
+  : GpgME::Result( error ), d()
 {
-  if ( error || !ctx )
-    return;
   init( ctx );
 }
 
 void GpgME::EncryptionResult::init( gpgme_ctx_t ctx ) {
+  if ( !ctx )
+    return;
   gpgme_encrypt_result_t res = gpgme_op_encrypt_result( ctx );
   if ( !res )
     return;
-  d = new Private( res );
-  d->ref();
+  d.reset( new Private( res ) );
 }
 
 make_standard_stuff(EncryptionResult)
@@ -104,26 +100,13 @@ std::vector<GpgME::InvalidRecipient> GpgME::EncryptionResult::invalidEncryptionK
 
 
 
-GpgME::InvalidRecipient::InvalidRecipient( EncryptionResult::Private * parent, unsigned int i )
+GpgME::InvalidRecipient::InvalidRecipient( const boost::shared_ptr<EncryptionResult::Private> & parent, unsigned int i )
   : d( parent ), idx( i )
 {
-  if ( d )
-    d->ref();
+
 }
 
-GpgME::InvalidRecipient::InvalidRecipient() : d( 0 ), idx( 0 ) {}
-
-GpgME::InvalidRecipient::InvalidRecipient( const InvalidRecipient & other )
-  : d( other.d ), idx( other.idx )
-{
-  if ( d )
-    d->ref();
-}
-
-GpgME::InvalidRecipient::~InvalidRecipient() {
-  if ( d )
-    d->unref();
-}
+GpgME::InvalidRecipient::InvalidRecipient() : d(), idx( 0 ) {}
 
 bool GpgME::InvalidRecipient::isNull() const {
   return !d || idx >= d->invalid.size() ;

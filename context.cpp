@@ -42,8 +42,6 @@
 
 #include <gpgme.h>
 
-//#include <string>
-//using std::string;
 #ifndef NDEBUG
 #include <iostream>
 using std::cerr;
@@ -57,12 +55,21 @@ namespace GpgME {
     return gpg_err_make( (gpg_err_source_t)22, code );
   }
 
+  static void format_error( gpgme_error_t err, std::string & str ) {
+    char buffer[ 1024 ];
+    gpgme_strerror_r( err, buffer, sizeof buffer );
+    buffer[ sizeof buffer - 1 ] = '\0';
+    str = buffer;
+  }
+
   const char * Error::source() const {
     return gpgme_strsource( (gpgme_error_t)mErr );
   }
 
   const char * Error::asString() const {
-    return gpgme_strerror( (gpgme_error_t)mErr );
+    if ( mMessage.empty() )
+      format_error( static_cast<gpgme_error_t>( mErr ), mMessage );
+    return mMessage.c_str();
   }
 
   int Error::code() const {
@@ -693,10 +700,6 @@ namespace GpgME {
     unsigned int result = 0;
     if ( flags & Context::AlwaysTrust )
       result |= GPGME_ENCRYPT_ALWAYS_TRUST;
-#ifdef HAVE_GPGME_NO_ENCRYPT_TO_FLAG
-    if ( flags & Context::NoEncryptTo )
-      result |= GPGME_ENCRYPT_NO_ENCRYPT_TO;
-#endif
     return static_cast<gpgme_encrypt_flags_t>( result );
   }
 
@@ -929,9 +932,6 @@ static const unsigned long supported_features = 0
 #endif
 #ifdef HAVE_GPGME_PROTOCOL_GPGCONF
     | GpgME::GpgConfEngineFeature
-#endif
-#ifdef HAVE_GPGME_NO_ENCRYPT_TO_FLAG
-    | GpgME::NoEncryptToFlagFeature
 #endif
     ;
 

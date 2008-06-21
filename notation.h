@@ -27,16 +27,16 @@
 #include <gpgme++/verificationresult.h>
 #include <gpgme++/gpgme++_export.h>
 
+#include <boost/shared_ptr.hpp>
+
 namespace GpgME {
 
   class GPGMEPP_EXPORT Notation {
     friend class ::GpgME::Signature;
-    Notation( VerificationResult::Private * parent, unsigned int sindex, unsigned int nindex );
+    Notation( const boost::shared_ptr<VerificationResult::Private> & parent, unsigned int sindex, unsigned int nindex );
   public:
     Notation();
     explicit Notation( gpgme_sig_notation_t nota );
-    Notation( const Notation & other );
-    ~Notation();
 
     const Notation & operator=( Notation other ) {
 	swap( other );
@@ -65,7 +65,7 @@ namespace GpgME {
 
   private:
     class Private;
-    Private * d;
+    boost::shared_ptr<Private> d;
   };
 
 }

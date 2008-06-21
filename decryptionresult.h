@@ -27,6 +27,8 @@
 #include <gpgme++/result.h>
 #include <gpgme++/gpgme++_export.h>
 
+#include <boost/shared_ptr.hpp>
+
 #include <vector>
 
 namespace GpgME {
@@ -35,11 +37,10 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT DecryptionResult : public Result {
   public:
-    explicit DecryptionResult( gpgme_ctx_t ctx=0, int error=0 );
-    explicit DecryptionResult( gpgme_ctx_t ctx, const Error & err );
+    DecryptionResult();
+    DecryptionResult( gpgme_ctx_t ctx, int error );
+    DecryptionResult( gpgme_ctx_t ctx, const Error & err );
     explicit DecryptionResult( const Error & err );
-    DecryptionResult( const DecryptionResult & other );
-    ~DecryptionResult();
 
     const DecryptionResult & operator=( DecryptionResult other ) {
 	swap( other );
@@ -71,14 +72,13 @@ namespace GpgME {
   private:
     class Private;
     void init( gpgme_ctx_t ctx );
-    Private * d;
+    boost::shared_ptr<Private> d;
   };
 
   class GPGMEPP_EXPORT DecryptionResult::Recipient {
   public:
-      explicit Recipient( gpgme_recipient_t reci=0 );
-      Recipient( const Recipient & other );
-      ~Recipient();
+      Recipient();
+      explicit Recipient( gpgme_recipient_t reci );
 
       const Recipient & operator=( Recipient other ) {
 	  swap( other );
@@ -102,7 +102,7 @@ namespace GpgME {
 
   private:
     class Private;
-    Private * d;
+    boost::shared_ptr<Private> d;
   };
 
 }

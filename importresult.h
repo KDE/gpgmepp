@@ -27,6 +27,8 @@
 #include <gpgme++/result.h>
 #include <gpgme++/gpgme++_export.h>
 
+#include <boost/shared_ptr.hpp>
+
 #include <vector>
 
 namespace GpgME {
@@ -36,11 +38,10 @@ namespace GpgME {
 
   class GPGMEPP_EXPORT ImportResult : public Result {
   public:
-    explicit ImportResult( gpgme_ctx_t ctx=0, int error=0 );
-    explicit ImportResult( gpgme_ctx_t ctx, const Error & error );
+    ImportResult();
+    ImportResult( gpgme_ctx_t ctx, int error );
+    ImportResult( gpgme_ctx_t ctx, const Error & error );
     explicit ImportResult( const Error & error );
-    ImportResult( const ImportResult & other );
-    ~ImportResult();
 
     const ImportResult & operator=( ImportResult other ) {
 	swap( other );
@@ -78,16 +79,14 @@ namespace GpgME {
     class Private;
   private:
     void init( gpgme_ctx_t ctx );
-    Private * d;
+    boost::shared_ptr<Private> d;
   };
 
   class GPGMEPP_EXPORT Import {
     friend class ::GpgME::ImportResult;
-    Import( ImportResult::Private * parent, unsigned int idx );
+    Import( const boost::shared_ptr<ImportResult::Private> & parent, unsigned int idx );
   public:
     Import();
-    Import( const Import & other );
-    ~Import();
 
     const Import & operator=( Import other ) {
 	swap( other );
@@ -116,7 +115,7 @@ namespace GpgME {
     Status status() const;
 
   private:
-    ImportResult::Private * d;
+    boost::shared_ptr<ImportResult::Private> d;
     unsigned int idx;
   };
 

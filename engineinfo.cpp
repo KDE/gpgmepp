@@ -23,39 +23,24 @@
 #include <gpgme++/config-gpgme++.h>
 
 #include "engineinfo.h"
-#include "shared.h"
 
 #include <gpgme.h>
 
-class GpgME::EngineInfo::Private : public GpgME::Shared {
+class GpgME::EngineInfo::Private {
 public:
-  Private( gpgme_engine_info_t engine=0 ) : Shared(), info( engine ) {}
+  Private( gpgme_engine_info_t engine=0 ) : info( engine ) {}
   ~Private() { info = 0; }
 
   gpgme_engine_info_t info;
 };
 
 
-GpgME::EngineInfo::EngineInfo() : d(0) {}
+GpgME::EngineInfo::EngineInfo() : d() {}
 
 GpgME::EngineInfo::EngineInfo( gpgme_engine_info_t engine )
-  : d(0)
+  : d( new Private( engine ) )
 {
-  d = new Private( engine );
-  d->ref();
-}
 
-GpgME::EngineInfo::EngineInfo( const EngineInfo & other )
-  : d( other.d )
-{
-  if ( d )
-    d->ref();
-}
-
-
-GpgME::EngineInfo::~EngineInfo() {
-  if ( d )
-    d->deref();
 }
 
 bool GpgME::EngineInfo::isNull() const {

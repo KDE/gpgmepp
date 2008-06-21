@@ -1,6 +1,6 @@
 project( gpgmepp )
 
-include_directories(  ${GPGME_INCLUDES} )
+include_directories(  ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
 add_definitions( ${KDE4_ENABLE_EXCEPTIONS} )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gpgme++.h )
@@ -29,11 +29,12 @@ set(gpgme_LIB_SRCS
         gpgsetexpirytimeeditinteractor.cpp
         gpgsetownertrusteditinteractor.cpp
         gpgsignkeyeditinteractor.cpp
+        gpgadduserideditinteractor.cpp
 )
 
-set( _gpgmepp_version 1.2.0 )
+set( _gpgmepp_version 2.0.0 )
 
-set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} )
+set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
 
 if ( GPGME_VANILLA_FOUND )
    kde4_add_library( gpgmepp SHARED ${gpgme_LIB_SRCS} context_vanilla.cpp )
@@ -122,6 +123,7 @@ if ( GPGME_FOUND )
         gpgsetexpirytimeeditinteractor.h
         gpgsetownertrusteditinteractor.h
         gpgsignkeyeditinteractor.h
+        gpgadduserideditinteractor.h
         gpgme++_export.h 
         DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++ COMPONENT Devel
    )

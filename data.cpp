@@ -42,44 +42,31 @@ GpgME::Data::Null GpgME::Data::null;
 GpgME::Data::Data() {
   gpgme_data_t data;
   const gpgme_error_t e = gpgme_data_new( &data );
-  d = new Private( e ? 0 : data );
-  d->ref();
+  d.reset( new Private( e ? 0 : data ) );
 }
 
 GpgME::Data::Data( const Null & )
   : d( new Private( 0 ) )
 {
-  d->ref();
+
 }
 
-GpgME::Data::Data( gpgme_data_t data ) {
-  d = new Private( data );
-  d->ref();
-}
-
-GpgME::Data::Data( const Data & other )
-  : d( other.d )
+GpgME::Data::Data( gpgme_data_t data )
+  : d( new Private( data ) )
 {
-  d->ref();
-}
 
-GpgME::Data::~Data() {
-  d->unref(); d = 0;
 }
-
 
 GpgME::Data::Data( const char * buffer, size_t size, bool copy ) {
   gpgme_data_t data;
   const gpgme_error_t e = gpgme_data_new_from_mem( &data, buffer, size, int( copy ) );
-  d = new Private( e ? 0 : data );
-  d->ref();
+  d.reset( new Private( e ? 0 : data ) );
 }
 
 GpgME::Data::Data( const char * filename ) {
   gpgme_data_t data;
   const gpgme_error_t e = gpgme_data_new( &data );
-  d = new Private( e ? 0 : data );
-  d->ref();
+  d.reset( new Private( e ? 0 : data ) );
   if ( !e )
     setFileName( filename );
 }
@@ -87,34 +74,29 @@ GpgME::Data::Data( const char * filename ) {
 GpgME::Data::Data( const char * filename, off_t offset, size_t length ) {
   gpgme_data_t data;
   const gpgme_error_t e = gpgme_data_new_from_filepart( &data, filename, 0, offset, length );
-  d = new Private( e ? 0 : data );
-  d->ref();
+  d.reset( new Private( e ? 0 : data ) );
 }
 
 GpgME::Data::Data( FILE * fp ) {
   gpgme_data_t data;
   const gpgme_error_t e = gpgme_data_new_from_stream( &data, fp );
-  d = new Private( e ? 0 : data );
-  d->ref();
+  d.reset( new Private( e ? 0 : data ) );
 }
 
 GpgME::Data::Data( FILE * fp, off_t offset, size_t length ) {
   gpgme_data_t data;
   const gpgme_error_t e = gpgme_data_new_from_filepart( &data, 0, fp, offset, length );
-  d = new Private( e ? 0 : data );
-  d->ref();
+  d.reset( new Private( e ? 0 : data ) );
 }
 
 GpgME::Data::Data( int fd ) {
   gpgme_data_t data;
   const gpgme_error_t e = gpgme_data_new_from_fd( &data, fd );
-  d = new Private( e ? 0 : data );
-  d->ref();
+  d.reset( new Private( e ? 0 : data ) );
 }
 
 GpgME::Data::Data( DataProvider * dp ) {
-  d = new Private();
-  d->ref();
+  d.reset( new Private );
   if ( !dp )
     return;
   if ( !dp->isSupported( DataProvider::Read ) )

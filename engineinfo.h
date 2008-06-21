@@ -25,6 +25,8 @@
 
 #include <gpgme++/global.h>
 
+#include <boost/shared_ptr.hpp>
+
 #include <algorithm>
 
 namespace GpgME {
@@ -33,8 +35,6 @@ namespace GpgME {
   public:
     EngineInfo();
     explicit EngineInfo( gpgme_engine_info_t engine );
-    EngineInfo( const EngineInfo & other );
-    ~EngineInfo();
 
     const EngineInfo & operator=( EngineInfo other ) {
 	swap( other );
@@ -56,7 +56,7 @@ namespace GpgME {
 
   private:
     class Private;
-    Private * d;
+    boost::shared_ptr<Private> d;
   };
 
 }
