@@ -1,7 +1,7 @@
 project( gpgmepp )
 
 include_directories(  ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
-add_definitions( ${KDE4_ENABLE_EXCEPTIONS} )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gpgme++.h )
 
