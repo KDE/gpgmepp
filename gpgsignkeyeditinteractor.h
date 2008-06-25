@@ -45,7 +45,6 @@ namespace GpgME {
         ~GpgSignKeyEditInteractor();
 
         void setCheckLevel( unsigned int checkLevel );
-        void setSigningKey( const Key & secretKey );
         void setUserIDsToSign( const std::vector<unsigned int> & userIDsToSign );
         void setSigningOptions( int options );
 
