@@ -57,3 +57,6 @@
 
 /* Define to 1 if your gpgme has GPGME_PROTOCOL_GPGCONF */
 #cmakedefine HAVE_GPGME_PROTOCOL_GPGCONF 1
+
+/* Define to 1 if your gpgme has gpgme_cancel_async */
+#cmakedefine HAVE_GPGME_CANCEL_ASYNC 1
