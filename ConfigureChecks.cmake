@@ -258,6 +258,9 @@ check_cxx_source_compiles ("
 " HAVE_GPGME_PROTOCOL_GPGCONF
 )
 
+# check if gpgme has gpgme_cancel_async
+check_function_exists ("gpgme_cancel_async" HAVE_GPGME_CANCEL_ASYNC )
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 

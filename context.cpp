@@ -785,7 +785,11 @@ namespace GpgME {
 
 
   Error Context::cancelPendingOperation() {
+#ifdef HAVE_GPGME_CANCEL_ASYNC
+    return Error( gpgme_cancel_async( d->ctx ) );
+#else
     return Error( gpgme_cancel( d->ctx ) );
+#endif
   }
 
   bool Context::poll() {
@@ -932,6 +936,9 @@ static const unsigned long supported_features = 0
 #endif
 #ifdef HAVE_GPGME_PROTOCOL_GPGCONF
     | GpgME::GpgConfEngineFeature
+#endif
+#ifdef HAVE_GPGME_CANCEL_ASYNC
+    | GpgME::CancelOperationAsyncFeature
 #endif
     ;
 

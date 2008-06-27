@@ -90,7 +90,7 @@ namespace GpgME {
 
         AuditLogFeature                            = 0x00001000,
         GpgConfEngineFeature                       = 0x00002000,
-        // reserved
+        CancelOperationAsyncFeature                = 0x00004000,
         // reserved
 
         ClearAddGetSignatureNotationsFeature       = 0x00010000,
