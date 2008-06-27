@@ -33,6 +33,7 @@ set(gpgme_LIB_SRCS
 )
 
 set( _gpgmepp_version 2.0.0 )
+set( _gpgmepp_soversion 2 )
 
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
 
@@ -41,7 +42,7 @@ if ( GPGME_VANILLA_FOUND )
    target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
    set_target_properties( gpgmepp PROPERTIES
                                   VERSION     ${_gpgmepp_version}
-                                  SOVERSION   ${_gpgmepp_version}
+                                  SOVERSION   ${_gpgmepp_soversion}
                                   OUTPUT_NAME gpgme++
    )
    get_target_property( GPGMEPP_VANILLA_LIBRARY gpgmepp LOCATION )
@@ -53,7 +54,7 @@ if ( GPGME_GLIB_FOUND )
    target_link_libraries( gpgmepp-glib ${GPGME_GLIB_LIBRARIES} )
    set_target_properties( gpgmepp-glib PROPERTIES
                                        VERSION     ${_gpgmepp_version}
-                                       SOVERSION   ${_gpgmepp_version}
+                                       SOVERSION   ${_gpgmepp_soversion}
                                        OUTPUT_NAME gpgme++-glib DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_GLIB_LIBRARY gpgmepp LOCATION )
@@ -69,7 +70,7 @@ if ( GPGME_QT_FOUND )
    endif(WIN32)
    set_target_properties( gpgmepp-qt PROPERTIES
                                      VERSION     ${_gpgmepp_version}
-                                     SOVERSION   ${_gpgmepp_version}
+                                     SOVERSION   ${_gpgmepp_soversion}
                                      OUTPUT_NAME gpgme++-qt DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_QT_LIBRARY gpgmepp LOCATION )
@@ -82,7 +83,7 @@ if ( GPGME_PTHREAD_FOUND )
    target_link_libraries( gpgmepp-pthread ${GPGME_PTHREAD_LIBRARIES} )
    set_target_properties( gpgmepp-pthread PROPERTIES
                                           VERSION     ${_gpgmepp_version}
-                                          SOVERSION   ${_gpgmepp_version}
+                                          SOVERSION   ${_gpgmepp_soversion}
                                           OUTPUT_NAME gpgme++-pthread DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_PTHREAD_LIBRARY gpgmepp LOCATION )
@@ -94,7 +95,7 @@ if ( GPGME_PTH_FOUND )
    target_link_libraries( gpgmepp-pth ${GPGME_PTH_LIBRARIES} )
    set_target_properties( gpgmepp-pth PROPERTIES
                                       VERSION     ${_gpgmepp_version}
-                                      SOVERSION   ${_gpgmepp_version}
+                                      SOVERSION   ${_gpgmepp_soversion}
                                       OUTPUT_NAME gpgme++-pth DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_PTH_LIBRARY gpgmepp LOCATION )
