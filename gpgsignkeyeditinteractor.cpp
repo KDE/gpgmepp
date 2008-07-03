@@ -57,7 +57,6 @@ public:
 
     bool started;
     int options;
-    Key secretKey;
     std::vector<unsigned int> userIDs;
     std::vector<unsigned int>::const_iterator currentId, nextId;
     unsigned int checkLevel;
@@ -279,11 +278,6 @@ void GpgSignKeyEditInteractor::setCheckLevel( unsigned int checkLevel ) {
     assert( !d->started );
     assert( checkLevel <= 3 );
     d->checkLevel = checkLevel;
-}
-
-void GpgSignKeyEditInteractor::setSigningKey( const Key & secretKey ) {
-    assert( !d->started );
-    d->secretKey = secretKey;
 }
 
 void GpgSignKeyEditInteractor::setUserIDsToSign( const std::vector<unsigned int> & userIDsToSign ) {
