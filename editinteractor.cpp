@@ -28,7 +28,7 @@
 
 #ifdef _WIN32
 # include <io.h>
-# define write _write
+#include <windows.h>
 #else
 # include <unistd.h>
 #endif
@@ -52,6 +52,24 @@ private:
 };
 
 class GpgME::CallbackHelper {
+private:
+    static int writeAll( int fd, const void * buf, uint count ) {
+        uint toWrite = count;
+        while ( toWrite > 0 ) {
+#ifdef Q_OS_WIN
+            DWORD n;
+            if ( !WriteFile( (HANDLE)fd, buf, toWrite, &n, NULL ) )
+                return -1;
+#else
+            const int n = write( fd, buf, toWrite );
+#endif
+            if ( n < 0 )
+                return n;
+            toWrite -= n;
+        }
+        return count;
+    }
+
 public:
     static int edit_interactor_callback_impl( void * opaque, gpgme_status_code_t status, const char * args, int fd ) {
         EditInteractor::Private * ei = (EditInteractor::Private*)opaque;
@@ -68,7 +86,7 @@ public:
             if ( ei->debug )
                 std::fprintf( ei->debug, "EditInteractor: %u -> nextState( %u, %s ) -> %u\n",
                               oldState, (unsigned int)status, args ? args : "<null>", ei->state );
-            
+
             if ( ei->state != oldState &&
                  // if there was an error from before, we stop here (### this looks weird, can this happen at all?)
                  gpg_err_code( ei->error.code() ) == GPG_ERR_NO_ERROR ) {
@@ -81,8 +99,8 @@ public:
                         std::fprintf( ei->debug, "EditInteractor: action result \"%s\"\n", result );
                     // if there's a result, write it:
                     if ( *result )
-                        write( fd, result, std::strlen( result ) );
-                    write( fd, "\n", 1 );
+                        writeAll( fd, result, std::strlen( result ) );
+                    writeAll( fd, "\n", 1 );
                 } else {
                     if ( err )
                         goto error;
@@ -94,8 +112,8 @@ public:
                     std::fprintf( ei->debug, "EditInteractor: no action executed\n" );
             }
 
-        
-    error:    
+
+    error:
         if ( err ) {
             ei->error = err;
             ei->state = EditInteractor::ErrorState;
