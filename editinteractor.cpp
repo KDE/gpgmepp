@@ -54,8 +54,8 @@ private:
 
 class GpgME::CallbackHelper {
 private:
-    static int writeAll( int fd, const void * buf, uint count ) {
-        uint toWrite = count;
+    static int writeAll( int fd, const void * buf, size_t count ) {
+        size_t toWrite = count;
         while ( toWrite > 0 ) {
 #ifdef Q_OS_WIN
             DWORD n;
@@ -101,7 +101,7 @@ public:
                     // if there's a result, write it:
                     if ( *result ) {
                         errno = 0;
-                        if ( writeAll( fd, result, std::strlen( result ) != std::strlen( result ) ) ) {
+                        if ( writeAll( fd, result, std::strlen( result ) ) != std::strlen( result ) ) {
                             if ( ei->debug )
                                 std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, strerror( errno ) );
                             err = Error( GPG_ERR_GENERAL );
