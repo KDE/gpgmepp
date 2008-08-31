@@ -26,7 +26,6 @@
 #include "result_p.h"
 
 #include <gpgme.h>
-#include <cstdlib>
 #include <cstring>
 
 #include <string.h>
