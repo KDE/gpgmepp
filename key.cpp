@@ -203,19 +203,17 @@ namespace GpgME {
   }
 
   const char * Key::keyID() const {
-    if ( !key || !key->subkeys || !key->subkeys->fpr )
-      return 0;
-    const int len = strlen( key->subkeys->fpr );
-    if ( len < 16 )
-      return 0;
-    return key->subkeys->fpr + len - 16; // return the last 8 bytes (in hex notation)
+    return key && key->subkeys ? key->subkeys->keyid : 0 ;
   }
 
   const char * Key::shortKeyID() const {
-    if ( const char * keyid = keyID() )
-      return keyid + 8 ;
-    else
+    if ( !key || !key->subkeys || !key->subkeys->keyid )
       return 0;
+    const int len = strlen( key->subkeys->keyid );
+    if ( len > 8 )
+      return key->subkeys->keyid + len - 8; // return the last 8 bytes (in hex notation)
+    else
+      return key->subkeys->keyid ; 
   }
 
   const char * Key::primaryFingerprint() const {
