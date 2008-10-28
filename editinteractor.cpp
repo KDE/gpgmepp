@@ -33,6 +33,7 @@
 # include <unistd.h>
 #endif
 
+#include <cerrno>
 #include <cstring>
 
 using namespace GpgME;
@@ -98,9 +99,22 @@ public:
                     if ( ei->debug )
                         std::fprintf( ei->debug, "EditInteractor: action result \"%s\"\n", result );
                     // if there's a result, write it:
-                    if ( *result )
-                        writeAll( fd, result, std::strlen( result ) );
-                    writeAll( fd, "\n", 1 );
+                    if ( *result ) {
+                        errno = 0;
+                        if ( writeAll( fd, result, std::strlen( result ) != std::strlen( result ) ) ) {
+                            if ( ei->debug )
+                                std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, strerror( errno ) );
+                            err = Error( GPG_ERR_GENERAL );
+                            goto error;
+                        }
+                    }
+                    errno = 0;
+                    if ( writeAll( fd, "\n", 1 ) != 1 ) {
+                        if ( ei->debug )
+                            std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, strerror( errno ) );
+                        err = Error( GPG_ERR_GENERAL );
+                        goto error;
+                    }
                 } else {
                     if ( err )
                         goto error;
