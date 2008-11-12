@@ -255,7 +255,7 @@ unsigned int GpgSignKeyEditInteractor::nextState( unsigned int status, const cha
              strcmp( args, "keyedit.prompt" ) == 0 ) {
             if ( !d->signAll() )
                 return UIDS_LIST_SEPARATELY;
-            err = Error( GPG_ERR_UNUSABLE_PUBKEY );
+            err = Error( gpg_error( GPG_ERR_UNUSABLE_PUBKEY ) );
             return ERROR;
         }
         break;
