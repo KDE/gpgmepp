@@ -85,13 +85,13 @@ public:
             // advance to next state based on input:
             const unsigned int oldState = ei->state;
             ei->state = ei->q->nextState( status, args, err );
+            if ( ei->debug )
+                std::fprintf( ei->debug, "EditInteractor: %u -> nextState( %s, %s ) -> %u\n",
+                              oldState, status_to_string(status), args ? args : "<null>", ei->state );
             if ( err ) {
                 ei->state = oldState;
                 goto error;
             }
-            if ( ei->debug )
-                std::fprintf( ei->debug, "EditInteractor: %u -> nextState( %s, %s ) -> %u\n",
-                              oldState, status_to_string(status), args ? args : "<null>", ei->state );
 
             if ( ei->state != oldState &&
                  // if there was an error from before, we stop here (### this looks weird, can this happen at all?)
