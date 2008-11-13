@@ -60,3 +60,17 @@
 
 /* Define to 1 if your gpgme has gpgme_cancel_async */
 #cmakedefine HAVE_GPGME_CANCEL_ASYNC 1
+
+/* Define to 1 if your gpg-error has GPG_ERR_NO_PASSPHRASE */
+#cmakedefine HAVE_GPG_ERR_NO_PASSPHRASE 1
+
+/* Define to 1 if your gpg-error has GPG_ERR_ALREADY_SIGNED */
+#cmakedefine HAVE_GPG_ERR_ALREADY_SIGNED 1
+
+#ifndef HAVE_GPG_ERR_NO_PASSPHRASE
+# define GPG_ERR_NO_PASSPHRASE GPG_ERR_INV_PASSPHRASE
+#endif
+
+#ifndef HAVE_GPG_ERR_ALREADY_SIGNED
+# define GPG_ERR_ALREADY_SIGNED GPG_ERR_CONFLICT
+#endif

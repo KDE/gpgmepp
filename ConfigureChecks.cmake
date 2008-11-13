@@ -261,6 +261,24 @@ check_cxx_source_compiles ("
 # check if gpgme has gpgme_cancel_async
 check_function_exists ("gpgme_cancel_async" HAVE_GPGME_CANCEL_ASYNC )
 
+# check if gpg-error has GPG_ERR_NO_PASSPHRASE
+check_cxx_source_compiles ("
+  #include <gpg-error.h>
+  int main() {
+    gpg_error_t err = GPG_ERR_NO_PASSPHRASE;
+    return 0;
+  }
+" HAVE_GPG_ERR_NO_PASSPHRASE )
+
+# check if gpg-error has GPG_ERR_ALREADY_SIGNED
+check_cxx_source_compiles ("
+  #include <gpg-error.h>
+  int main() {
+    gpg_error_t err = GPG_ERR_ALREADY_SIGNED;
+    return 0;
+  }
+" HAVE_GPG_ERR_ALREADY_SIGNED )
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 
