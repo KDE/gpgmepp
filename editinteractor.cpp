@@ -20,6 +20,8 @@
   Boston, MA 02110-1301, USA.
 */
 
+#include <config-gpgme++.h>
+
 #include "editinteractor.h"
 #include "callbacks.h"
 #include "error.h"
@@ -204,9 +206,9 @@ bool EditInteractor::needsNoResponse( unsigned int status ) const {
 Error status_to_error( unsigned int status ) {
     switch ( status ) {
     case GPGME_STATUS_MISSING_PASSPHRASE:
-        return Error( gpg_error( GPG_ERR_INV_PASSPHRASE ) ); // should be GPG_ERR_MISSING_PASSPHRASE
+        return Error( gpg_error( GPG_ERR_NO_PASSPHRASE ) );
     case GPGME_STATUS_ALREADY_SIGNED:
-        return Error( gpg_error( GPG_ERR_CONFLICT ) ); // should be GPG_ERR_ALREADY_SIGNED
+        return Error( gpg_error( GPG_ERR_ALREADY_SIGNED ) );
     }
     return Error();
 }
