@@ -31,6 +31,7 @@
 
 #include <map>
 #include <string>
+#include <sstream>
 
 #include <cassert>
 #include <cstring>
@@ -55,6 +56,7 @@ class GpgSignKeyEditInteractor::Private {
 public:
     Private();
 
+    std::string scratch;
     bool started;
     int options;
     std::vector<unsigned int> userIDs;
@@ -128,7 +130,9 @@ enum SignKeyState {
     COMMAND,
     UIDS_ANSWER_SIGN_ALL,
     UIDS_LIST_SEPARATELY,
-    UIDS_LIST_SEPARATELY_DONE,
+    // all these free slots belong to UIDS_LIST_SEPARATELY, too
+    // (we increase state() by one for each UID, so that action() is called)
+    UIDS_LIST_SEPARATELY_DONE = 1000000,
     SET_EXPIRE,
     SET_CHECK_LEVEL,
     SET_TRUST_VALUE,
@@ -189,16 +193,11 @@ const char * GpgSignKeyEditInteractor::action( Error & err ) const {
     using namespace GpgSignKeyEditInteractor_Private;
     using namespace std;
 
-    switch ( state() ) {
+    switch ( const unsigned int st = state() ) {
     case COMMAND:
         return d->command();
     case UIDS_ANSWER_SIGN_ALL:
         return answer( d->signAll() );
-    case UIDS_LIST_SEPARATELY:
-        static char buf[255];
-        snprintf( buf, sizeof(buf) - 1, "%d", d->nextUserID() );
-        buf[sizeof( buf ) - 1] = '\0';
-        return buf;
     case UIDS_LIST_SEPARATELY_DONE:
         return d->command();
     case SET_EXPIRE:
@@ -218,8 +217,16 @@ const char * GpgSignKeyEditInteractor::action( Error & err ) const {
         return "quit";
     case SAVE:
         return answer( true );
-    case ERROR:
     default:
+        if ( st >= UIDS_LIST_SEPARATELY && st < UIDS_LIST_SEPARATELY_DONE )
+        {
+            std::stringstream ss;
+            ss << d->nextUserID();
+            d->scratch = ss.str();
+            return d->scratch.c_str();
+        }
+        // fall through
+    case ERROR:
         err = Error( gpg_error( GPG_ERR_GENERAL ) );
         return 0;
     }
@@ -242,7 +249,7 @@ unsigned int GpgSignKeyEditInteractor::nextState( unsigned int status, const cha
         return it->second;
 
     //handle cases that cannot be handled via the map
-    switch ( state() ) {
+    switch ( const unsigned int st = state() ) {
     case UIDS_ANSWER_SIGN_ALL:
         if ( status == GPGME_STATUS_ALREADY_SIGNED ) {
             err = Error( GPG_ERR_CONFLICT );
@@ -256,18 +263,18 @@ unsigned int GpgSignKeyEditInteractor::nextState( unsigned int status, const cha
             return ERROR;
         }
         break;
-    case UIDS_LIST_SEPARATELY:
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 ) {
-            return d->allUserIDsListed() ? UIDS_LIST_SEPARATELY_DONE : UIDS_LIST_SEPARATELY;
+    default:
+        if ( st >= UIDS_LIST_SEPARATELY && st < UIDS_LIST_SEPARATELY_DONE ) {
+            if ( status == GPGME_STATUS_GET_LINE &&
+                 strcmp( args, "keyedit.prompt" ) == 0 ) {
+                return d->allUserIDsListed() ? UIDS_LIST_SEPARATELY_DONE : st+1 ;
+            }
         }
         break;
     case CONFIRM:
     case ERROR:
         err = lastError();
         return ERROR;
-    default:
-        break;
     }
 
     err = GENERAL_ERROR;
