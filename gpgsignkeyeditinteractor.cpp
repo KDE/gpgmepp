@@ -251,10 +251,6 @@ unsigned int GpgSignKeyEditInteractor::nextState( unsigned int status, const cha
     //handle cases that cannot be handled via the map
     switch ( const unsigned int st = state() ) {
     case UIDS_ANSWER_SIGN_ALL:
-        if ( status == GPGME_STATUS_ALREADY_SIGNED ) {
-            err = Error( GPG_ERR_CONFLICT );
-            return ERROR;
-        }
         if ( status == GPGME_STATUS_GET_LINE &&
              strcmp( args, "keyedit.prompt" ) == 0 ) {
             if ( !d->signAll() )
