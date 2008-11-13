@@ -38,6 +38,9 @@
 
 using namespace GpgME;
 
+static const char * status_to_string( unsigned int status );
+static Error status_to_error( unsigned int status );
+
 class EditInteractor::Private {
     friend class ::GpgME::EditInteractor;
     friend class ::GpgME::CallbackHelper;
@@ -75,7 +78,9 @@ public:
     static int edit_interactor_callback_impl( void * opaque, gpgme_status_code_t status, const char * args, int fd ) {
         EditInteractor::Private * ei = (EditInteractor::Private*)opaque;
 
-        Error err;
+        Error err = status_to_error( status );
+
+        if ( !err ) {
 
             // advance to next state based on input:
             const unsigned int oldState = ei->state;
@@ -85,8 +90,8 @@ public:
                 goto error;
             }
             if ( ei->debug )
-                std::fprintf( ei->debug, "EditInteractor: %u -> nextState( %u, %s ) -> %u\n",
-                              oldState, (unsigned int)status, args ? args : "<null>", ei->state );
+                std::fprintf( ei->debug, "EditInteractor: %u -> nextState( %s, %s ) -> %u\n",
+                              oldState, status_to_string(status), args ? args : "<null>", ei->state );
 
             if ( ei->state != oldState &&
                  // if there was an error from before, we stop here (### this looks weird, can this happen at all?)
@@ -102,17 +107,17 @@ public:
                     if ( *result ) {
                         errno = 0;
                         if ( writeAll( fd, result, std::strlen( result ) ) != std::strlen( result ) ) {
+                            err = Error( gpg_error_from_syserror() );
                             if ( ei->debug )
                                 std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, strerror( errno ) );
-                            err = Error( GPG_ERR_GENERAL );
                             goto error;
                         }
                     }
                     errno = 0;
                     if ( writeAll( fd, "\n", 1 ) != 1 ) {
+                        err = Error( gpg_error_from_syserror() );
                         if ( ei->debug )
                             std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, strerror( errno ) );
-                        err = Error( GPG_ERR_GENERAL );
                         goto error;
                     }
                 } else {
@@ -125,6 +130,7 @@ public:
                 if ( ei->debug )
                     std::fprintf( ei->debug, "EditInteractor: no action executed\n" );
             }
+        }
 
 
     error:
@@ -194,6 +200,118 @@ bool EditInteractor::needsNoResponse( unsigned int status ) const {
     }
 }
 
+// static
+Error status_to_error( unsigned int status ) {
+    switch ( status ) {
+    case GPGME_STATUS_MISSING_PASSPHRASE:
+        return Error( gpg_error( GPG_ERR_INV_PASSPHRASE ) ); // should be GPG_ERR_MISSING_PASSPHRASE
+    }
+    return Error();
+}
+
 void EditInteractor::setDebugChannel( std::FILE * debug ) {
     d->debug = debug;
+}
+
+static const char * status_strings[] = {
+    "EOF",
+    /* mkstatus processing starts here */
+    "ENTER",
+    "LEAVE",
+    "ABORT",
+
+    "GOODSIG",
+    "BADSIG",
+    "ERRSIG",
+
+    "BADARMOR",
+
+    "RSA_OR_IDEA",
+    "KEYEXPIRED",
+    "KEYREVOKED",
+
+    "TRUST_UNDEFINED",
+    "TRUST_NEVER",
+    "TRUST_MARGINAL",
+    "TRUST_FULLY",
+    "TRUST_ULTIMATE",
+
+    "SHM_INFO",
+    "SHM_GET",
+    "SHM_GET_BOOL",
+    "SHM_GET_HIDDEN",
+
+    "NEED_PASSPHRASE",
+    "VALIDSIG",
+    "SIG_ID",
+    "ENC_TO",
+    "NODATA",
+    "BAD_PASSPHRASE",
+    "NO_PUBKEY",
+    "NO_SECKEY",
+    "NEED_PASSPHRASE_SYM",
+    "DECRYPTION_FAILED",
+    "DECRYPTION_OKAY",
+    "MISSING_PASSPHRASE",
+    "GOOD_PASSPHRASE",
+    "GOODMDC",
+    "BADMDC",
+    "ERRMDC",
+    "IMPORTED",
+    "IMPORT_OK",
+    "IMPORT_PROBLEM",
+    "IMPORT_RES",
+    "FILE_START",
+    "FILE_DONE",
+    "FILE_ERROR",
+
+    "BEGIN_DECRYPTION",
+    "END_DECRYPTION",
+    "BEGIN_ENCRYPTION",
+    "END_ENCRYPTION",
+
+    "DELETE_PROBLEM",
+    "GET_BOOL",
+    "GET_LINE",
+    "GET_HIDDEN",
+    "GOT_IT",
+    "PROGRESS",
+    "SIG_CREATED",
+    "SESSION_KEY",
+    "NOTATION_NAME",
+    "NOTATION_DATA",
+    "POLICY_URL",
+    "BEGIN_STREAM",
+    "END_STREAM",
+    "KEY_CREATED",
+    "USERID_HINT",
+    "UNEXPECTED",
+    "INV_RECP",
+    "NO_RECP",
+    "ALREADY_SIGNED",
+    "SIGEXPIRED",
+    "EXPSIG",
+    "EXPKEYSIG",
+    "TRUNCATED",
+    "ERROR",
+    "NEWSIG",
+    "REVKEYSIG",
+    "SIG_SUBPACKET",
+    "NEED_PASSPHRASE_PIN",
+    "SC_OP_FAILURE",
+    "SC_OP_SUCCESS",
+    "CARDCTRL",
+    "BACKUP_KEY_CREATED",
+    "PKA_TRUST_BAD",
+    "PKA_TRUST_GOOD",
+
+    "PLAINTEXT",
+};
+static const unsigned int num_status_strings = sizeof status_strings / sizeof *status_strings ;
+
+const char * status_to_string( unsigned int idx ) {
+    if ( idx < num_status_strings )
+        return status_strings[idx];
+    else
+        return "(unknown)";
 }
