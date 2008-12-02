@@ -46,7 +46,7 @@ if ( GPGME_VANILLA_FOUND )
                                   OUTPUT_NAME gpgme++
    )
    get_target_property( GPGMEPP_VANILLA_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp ${INSTALL_TARGETS_DEFAULT_ARGS} )
+   install(TARGETS gpgmepp EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_VANILLA_FOUND )
 
 if ( GPGME_GLIB_FOUND )
@@ -58,7 +58,7 @@ if ( GPGME_GLIB_FOUND )
                                        OUTPUT_NAME gpgme++-glib DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_GLIB_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-glib ${INSTALL_TARGETS_DEFAULT_ARGS} )
+   install(TARGETS gpgmepp-glib EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_GLIB_FOUND )
 
 
@@ -74,7 +74,7 @@ if ( GPGME_QT_FOUND )
                                      OUTPUT_NAME gpgme++-qt DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_QT_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-qt ${INSTALL_TARGETS_DEFAULT_ARGS} )
+   install(TARGETS gpgmepp-qt EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_QT_FOUND )
 
 
@@ -87,7 +87,7 @@ if ( GPGME_PTHREAD_FOUND )
                                           OUTPUT_NAME gpgme++-pthread DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_PTHREAD_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-pthread ${INSTALL_TARGETS_DEFAULT_ARGS} )
+   install(TARGETS gpgmepp-pthread EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_PTHREAD_FOUND )
 
 if ( GPGME_PTH_FOUND )
@@ -99,7 +99,7 @@ if ( GPGME_PTH_FOUND )
                                       OUTPUT_NAME gpgme++-pth DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_PTH_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-pth ${INSTALL_TARGETS_DEFAULT_ARGS} )
+   install(TARGETS gpgmepp-pth EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_PTH_FOUND )
 
 
