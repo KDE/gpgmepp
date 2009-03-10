@@ -52,6 +52,10 @@ public:
       gpgme_signature_t scopy = new _gpgme_signature( *is );
       if ( is->fpr )
 	scopy->fpr = strdup( is->fpr );
+// PENDING(marc) why does this crash on Windows?
+//     if ( is->pka_address )
+//	scopy->pka_address = strdup( is->pka_address );
+
       scopy->next = 0;
       sigs.push_back( scopy );
       // copy notations:
@@ -463,7 +467,8 @@ std::ostream & GpgME::operator<<( std::ostream & os, const Signature & sig ) {
            << "\n isWrongKeyUsage:           " << sig.isWrongKeyUsage()
            << "\n isVerifiedUsingChainModel: " << sig.isVerifiedUsingChainModel()
            << "\n pkaStatus:                 " << sig.pkaStatus()
-           << "\n pkaAddress:                " << protect( sig.pkaAddress() )
+// PENDING(marc) why does this crash on Windows?
+          // << "\n pkaAddress:                " << protect( sig.pkaAddress() )
            << "\n validity:                  " << sig.validityAsString()
            << "\n nonValidityReason:         " << sig.nonValidityReason()
            << "\n publicKeyAlgorithm:        " << protect( sig.publicKeyAlgorithmAsString() )
