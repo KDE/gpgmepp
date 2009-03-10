@@ -24,6 +24,7 @@
 
 #include <gpgme++/decryptionresult.h>
 #include "result_p.h"
+#include "util.h"
 
 #include <gpgme.h>
 
@@ -31,6 +32,7 @@
 #include <iterator>
 #include <cstring>
 #include <cstdlib>
+#include <istream>
 
 #include <string.h>
 
@@ -209,4 +211,29 @@ GpgME::Error GpgME::DecryptionResult::Recipient::status() const {
     return Error( d->status );
 #endif
   return Error();
+}
+
+std::ostream & GpgME::operator<<( std::ostream & os, const DecryptionResult & result ) {
+    os << "GpgME::DecryptionResult(";
+    if ( !result.isNull() ) {
+        os << "\n error:                " << result.error()
+           << "\n fileName:             " << protect( result.fileName() )
+           << "\n unsupportedAlgorithm: " << protect( result.unsupportedAlgorithm() )
+           << "\n isWrongKeyUsage:      " << result.isWrongKeyUsage()
+           << "\n recipients:\n";
+        const std::vector<DecryptionResult::Recipient> recipients = result.recipients();
+        std::copy( recipients.begin(), recipients.end(),
+                   std::ostream_iterator<DecryptionResult::Recipient>( os, "\n" ) );
+    }
+    return os << ')';
+}
+
+std::ostream & GpgME::operator<<( std::ostream & os, const DecryptionResult::Recipient & reci ) {
+    os << "GpgME::DecryptionResult::Recipient(";
+    if ( !reci.isNull() )
+        os << "\n keyID:              " << protect( reci.keyID() )
+           << "\n shortKeyID:         " << protect( reci.shortKeyID() )
+           << "\n publicKeyAlgorithm: " << protect( reci.publicKeyAlgorithmAsString() )
+           << "\n status:             " << reci.status();
+    return os << ')';
 }

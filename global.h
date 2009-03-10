@@ -27,6 +27,8 @@
 #include <gpgme++/gpgmefw.h>
 #include <gpgme++/gpgme++_export.h>
 
+#include <iosfwd>
+
 namespace GpgME {
     class Error;
     class EngineInfo;
@@ -53,6 +55,10 @@ namespace GpgME {
 
     enum SignatureMode { NormalSignatureMode, Detached, Clearsigned };
 
+    GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, Protocol proto );
+    GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, Engine eng );
+    GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, KeyListMode mode );
+    GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, SignatureMode mode );
 
 
     GPGMEPP_EXPORT Error setDefaultLocale( int category, const char * value );

@@ -28,7 +28,9 @@
 
 #include <gpgme.h>
 
+#include <istream>
 #include <algorithm>
+#include <iterator>
 #include <string>
 #include <cstring>
 #include <cstdlib>
@@ -408,3 +410,88 @@ bool GpgME::Notation::isCritical() const {
 }
 
 
+
+std::ostream & GpgME::operator<<( std::ostream & os, const VerificationResult & result ) {
+    os << "GpgME::VerificationResult(";
+    if ( !result.isNull() ) {
+        os << "\n error:      " << result.error()
+           << "\n fileName:   " << protect( result.fileName() )
+           << "\n signatures:\n";
+        const std::vector<Signature> sigs = result.signatures();
+        std::copy( sigs.begin(), sigs.end(),
+                   std::ostream_iterator<Signature>( os, "\n" ) );
+    }
+    return os << ')';
+}
+
+std::ostream & GpgME::operator<<( std::ostream & os, Signature::PKAStatus pkaStatus ) {
+#define OUTPUT( x ) if ( !(pkaStatus & (GpgME::Signature:: x)) ) {} else do { os << #x " "; } while(0)
+    os << "GpgME::Signature::PKAStatus(";
+    OUTPUT( UnknownPKAStatus );
+    OUTPUT( PKAVerificationFailed );
+    OUTPUT( PKAVerificationSucceeded );
+#undef OUTPUT
+    return os << ')';
+}
+
+std::ostream & GpgME::operator<<( std::ostream & os, Signature::Summary summary ) {
+#define OUTPUT( x ) if ( !(summary & (GpgME::Signature:: x)) ) {} else do { os << #x " "; } while(0)
+    os << "GpgME::Signature::Summary(";
+    OUTPUT( Valid );
+    OUTPUT( Green );
+    OUTPUT( Red );
+    OUTPUT( KeyRevoked );
+    OUTPUT( KeyExpired );
+    OUTPUT( SigExpired );
+    OUTPUT( KeyMissing );
+    OUTPUT( CrlMissing );
+    OUTPUT( CrlTooOld );
+    OUTPUT( BadPolicy );
+    OUTPUT( SysError );
+#undef OUTPUT
+    return os << ')';
+}
+
+std::ostream & GpgME::operator<<( std::ostream & os, const Signature & sig ) {
+    os << "GpgME::Signature(";
+    if ( !sig.isNull() ) {
+        os << "\n Summary:                   " << sig.summary()
+           << "\n Fingerprint:               " << protect( sig.fingerprint() )
+           << "\n Status:                    " << sig.status()
+           << "\n creationTime:              " << sig.creationTime()
+           << "\n expirationTime:            " << sig.expirationTime()
+           << "\n isWrongKeyUsage:           " << sig.isWrongKeyUsage()
+           << "\n isVerifiedUsingChainModel: " << sig.isVerifiedUsingChainModel()
+           << "\n pkaStatus:                 " << sig.pkaStatus()
+           << "\n pkaAddress:                " << protect( sig.pkaAddress() )
+           << "\n validity:                  " << sig.validityAsString()
+           << "\n nonValidityReason:         " << sig.nonValidityReason()
+           << "\n publicKeyAlgorithm:        " << protect( sig.publicKeyAlgorithmAsString() )
+           << "\n hashAlgorithm:             " << protect( sig.hashAlgorithmAsString() )
+           << "\n policyURL:                 " << protect( sig.policyURL() )
+           << "\n notations:\n";
+        const std::vector<Notation> nota = sig.notations();
+        std::copy( nota.begin(), nota.end(),
+                   std::ostream_iterator<Notation>( os, "\n" ) );
+    }
+    return os << ')';
+}
+
+std::ostream & GpgME::operator<<( std::ostream & os, Notation::Flags flags ) {
+    os << "GpgME::Notation::Flags(";
+#define OUTPUT( x ) if ( !(flags & (GpgME::Notation:: x)) ) {} else do { os << #x " "; } while(0)
+    OUTPUT( HumanReadable );
+    OUTPUT( Critical );
+#undef OUTPUT
+    return os << ')';
+}
+
+std::ostream & GpgME::operator<<( std::ostream & os, const Notation & nota ) {
+    os << "GpgME::Signature::Notation(";
+    if ( !nota.isNull() )
+        os << "\n name:  " << protect( nota.name() )
+           << "\n value: " << protect( nota.value() )
+           << "\n flags: " << nota.flags()
+           << '\n';
+    return os << ")";
+}

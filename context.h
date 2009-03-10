@@ -32,6 +32,7 @@
 #include <memory>
 #include <vector>
 #include <utility>
+#include <iosfwd>
 
 namespace GpgME {
 
@@ -295,6 +296,10 @@ namespace GpgME {
     Context( const Context & );
     const Context & operator=( const Context & );
   };
+
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, Context::CertificateInclusion incl );
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, Context::EncryptionFlags flags );
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, Context::AuditLogFlags flags );
 
 } // namespace GpgME
 

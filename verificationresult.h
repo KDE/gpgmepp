@@ -32,6 +32,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <vector>
+#include <iosfwd>
 
 namespace GpgME {
 
@@ -70,6 +71,8 @@ namespace GpgME {
     void init( gpgme_ctx_t ctx );
     boost::shared_ptr<Private> d;
   };
+
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const VerificationResult & result );
 
   class GPGMEPP_EXPORT Signature {
     friend class ::GpgME::VerificationResult;
@@ -148,6 +151,10 @@ namespace GpgME {
     boost::shared_ptr<VerificationResult::Private> d;
     unsigned int idx;
   };
+
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const Signature & sig );
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, Signature::PKAStatus pkaStatus );
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, Signature::Summary summary );
 
 }
 

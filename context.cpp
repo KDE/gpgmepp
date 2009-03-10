@@ -42,6 +42,7 @@
 
 #include <gpgme.h>
 
+#include <istream>
 #ifndef NDEBUG
 #include <iostream>
 using std::cerr;
@@ -82,6 +83,10 @@ namespace GpgME {
 
   bool Error::isCanceled() const {
     return code() == GPG_ERR_CANCELED;
+  }
+
+  std::ostream & operator<<( std::ostream & os, const Error & err ) {
+      return os << "GpgME::Error(" << err.encodedError() << " (" << err.asString() << "))";
   }
 
   Context::Context( gpgme_ctx_t ctx ) {
@@ -809,6 +814,109 @@ namespace GpgME {
   Error Context::lastError() const {
     return Error( d->lasterr );
   }
+
+  std::ostream & operator<<( std::ostream & os, Protocol proto ) {
+      os << "GpgME::Protocol(";
+      switch ( proto ) {
+      case OpenPGP:
+          os << "OpenPGP";
+          break;
+      case CMS:
+          os << "CMS";
+          break;
+      default:
+      case UnknownProtocol:
+          os << "UnknownProtocol";
+          break;
+      }
+      return os << ')';
+  }
+
+  std::ostream & operator<<( std::ostream & os, Engine eng ) {
+      os << "GpgME::Engine(";
+      switch ( eng ) {
+      case GpgEngine:
+          os << "GpgEngine";
+          break;
+      case GpgSMEngine:
+          os << "GpgSMEngine";
+          break;
+      case GpgConfEngine:
+          os << "GpgConfEngine";
+          break;
+      default:
+      case UnknownEngine:
+          os << "UnknownEngine";
+          break;
+      }
+      return os << ')';
+  }
+
+  std::ostream & operator<<( std::ostream & os, Context::CertificateInclusion incl ) {
+      os << "GpgME::Context::CertificateInclusion(" << static_cast<int>( incl );
+      switch ( incl ) {
+      case Context::DefaultCertificates:
+          os << "(DefaultCertificates)";
+          break;
+      case Context::AllCertificatesExceptRoot:
+          os << "(AllCertificatesExceptRoot)";
+          break;
+      case Context::AllCertificates:
+          os << "(AllCertificates)";
+          break;
+      case Context::NoCertificates:
+          os << "(NoCertificates)";
+          break;
+      case Context::OnlySenderCertificate:
+          os << "(OnlySenderCertificate)";
+          break;
+      }
+      return os << ')';
+  }
+
+  std::ostream & operator<<( std::ostream & os, KeyListMode mode ) {
+      os << "GpgME::KeyListMode(";
+#define CHECK( x ) if ( !(mode & (x)) ) {} else do { os << #x " "; } while (0)
+      CHECK( Local );
+      CHECK( Extern );
+      CHECK( Signatures );
+      CHECK( Validate );
+#undef CHECK
+      return os << ')';
+  }
+
+  std::ostream & operator<<( std::ostream & os, SignatureMode mode ) {
+      os << "GpgME::SignatureMode(";
+      switch ( mode ) {
+#define CHECK( x ) case x: os << #x; break
+          CHECK( NormalSignatureMode );
+          CHECK( Detached );
+          CHECK( Clearsigned );
+#undef CHECK
+      default:
+          os << "???" "(" << static_cast<int>( mode ) << ')';
+          break;
+      }
+      return os << ')';
+  }
+
+  std::ostream & operator<<( std::ostream & os, Context::EncryptionFlags flags ) {
+      os << "GpgME::Context::EncryptionFlags(";
+#define CHECK( x ) if ( !(flags & (Context::x)) ) {} else do { os << #x " "; } while (0) 
+     CHECK( AlwaysTrust );
+#undef CHECK
+      return os << ')';
+  }
+
+  std::ostream & operator<<( std::ostream & os, Context::AuditLogFlags flags ) {
+      os << "GpgME::Context::AuditLogFlags(";
+#define CHECK( x ) if ( !(flags & (Context::x)) ) {} else do { os << #x " "; } while (0)
+      CHECK( HtmlAuditLog );
+      CHECK( AuditLogWithHelp );
+#undef CHECK
+      return os << ')';
+  }
+
 
 
 } // namespace GpgME
