@@ -29,6 +29,8 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include <iosfwd>
+
 namespace GpgME {
 
   class GPGMEPP_EXPORT Notation {
@@ -67,6 +69,9 @@ namespace GpgME {
     class Private;
     boost::shared_ptr<Private> d;
   };
+
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const Notation & nota );
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, Notation::Flags flags );
 
 }
 

@@ -31,6 +31,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <vector>
+#include <iosfwd>
 
 namespace GpgME {
 
@@ -70,6 +71,8 @@ namespace GpgME {
     boost::shared_ptr<Private> d;
   };
 
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const SigningResult & result );
+
   class GPGMEPP_EXPORT InvalidSigningKey {
     friend class ::GpgME::SigningResult;
     InvalidSigningKey( const boost::shared_ptr<SigningResult::Private> & parent, unsigned int index );
@@ -96,6 +99,8 @@ namespace GpgME {
     boost::shared_ptr<SigningResult::Private> d;
     unsigned int idx;
   };
+
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const InvalidSigningKey & key );
 
   class GPGMEPP_EXPORT CreatedSignature {
     friend class ::GpgME::SigningResult;
@@ -135,6 +140,8 @@ namespace GpgME {
     boost::shared_ptr<SigningResult::Private> d;
     unsigned int idx;
   };
+
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const CreatedSignature & sig );
 
 }
 

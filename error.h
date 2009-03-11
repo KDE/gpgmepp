@@ -28,6 +28,7 @@
 #include <gpgme++/gpgme++_export.h>
 
 #include <string>
+#include <iosfwd>
 
 namespace GpgME {
 
@@ -54,6 +55,8 @@ namespace GpgME {
     unsigned int mErr;
     mutable std::string mMessage;
   };
+
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const Error & err );
 
 } // namespace GpgME
 

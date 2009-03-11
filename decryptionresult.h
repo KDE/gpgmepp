@@ -30,6 +30,8 @@
 #include <boost/shared_ptr.hpp>
 
 #include <vector>
+#include <algorithm>
+#include <iosfwd>
 
 namespace GpgME {
 
@@ -75,6 +77,8 @@ namespace GpgME {
     boost::shared_ptr<Private> d;
   };
 
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const DecryptionResult & result );
+
   class GPGMEPP_EXPORT DecryptionResult::Recipient {
   public:
       Recipient();
@@ -104,6 +108,8 @@ namespace GpgME {
     class Private;
     boost::shared_ptr<Private> d;
   };
+
+  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const DecryptionResult::Recipient & reci );
 
 }
 
