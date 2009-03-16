@@ -52,10 +52,15 @@ public:
       gpgme_signature_t scopy = new _gpgme_signature( *is );
       if ( is->fpr )
 	scopy->fpr = strdup( is->fpr );
-// PENDING(marc) why does this crash on Windows?
-//     if ( is->pka_address )
-//	scopy->pka_address = strdup( is->pka_address );
-
+#ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
+// PENDING(marc) why does this crash on Windows in strdup()?
+# ifndef _WIN32
+     if ( is->pka_address )
+	scopy->pka_address = strdup( is->pka_address );
+# else
+     scopy->pka_address = 0;
+# endif
+#endif
       scopy->next = 0;
       sigs.push_back( scopy );
       // copy notations:
@@ -82,6 +87,9 @@ public:
   ~Private() {
     for ( std::vector<gpgme_signature_t>::iterator it = sigs.begin() ; it != sigs.end() ; ++it ) {
       std::free( (*it)->fpr );
+#ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
+      std::free( (*it)->pka_address );
+#endif
       delete *it; *it = 0;
     }
     for ( std::vector< std::vector<Nota> >::iterator it = nota.begin() ; it != nota.end() ; ++it )
@@ -467,8 +475,7 @@ std::ostream & GpgME::operator<<( std::ostream & os, const Signature & sig ) {
            << "\n isWrongKeyUsage:           " << sig.isWrongKeyUsage()
            << "\n isVerifiedUsingChainModel: " << sig.isVerifiedUsingChainModel()
            << "\n pkaStatus:                 " << sig.pkaStatus()
-// PENDING(marc) why does this crash on Windows?
-          // << "\n pkaAddress:                " << protect( sig.pkaAddress() )
+           << "\n pkaAddress:                " << protect( sig.pkaAddress() )
            << "\n validity:                  " << sig.validityAsString()
            << "\n nonValidityReason:         " << sig.nonValidityReason()
            << "\n publicKeyAlgorithm:        " << protect( sig.publicKeyAlgorithmAsString() )
