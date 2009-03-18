@@ -52,6 +52,15 @@ public:
       gpgme_signature_t scopy = new _gpgme_signature( *is );
       if ( is->fpr )
 	scopy->fpr = strdup( is->fpr );
+#ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
+// PENDING(marc) why does this crash on Windows in strdup()?
+# ifndef _WIN32
+     if ( is->pka_address )
+	scopy->pka_address = strdup( is->pka_address );
+# else
+     scopy->pka_address = 0;
+# endif
+#endif
       scopy->next = 0;
       sigs.push_back( scopy );
       // copy notations:
@@ -78,6 +87,9 @@ public:
   ~Private() {
     for ( std::vector<gpgme_signature_t>::iterator it = sigs.begin() ; it != sigs.end() ; ++it ) {
       std::free( (*it)->fpr );
+#ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
+      std::free( (*it)->pka_address );
+#endif
       delete *it; *it = 0;
     }
     for ( std::vector< std::vector<Nota> >::iterator it = nota.begin() ; it != nota.end() ; ++it )
