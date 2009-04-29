@@ -132,6 +132,9 @@ void GpgME::VerificationResult::init( gpgme_ctx_t ctx ) {
   gpgme_verify_result_t res = gpgme_op_verify_result( ctx );
   if ( !res )
     return;
+  int i = 0;
+  for ( gpgme_signature_t sig = res->signatures ; sig ; sig = sig->next, ++i )
+	  fprintf( stderr, "validity[%d]: %d\n", i, (int)sig->validity );
   d.reset( new Private( res ) );
 }
 

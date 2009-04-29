@@ -58,7 +58,7 @@ if ( GPGME_GLIB_FOUND )
                                        OUTPUT_NAME gpgme++-glib DEFINE_SYMBOL MAKE_GPGME___LIB
    )
    get_target_property( GPGMEPP_GLIB_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-glib EXPORT kdepimlibsLibraryTargets EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
+   install(TARGETS gpgmepp-glib EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif ( GPGME_GLIB_FOUND )
 
 
