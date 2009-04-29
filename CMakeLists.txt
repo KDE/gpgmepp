@@ -46,7 +46,8 @@ if ( GPGME_VANILLA_FOUND )
                                   OUTPUT_NAME gpgme++
    )
    get_target_property( GPGMEPP_VANILLA_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
+   install(TARGETS gpgmepp EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} COMPONENT Devel)
+
 endif ( GPGME_VANILLA_FOUND )
 
 if ( GPGME_GLIB_FOUND )
