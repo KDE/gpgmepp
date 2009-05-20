@@ -279,6 +279,56 @@ check_cxx_source_compiles ("
   }
 " HAVE_GPG_ERR_ALREADY_SIGNED )
 
+# check if gpgme has GPGME_ENCRYPT_NO_ENCRYPT_TO
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_encrypt_flags_t f = GPGME_ENCRYPT_NO_ENCRYPT_TO;
+    return 0;
+  }
+" HAVE_GPGME_ENCRYPT_NO_ENCRYPT_TO )
+
+# check if gpgme has gpgme_subkey_t->is_cardkey and ->card_number
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_subkey_t sk = 0;
+    const char * card_number = sk->card_number;
+    const unsigned int is_cardkey = sk->is_cardkey;
+    return 0;
+  }
+" HAVE_GPGME_SUBKEY_T_IS_CARDKEY )
+
+# check if gpgme has assuan protocol support
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+
+  static gpgme_error_t data_cb(void *, const void *, size_t) { return 0; }
+  static gpgme_error_t inquire_cb(void *, const char *, const char *, gpgme_data_t *) { return 0; }
+  static gpgme_error_t status_cb(void *, const char *, const char *) { return 0; }
+
+  int main() {
+     const gpgme_protocol_t proto = GPGME_PROTOCOL_ASSUAN;
+     gpgme_ctx_t ctx = 0;
+     gpgme_assuan_data_cb_t d = data_cb;
+     gpgme_assuan_inquire_cb_t i = inquire_cb;
+     gpgme_assuan_status_cb_t s = status_cb;
+     gpgme_assuan_result_t r = gpgme_op_assuan_result( ctx );
+     void * opaque = 0;
+     gpgme_error_t err = gpgme_op_assuan_transact_start( ctx, \"FOO\", d, opaque, i, opaque, s, opaque );
+     err = gpgme_op_assuan_transact( ctx, \"FOO\", d, opaque, i, opaque, s, opaque );
+     return 0;
+  }
+" HAVE_GPGME_ASSUAN_ENGINE )
+
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_keylist_mode_t mode = GPGME_KEYLIST_MODE_EPHEMERAL;
+    return 0;
+  }
+" HAVE_GPGME_KEYLIST_MODE_EPHEMERAL )
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 

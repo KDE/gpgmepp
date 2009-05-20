@@ -335,6 +335,22 @@ namespace GpgME {
 #endif
   }
 
+  bool Subkey::isCardKey() const {
+#ifdef HAVE_GPGME_SUBKEY_T_IS_CARDKEY
+    return subkey && subkey->is_cardkey;
+#else
+    return false;
+#endif
+  }
+
+  const char * Subkey::cardSerialNumber() const {
+#ifdef HAVE_GPGME_SUBKEY_T_IS_CARDKEY
+    return subkey ? subkey->card_number : 0 ;
+#else
+    return 0;
+#endif
+  }
+
   bool Subkey::isSecret() const {
     return subkey && subkey->secret;
   }

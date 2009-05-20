@@ -74,3 +74,15 @@
 #ifndef HAVE_GPG_ERR_ALREADY_SIGNED
 # define GPG_ERR_ALREADY_SIGNED GPG_ERR_USER_1
 #endif
+
+/* Define to 1 if your gpgme has GPGME_ENCRYPT_NO_ENCRYPT_TO */
+#cmakedefine HAVE_GPGME_ENCRYPT_NO_ENCRYPT_TO 1
+
+/* Define to 1 if your gpgme has gpgme_subkey_t->card_number and gpgme_subkey_t->is_cardkey */
+#cmakedefine HAVE_GPGME_SUBKEY_T_IS_CARDKEY
+
+/* Define to 1 if your gpgme has ASSUAN protocol support (in the interface, not only in the implementation */
+#cmakedefine HAVE_GPGME_ASSUAN_ENGINE
+
+/* Define to 1 if your gpgme has GPGME_KEYLIST_MODE_EPHEMERAL */
+#cmakedefine HAVE_GPGME_KEYLIST_MODE_EPHEMERAL

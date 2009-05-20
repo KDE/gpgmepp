@@ -705,11 +705,19 @@ namespace GpgME {
     unsigned int result = 0;
     if ( flags & Context::AlwaysTrust )
       result |= GPGME_ENCRYPT_ALWAYS_TRUST;
+#ifdef HAVE_GPGME_ENCRYPT_NO_ENCRYPT_TO
+    if ( flags & Context::NoEncryptTo )
+      result |= GPGME_ENCRYPT_NO_ENCRYPT_TO;
+#endif
     return static_cast<gpgme_encrypt_flags_t>( result );
   }
 
   EncryptionResult Context::encrypt( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags ) {
     d->lastop = Private::Encrypt;
+#ifndef HAVE_GPGME_ENCRYPT_NO_ENCRYPT_TO
+    if ( flags & NoEncryptTo )
+        return EncryptionResult( Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) ) );
+#endif
     const Data::Private * const pdp = plainText.impl();
     Data::Private * const cdp = cipherText.impl();
     gpgme_key_t * const keys = new gpgme_key_t[ recipients.size() + 1 ];
@@ -734,6 +742,10 @@ namespace GpgME {
 
   Error Context::startEncryption( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags ) {
     d->lastop = Private::Encrypt;
+#ifndef HAVE_GPGME_ENCRYPT_NO_ENCRYPT_TO
+    if ( flags & NoEncryptTo )
+        return Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) );
+#endif
     const Data::Private * const pdp = plainText.impl();
     Data::Private * const cdp = cipherText.impl();
     gpgme_key_t * const keys = new gpgme_key_t[ recipients.size() + 1 ];
@@ -844,6 +856,8 @@ namespace GpgME {
       case GpgConfEngine:
           os << "GpgConfEngine";
           break;
+      case AssuanEngine:
+          os << "AssuanEngine";
       default:
       case UnknownEngine:
           os << "UnknownEngine";
@@ -881,6 +895,7 @@ namespace GpgME {
       CHECK( Extern );
       CHECK( Signatures );
       CHECK( Validate );
+      CHECK( Ephemeral );
 #undef CHECK
       return os << ')';
   }
@@ -954,6 +969,14 @@ static gpgme_protocol_t engine2protocol( const GpgME::Engine engine ) {
     case GpgME::GpgConfEngine:
 #ifdef HAVE_GPGME_PROTOCOL_GPGCONF
         return GPGME_PROTOCOL_GPGCONF;
+#else
+        break;
+#endif
+    case GpgME::AssuanEngine:
+#ifdef HAVE_GPGME_ASSUAN_ENGINE
+        return GPGME_PROTOCOL_ASSUAN;
+#else
+        break;
 #endif
     case GpgME::UnknownEngine:
         ;
@@ -1047,6 +1070,18 @@ static const unsigned long supported_features = 0
 #endif
 #ifdef HAVE_GPGME_CANCEL_ASYNC
     | GpgME::CancelOperationAsyncFeature
+#endif
+#ifdef HAVE_GPGME_ENCRYPT_NO_ENCRYPT_TO
+    | GpgME::NoEncryptToEncryptionFlagFeature
+#endif
+#ifdef HAVE_GPGME_SUBKEY_T_IS_CARDKEY
+    | GpgME::CardKeyFeature
+#endif
+#ifdef HAVE_GPGME_ASSUAN_ENGINE
+    | GpgME::AssuanEngineFeature
+#endif
+#ifdef HAVE_GPGME_KEYLIST_MODE_EPHEMERAL
+    | GpgME::EphemeralKeylistModeFeature
 #endif
     ;
 

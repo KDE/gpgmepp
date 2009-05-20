@@ -48,6 +48,13 @@ static inline gpgme_keylist_mode_t add_to_gpgme_keylist_mode_t( unsigned int old
     std::cerr << "GpgME: ignoring SignatureNotations keylist flag (gpgme too old)." << std::endl;
 #endif
   }
+  if ( newmodes & GpgME::Ephemeral ) {
+#ifdef HAVE_GPGME_KEYLIST_MODE_EPHEMERAL
+    oldmode |= GPGME_KEYLIST_MODE_EPHEMERAL;
+#elif !defined(NDEBUG)
+    std::cerr << "GpgME: ignoring Ephemeral keylist flag (gpgme too old)." << std::endl;
+#endif
+  }
   if ( newmodes & GpgME::Validate ) oldmode |= GPGME_KEYLIST_MODE_VALIDATE;
 #ifndef NDEBUG
   if ( newmodes & ~(GpgME::Local|GpgME::Extern|GpgME::Signatures|GpgME::SignatureNotations|GpgME::Validate) )
@@ -65,12 +72,18 @@ static inline unsigned int convert_from_gpgme_keylist_mode_t( unsigned int mode 
 #ifdef HAVE_GPGME_KEYLIST_MODE_SIG_NOTATIONS
   if ( mode & GPGME_KEYLIST_MODE_SIG_NOTATIONS ) result |= GpgME::SignatureNotations;
 #endif
+#ifdef HAVE_GPGME_KEYLIST_MODE_EPHEMERAL
+  if ( mode & GPGME_KEYLIST_MODE_EPHEMERAL ) result |= GpgME::Ephemeral;
+#endif
   if ( mode & GPGME_KEYLIST_MODE_VALIDATE ) result |= GpgME::Validate;
 #ifndef NDEBUG
   if ( mode & ~(GPGME_KEYLIST_MODE_LOCAL|
 		GPGME_KEYLIST_MODE_EXTERN|
 #ifdef HAVE_GPGME_KEYLIST_MODE_SIG_NOTATIONS
 		GPGME_KEYLIST_MODE_SIG_NOTATIONS|
+#endif
+#ifdef HAVE_GPGME_KEYLIST_MODE_EPHEMERAL
+		GPGME_KEYLIST_MODE_EPHEMERAL|
 #endif
 		GPGME_KEYLIST_MODE_VALIDATE|
 		GPGME_KEYLIST_MODE_SIGS) )

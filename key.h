@@ -172,6 +172,7 @@ namespace GpgME {
     bool canCertify() const;
     bool canAuthenticate() const;
     bool isQualified() const;
+    bool isCardKey() const;
 
     bool isSecret() const;
 
@@ -179,6 +180,8 @@ namespace GpgME {
     const char * publicKeyAlgorithmAsString() const;
 
     unsigned int length() const;
+
+    const char * cardSerialNumber() const;
 
   private:
     shared_gpgme_key_t key;
