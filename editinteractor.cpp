@@ -108,7 +108,8 @@ public:
                     // if there's a result, write it:
                     if ( *result ) {
                         errno = 0;
-                        if ( writeAll( fd, result, std::strlen( result ) ) != std::strlen( result ) ) {
+                        const ssize_t len = std::strlen( result );
+                        if ( writeAll( fd, result, len ) != len ) {
                             err = Error( gpg_error_from_syserror() );
                             if ( ei->debug )
                                 std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, strerror( errno ) );
