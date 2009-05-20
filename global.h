@@ -43,14 +43,15 @@ namespace GpgME {
 
     enum Protocol { OpenPGP, CMS, UnknownProtocol };
 
-    enum Engine { GpgEngine, GpgSMEngine, GpgConfEngine, UnknownEngine };
+    enum Engine { GpgEngine, GpgSMEngine, GpgConfEngine, UnknownEngine, AssuanEngine };
 
     enum KeyListMode {
       Local = 0x1,
       Extern = 0x2,
       Signatures = 0x4,
       SignatureNotations = 0x8,
-      Validate = 0x10
+      Validate = 0x10,
+      Ephemeral = 0x20
     };
 
     enum SignatureMode { NormalSignatureMode, Detached, Clearsigned };
@@ -86,8 +87,8 @@ namespace GpgME {
 
         GetSetEngineInfoFeature                    = 0x00000010,
         EngineInfoHomeDirFeature                   = 0x00000020,
-        // reserved
-        // reserved
+        NoEncryptToEncryptionFlagFeature           = 0x00000040,
+        EphemeralKeylistModeFeature                = 0x00000080,
 
         SetDataFileNameFeeature                    = 0x00000100,
         VerificationResultFileNameFeature          = 0x00000200,
@@ -97,7 +98,7 @@ namespace GpgME {
         AuditLogFeature                            = 0x00001000,
         GpgConfEngineFeature                       = 0x00002000,
         CancelOperationAsyncFeature                = 0x00004000,
-        // reserved
+        AssuanEngineFeature                        = 0x00008000,
 
         ClearAddGetSignatureNotationsFeature       = 0x00010000,
         SignatureNotationsKeylistModeFeature       = 0x00020000,
@@ -105,7 +106,7 @@ namespace GpgME {
         SignatureNotationsFlagsFeature             = 0x00080000,
         SignatureNotationsCriticalFlagFeature      = 0x00100000,
         SignatureNotationsHumanReadableFlagFeature = 0x00200000,
-        // reserved
+        CardKeyFeature                             = 0x00400000,
         // reserved
 
         KeyIsQualifiedFeature                      = 0x01000200,
