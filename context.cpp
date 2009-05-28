@@ -25,6 +25,7 @@
 #include <gpgme++/context.h>
 #include <gpgme++/eventloopinteractor.h>
 #include <gpgme++/trustitem.h>
+#include <gpgme++/assuanresult.h>
 #include <gpgme++/keylistresult.h>
 #include <gpgme++/keygenerationresult.h>
 #include <gpgme++/importresult.h>
@@ -34,6 +35,8 @@
 #include <gpgme++/encryptionresult.h>
 #include <gpgme++/engineinfo.h>
 #include <gpgme++/editinteractor.h>
+
+#include <gpgme++/interfaces/assuantransaction.h>
 
 #include "callbacks.h"
 #include "data_p.h"
@@ -133,6 +136,8 @@ namespace GpgME {
         iocbs( 0 ),
         lastop( None ),
         lasterr( GPG_ERR_NO_ERROR ),
+        lastAssuanInquireData( Data::null ),
+        lastAssuanTransaction(),
         lastEditInteractor(),
         lastCardEditInteractor()
   {
@@ -482,6 +487,81 @@ namespace GpgME {
   Error Context::endTrustItemListing() {
     return Error( d->lasterr = gpgme_op_trustlist_end( d->ctx ) );
   }
+
+#ifdef HAVE_GPGME_ASSUAN_ENGINE
+  static gpgme_error_t assuan_transaction_data_callback( void * opaque, const void * data, size_t datalen ) {
+    assert( opaque );
+    AssuanTransaction * t = static_cast<AssuanTransaction*>( opaque );
+    return t->data( data, datalen ).encodedError();
+  }
+
+  static gpgme_error_t assuan_transaction_inquire_callback( void * opaque, const char * name, const char * args, gpgme_data_t * r_data ) {
+    assert( opaque );
+    Context::Private * p = static_cast<Context::Private*>( opaque );
+    AssuanTransaction * t = p->lastAssuanTransaction.get();
+    assert( t );
+    Error err;
+    if ( name )
+      p->lastAssuanInquireData = t->inquire( name, args, err );
+    else
+      p->lastAssuanInquireData = Data::null;
+    if ( !p->lastAssuanInquireData.isNull() )
+      *r_data = p->lastAssuanInquireData.impl()->data;
+    return err.encodedError();
+  }
+
+  static gpgme_error_t assuan_transaction_status_callback( void * opaque, const char * status, const char * args ) {
+    assert( opaque );
+    AssuanTransaction * t = static_cast<AssuanTransaction*>( opaque );
+    return t->status( status, args ).encodedError();
+  }
+#endif
+
+  AssuanResult Context::assuanTransact( const char * command, std::auto_ptr<AssuanTransaction> transaction ) {
+    d->lastop = Private::AssuanTransact;
+    d->lastAssuanTransaction = transaction;
+#ifdef HAVE_GPGME_ASSUAN_ENGINE
+    d->lasterr = gpgme_op_assuan_transact( d->ctx, command,
+                                           d->lastAssuanTransaction.get() ? assuan_transaction_data_callback : 0,
+                                           d->lastAssuanTransaction.get(),
+                                           d->lastAssuanTransaction.get() ? assuan_transaction_inquire_callback : 0,
+                                           d->lastAssuanTransaction.get() ? d : 0, // sic!
+                                           d->lastAssuanTransaction.get() ? assuan_transaction_status_callback : 0,
+                                           d->lastAssuanTransaction.get() );
+#else
+    (void)command;
+    d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED );
+#endif
+    return AssuanResult( d->ctx, d->lasterr );
+  }
+
+  Error Context::startAssuanTransaction( const char * command, std::auto_ptr<AssuanTransaction> transaction ) {
+    d->lastop = Private::AssuanTransact;
+    d->lastAssuanTransaction = transaction;
+#ifdef HAVE_GPGME_ASSUAN_ENGINE
+    return Error( d->lasterr = gpgme_op_assuan_transact_start( d->ctx, command,
+                                                               d->lastAssuanTransaction.get() ? assuan_transaction_data_callback : 0,
+                                                               d->lastAssuanTransaction.get(),
+                                                               d->lastAssuanTransaction.get() ? assuan_transaction_inquire_callback : 0,
+                                                               d->lastAssuanTransaction.get() ? d : 0, // sic!
+                                                               d->lastAssuanTransaction.get() ? assuan_transaction_status_callback : 0,
+                                                               d->lastAssuanTransaction.get() ) );
+#else
+    (void)command;
+    return Error( d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED ) );
+#endif
+  }
+
+  AssuanResult Context::assuanResult() const {
+    if ( d->lastop & Private::AssuanTransact )
+      return AssuanResult( d->ctx, d->lasterr );
+    else
+      return AssuanResult();
+  }
+
+  AssuanTransaction * Context::lastAssuanTransaction() const {
+    return d->lastAssuanTransaction.get();
+ }
 
   DecryptionResult Context::decrypt( const Data & cipherText, Data & plainText ) {
     d->lastop = Private::Decrypt;
