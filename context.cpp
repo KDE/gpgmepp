@@ -55,6 +55,10 @@ using std::endl;
 #include <cassert>
 
 namespace GpgME {
+  void initializeLibrary() {
+      gpgme_check_version( 0 );
+  }
+
   static inline gpgme_error_t makeError( gpg_err_code_t code ) {
     return gpg_err_make( (gpg_err_source_t)22, code );
   }

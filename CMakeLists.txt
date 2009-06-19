@@ -38,7 +38,7 @@ set(gpgme_LIB_SRCS
         gpgadduserideditinteractor.cpp
 )
 
-set( _gpgmepp_version 2.2.1 )
+set( _gpgmepp_version 2.2.2 )
 set( _gpgmepp_soversion 2 )
 
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
