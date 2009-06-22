@@ -45,6 +45,8 @@
 
 #include <gpgme.h>
 
+#include <boost/scoped_array.hpp>
+
 #include <istream>
 #ifndef NDEBUG
 #include <iostream>
@@ -406,10 +408,43 @@ namespace GpgME {
     return ImportResult( d->ctx, Error(d->lasterr) );
   }
 
+  ImportResult Context::importKeys( const std::vector<Key> & kk ) {
+    d->lastop = Private::Import;
+#ifdef HAVE_GPGME_OP_IMPORT_KEYS
+    const boost::scoped_array<gpgme_key_t> keys( new gpgme_key_t[ kk.size() + 1 ] );
+    gpgme_key_t * keys_it = &keys[0];
+    for ( std::vector<Key>::const_iterator it = kk.begin(), end = kk.end() ; it != end ; ++it )
+      if ( it->impl() )
+        *keys_it++ = it->impl();
+    *keys_it++ = 0;
+    d->lasterr = gpgme_op_import_keys( d->ctx, keys.get() );
+    return ImportResult( d->ctx, Error(d->lasterr) );
+#else
+    (void)kk;
+    return ImportResult( Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) ) );
+#endif
+  }
+
   Error Context::startKeyImport( const Data & data ) {
     d->lastop = Private::Import;
     const Data::Private * const dp = data.impl();
     return Error( d->lasterr = gpgme_op_import_start( d->ctx, dp ? dp->data : 0 ) );
+  }
+
+  Error Context::startKeyImport( const std::vector<Key> & kk ) {
+    d->lastop = Private::Import;
+#ifdef HAVE_GPGME_OP_IMPORT_KEYS
+    const boost::scoped_array<gpgme_key_t> keys( new gpgme_key_t[ kk.size() + 1 ] );
+    gpgme_key_t * keys_it = &keys[0];
+    for ( std::vector<Key>::const_iterator it = kk.begin(), end = kk.end() ; it != end ; ++it )
+      if ( it->impl() )
+        *keys_it++ = it->impl();
+    *keys_it++ = 0;
+    return Error( d->lasterr = gpgme_op_import_keys_start( d->ctx, keys.get() ) );
+#else
+    (void)kk;
+    return Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) );
+#endif
   }
 
   ImportResult Context::importResult() const {
@@ -1166,6 +1201,9 @@ static const unsigned long supported_features = 0
 #endif
 #ifdef HAVE_GPGME_KEYLIST_MODE_EPHEMERAL
     | GpgME::EphemeralKeylistModeFeature
+#endif
+#ifdef HAVE_GPGME_OP_IMPORT_KEYS
+    | GpgME::ImportFromKeyserverFeature
 #endif
     ;
 
