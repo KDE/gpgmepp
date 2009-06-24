@@ -109,7 +109,7 @@ namespace GpgME {
         SignatureNotationsCriticalFlagFeature      = 0x00100000,
         SignatureNotationsHumanReadableFlagFeature = 0x00200000,
         CardKeyFeature                             = 0x00400000,
-        // reserved
+        ImportFromKeyserverFeature                 = 0x00800000,
 
         KeyIsQualifiedFeature                      = 0x01000200,
         SubkeyIsQualifiedFeature                   = 0x02000000,

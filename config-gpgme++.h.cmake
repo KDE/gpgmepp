@@ -86,3 +86,6 @@
 
 /* Define to 1 if your gpgme has GPGME_KEYLIST_MODE_EPHEMERAL */
 #cmakedefine HAVE_GPGME_KEYLIST_MODE_EPHEMERAL
+
+/* Define to 1 if your gpgme has gpgme_op_import_keys */
+#cmakedefine HAVE_GPGME_OP_IMPORT_KEYS

@@ -158,7 +158,9 @@ namespace GpgME {
     //
 
     ImportResult importKeys( const Data & data );
+    ImportResult importKeys( const std::vector<Key> & keys );
     GpgME::Error startKeyImport( const Data & data );
+    GpgME::Error startKeyImport( const std::vector<Key> & keys );
     ImportResult importResult() const;
 
     //
