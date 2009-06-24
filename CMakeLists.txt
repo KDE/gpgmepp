@@ -18,6 +18,7 @@ set(gpgme_LIB_SRCS
         callbacks.cpp 
         eventloopinteractor.cpp 
         editinteractor.cpp
+        assuanresult.cpp
         keylistresult.cpp
         keygenerationresult.cpp 
         importresult.cpp
@@ -32,7 +33,7 @@ set(gpgme_LIB_SRCS
         gpgadduserideditinteractor.cpp
 )
 
-set( _gpgmepp_version 2.2.0 )
+set( _gpgmepp_version 2.2.1 )
 set( _gpgmepp_soversion 2 )
 
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
@@ -119,6 +120,7 @@ if ( GPGME_FOUND )
    install(FILES
         global.h error.h exception.h context.h key.h trustitem.h 
         eventloopinteractor.h editinteractor.h data.h gpgmefw.h result.h
+        assuanresult.h
         keylistresult.h keygenerationresult.h 
         importresult.h decryptionresult.h verificationresult.h
         signingresult.h encryptionresult.h notation.h engineinfo.h

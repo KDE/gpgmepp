@@ -25,6 +25,7 @@
 #define __GPGMEPP_CONTEXT_P_H__
 
 #include <gpgme++/context.h>
+#include <gpgme++/data.h>
 
 #include <gpgme.h>
 
@@ -54,7 +55,11 @@ namespace GpgME {
       Edit      = 0x400, // no gpgme_edit_result_t, but nevertheless...
       CardEdit  = 0x800, // no gpgme_card_edit_result_t, but nevertheless...
 
-      GetAuditLog = 0x1000 // no gpgme_getauditlog_result_t, but nevertheless...
+      GetAuditLog = 0x1000, // no gpgme_getauditlog_result_t, but nevertheless...
+
+      AssuanTransact = 0x2000,
+
+      EndMarker
     };
 
     Private( gpgme_ctx_t c=0 );
@@ -65,6 +70,8 @@ namespace GpgME {
     gpgme_io_cbs * iocbs;
     Operation lastop;
     gpgme_error_t lasterr;
+    Data lastAssuanInquireData;
+    std::auto_ptr<AssuanTransaction> lastAssuanTransaction;
     std::auto_ptr<EditInteractor> lastEditInteractor, lastCardEditInteractor;
   };
 
