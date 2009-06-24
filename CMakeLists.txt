@@ -1,5 +1,10 @@
 project( gpgmepp )
 
+if (MINGW)
+  set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -mms-bitfields")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mms-bitfields")
+endif (MINGW)
+
 include_directories(  ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
