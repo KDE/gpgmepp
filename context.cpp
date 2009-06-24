@@ -410,6 +410,8 @@ namespace GpgME {
 
   ImportResult Context::importKeys( const std::vector<Key> & kk ) {
     d->lastop = Private::Import;
+    d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED );
+    bool shouldHaveResult = false;
 #ifdef HAVE_GPGME_OP_IMPORT_KEYS
     const boost::scoped_array<gpgme_key_t> keys( new gpgme_key_t[ kk.size() + 1 ] );
     gpgme_key_t * keys_it = &keys[0];
@@ -418,11 +420,40 @@ namespace GpgME {
         *keys_it++ = it->impl();
     *keys_it++ = 0;
     d->lasterr = gpgme_op_import_keys( d->ctx, keys.get() );
-    return ImportResult( d->ctx, Error(d->lasterr) );
-#else
-    (void)kk;
-    return ImportResult( Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) ) );
+    shouldHaveResult = true;
 #endif
+    if ( ( gpgme_err_code( d->lasterr ) == GPG_ERR_NOT_IMPLEMENTED ||
+           gpgme_err_code( d->lasterr ) == GPG_ERR_NOT_SUPPORTED ) &&
+         protocol() == CMS )
+    {
+        // ok, try the workaround (export+import):
+        std::vector<const char*> fprs;
+        for ( std::vector<Key>::const_iterator it = kk.begin(), end = kk.end() ; it != end ; ++it ) {
+            if ( const char * fpr = it->primaryFingerprint() ) {
+                if ( *fpr )
+                    fprs.push_back( fpr );
+            } else if ( const char * keyid = it->keyID() ) {
+                if ( *keyid )
+                    fprs.push_back( keyid );
+            }
+        }
+        fprs.push_back( 0 );
+        Data data;
+        Data::Private * const dp = data.impl();
+        const gpgme_keylist_mode_t oldMode = gpgme_get_keylist_mode( d->ctx );
+        gpgme_set_keylist_mode( d->ctx, GPGME_KEYLIST_MODE_EXTERN );
+        d->lasterr = gpgme_op_export_ext( d->ctx, &fprs[0], 0, dp ? dp->data : 0 );
+        gpgme_set_keylist_mode( d->ctx, oldMode );
+        if ( !d->lasterr ) {
+            data.seek( 0, SEEK_SET );
+            d->lasterr = gpgme_op_import( d->ctx, dp ? dp->data : 0 );
+            shouldHaveResult = true;
+        }
+    }
+    if ( shouldHaveResult )
+        return ImportResult( d->ctx, Error(d->lasterr) );
+    else
+        return ImportResult( Error( d->lasterr ) );
   }
 
   Error Context::startKeyImport( const Data & data ) {
