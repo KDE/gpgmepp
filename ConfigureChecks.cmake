@@ -329,6 +329,17 @@ check_cxx_source_compiles ("
   }
 " HAVE_GPGME_KEYLIST_MODE_EPHEMERAL )
 
+# check if gpgme has import-from-keyserver support
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+     gpgme_ctx_t ctx = 0;
+     gpgme_key_t keys[2] = { 0, 0 };
+     const gpgme_error_t err = gpgme_op_import_keys( ctx, keys );
+     return err ? 1 : 0 ;
+  }
+" HAVE_GPGME_OP_IMPORT_KEYS )
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 

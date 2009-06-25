@@ -217,7 +217,11 @@ namespace GpgME {
   }
 
   const char * Key::primaryFingerprint() const {
-    return key && key->subkeys ? key->subkeys->fpr : 0 ;
+    const char * fpr = key && key->subkeys ? key->subkeys->fpr : 0 ;
+    if ( fpr )
+        return fpr;
+    else
+        return keyID();
   }
 
   unsigned int Key::keyListMode() const {

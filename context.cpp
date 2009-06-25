@@ -25,6 +25,7 @@
 #include <gpgme++/context.h>
 #include <gpgme++/eventloopinteractor.h>
 #include <gpgme++/trustitem.h>
+#include <gpgme++/assuanresult.h>
 #include <gpgme++/keylistresult.h>
 #include <gpgme++/keygenerationresult.h>
 #include <gpgme++/importresult.h>
@@ -35,12 +36,16 @@
 #include <gpgme++/engineinfo.h>
 #include <gpgme++/editinteractor.h>
 
+#include <gpgme++/interfaces/assuantransaction.h>
+
 #include "callbacks.h"
 #include "data_p.h"
 #include "context_p.h"
 #include "util.h"
 
 #include <gpgme.h>
+
+#include <boost/scoped_array.hpp>
 
 #include <istream>
 #ifndef NDEBUG
@@ -52,6 +57,10 @@ using std::endl;
 #include <cassert>
 
 namespace GpgME {
+  void initializeLibrary() {
+      gpgme_check_version( 0 );
+  }
+
   static inline gpgme_error_t makeError( gpg_err_code_t code ) {
     return gpg_err_make( (gpg_err_source_t)22, code );
   }
@@ -133,6 +142,8 @@ namespace GpgME {
         iocbs( 0 ),
         lastop( None ),
         lasterr( GPG_ERR_NO_ERROR ),
+        lastAssuanInquireData( Data::null ),
+        lastAssuanTransaction(),
         lastEditInteractor(),
         lastCardEditInteractor()
   {
@@ -397,10 +408,74 @@ namespace GpgME {
     return ImportResult( d->ctx, Error(d->lasterr) );
   }
 
+  ImportResult Context::importKeys( const std::vector<Key> & kk ) {
+    d->lastop = Private::Import;
+    d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED );
+    bool shouldHaveResult = false;
+#ifdef HAVE_GPGME_OP_IMPORT_KEYS
+    const boost::scoped_array<gpgme_key_t> keys( new gpgme_key_t[ kk.size() + 1 ] );
+    gpgme_key_t * keys_it = &keys[0];
+    for ( std::vector<Key>::const_iterator it = kk.begin(), end = kk.end() ; it != end ; ++it )
+      if ( it->impl() )
+        *keys_it++ = it->impl();
+    *keys_it++ = 0;
+    d->lasterr = gpgme_op_import_keys( d->ctx, keys.get() );
+    shouldHaveResult = true;
+#endif
+    if ( ( gpgme_err_code( d->lasterr ) == GPG_ERR_NOT_IMPLEMENTED ||
+           gpgme_err_code( d->lasterr ) == GPG_ERR_NOT_SUPPORTED ) &&
+         protocol() == CMS )
+    {
+        // ok, try the workaround (export+import):
+        std::vector<const char*> fprs;
+        for ( std::vector<Key>::const_iterator it = kk.begin(), end = kk.end() ; it != end ; ++it ) {
+            if ( const char * fpr = it->primaryFingerprint() ) {
+                if ( *fpr )
+                    fprs.push_back( fpr );
+            } else if ( const char * keyid = it->keyID() ) {
+                if ( *keyid )
+                    fprs.push_back( keyid );
+            }
+        }
+        fprs.push_back( 0 );
+        Data data;
+        Data::Private * const dp = data.impl();
+        const gpgme_keylist_mode_t oldMode = gpgme_get_keylist_mode( d->ctx );
+        gpgme_set_keylist_mode( d->ctx, GPGME_KEYLIST_MODE_EXTERN );
+        d->lasterr = gpgme_op_export_ext( d->ctx, &fprs[0], 0, dp ? dp->data : 0 );
+        gpgme_set_keylist_mode( d->ctx, oldMode );
+        if ( !d->lasterr ) {
+            data.seek( 0, SEEK_SET );
+            d->lasterr = gpgme_op_import( d->ctx, dp ? dp->data : 0 );
+            shouldHaveResult = true;
+        }
+    }
+    if ( shouldHaveResult )
+        return ImportResult( d->ctx, Error(d->lasterr) );
+    else
+        return ImportResult( Error( d->lasterr ) );
+  }
+
   Error Context::startKeyImport( const Data & data ) {
     d->lastop = Private::Import;
     const Data::Private * const dp = data.impl();
     return Error( d->lasterr = gpgme_op_import_start( d->ctx, dp ? dp->data : 0 ) );
+  }
+
+  Error Context::startKeyImport( const std::vector<Key> & kk ) {
+    d->lastop = Private::Import;
+#ifdef HAVE_GPGME_OP_IMPORT_KEYS
+    const boost::scoped_array<gpgme_key_t> keys( new gpgme_key_t[ kk.size() + 1 ] );
+    gpgme_key_t * keys_it = &keys[0];
+    for ( std::vector<Key>::const_iterator it = kk.begin(), end = kk.end() ; it != end ; ++it )
+      if ( it->impl() )
+        *keys_it++ = it->impl();
+    *keys_it++ = 0;
+    return Error( d->lasterr = gpgme_op_import_keys_start( d->ctx, keys.get() ) );
+#else
+    (void)kk;
+    return Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) );
+#endif
   }
 
   ImportResult Context::importResult() const {
@@ -482,6 +557,81 @@ namespace GpgME {
   Error Context::endTrustItemListing() {
     return Error( d->lasterr = gpgme_op_trustlist_end( d->ctx ) );
   }
+
+#ifdef HAVE_GPGME_ASSUAN_ENGINE
+  static gpgme_error_t assuan_transaction_data_callback( void * opaque, const void * data, size_t datalen ) {
+    assert( opaque );
+    AssuanTransaction * t = static_cast<AssuanTransaction*>( opaque );
+    return t->data( data, datalen ).encodedError();
+  }
+
+  static gpgme_error_t assuan_transaction_inquire_callback( void * opaque, const char * name, const char * args, gpgme_data_t * r_data ) {
+    assert( opaque );
+    Context::Private * p = static_cast<Context::Private*>( opaque );
+    AssuanTransaction * t = p->lastAssuanTransaction.get();
+    assert( t );
+    Error err;
+    if ( name )
+      p->lastAssuanInquireData = t->inquire( name, args, err );
+    else
+      p->lastAssuanInquireData = Data::null;
+    if ( !p->lastAssuanInquireData.isNull() )
+      *r_data = p->lastAssuanInquireData.impl()->data;
+    return err.encodedError();
+  }
+
+  static gpgme_error_t assuan_transaction_status_callback( void * opaque, const char * status, const char * args ) {
+    assert( opaque );
+    AssuanTransaction * t = static_cast<AssuanTransaction*>( opaque );
+    return t->status( status, args ).encodedError();
+  }
+#endif
+
+  AssuanResult Context::assuanTransact( const char * command, std::auto_ptr<AssuanTransaction> transaction ) {
+    d->lastop = Private::AssuanTransact;
+    d->lastAssuanTransaction = transaction;
+#ifdef HAVE_GPGME_ASSUAN_ENGINE
+    d->lasterr = gpgme_op_assuan_transact( d->ctx, command,
+                                           d->lastAssuanTransaction.get() ? assuan_transaction_data_callback : 0,
+                                           d->lastAssuanTransaction.get(),
+                                           d->lastAssuanTransaction.get() ? assuan_transaction_inquire_callback : 0,
+                                           d->lastAssuanTransaction.get() ? d : 0, // sic!
+                                           d->lastAssuanTransaction.get() ? assuan_transaction_status_callback : 0,
+                                           d->lastAssuanTransaction.get() );
+#else
+    (void)command;
+    d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED );
+#endif
+    return AssuanResult( d->ctx, d->lasterr );
+  }
+
+  Error Context::startAssuanTransaction( const char * command, std::auto_ptr<AssuanTransaction> transaction ) {
+    d->lastop = Private::AssuanTransact;
+    d->lastAssuanTransaction = transaction;
+#ifdef HAVE_GPGME_ASSUAN_ENGINE
+    return Error( d->lasterr = gpgme_op_assuan_transact_start( d->ctx, command,
+                                                               d->lastAssuanTransaction.get() ? assuan_transaction_data_callback : 0,
+                                                               d->lastAssuanTransaction.get(),
+                                                               d->lastAssuanTransaction.get() ? assuan_transaction_inquire_callback : 0,
+                                                               d->lastAssuanTransaction.get() ? d : 0, // sic!
+                                                               d->lastAssuanTransaction.get() ? assuan_transaction_status_callback : 0,
+                                                               d->lastAssuanTransaction.get() ) );
+#else
+    (void)command;
+    return Error( d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED ) );
+#endif
+  }
+
+  AssuanResult Context::assuanResult() const {
+    if ( d->lastop & Private::AssuanTransact )
+      return AssuanResult( d->ctx, d->lasterr );
+    else
+      return AssuanResult();
+  }
+
+  AssuanTransaction * Context::lastAssuanTransaction() const {
+    return d->lastAssuanTransaction.get();
+ }
 
   DecryptionResult Context::decrypt( const Data & cipherText, Data & plainText ) {
     d->lastop = Private::Decrypt;
@@ -1082,6 +1232,9 @@ static const unsigned long supported_features = 0
 #endif
 #ifdef HAVE_GPGME_KEYLIST_MODE_EPHEMERAL
     | GpgME::EphemeralKeylistModeFeature
+#endif
+#ifdef HAVE_GPGME_OP_IMPORT_KEYS
+    | GpgME::ImportFromKeyserverFeature
 #endif
     ;
 

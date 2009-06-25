@@ -43,7 +43,9 @@ namespace GpgME {
   class PassphraseProvider;
   class EventLoopInteractor;
   class EditInteractor;
+  class AssuanTransaction;
 
+  class AssuanResult;
   class KeyListResult;
   class KeyGenerationResult;
   class ImportResult;
@@ -156,7 +158,9 @@ namespace GpgME {
     //
 
     ImportResult importKeys( const Data & data );
+    ImportResult importKeys( const std::vector<Key> & keys );
     GpgME::Error startKeyImport( const Data & data );
+    GpgME::Error startKeyImport( const std::vector<Key> & keys );
     ImportResult importResult() const;
 
     //
@@ -191,6 +195,16 @@ namespace GpgME {
     GpgME::Error startTrustItemListing( const char * pattern, int maxLevel );
     TrustItem nextTrustItem( GpgME::Error & e );
     GpgME::Error endTrustItemListing();
+
+    //
+    // Assuan Transactions
+    //
+
+    AssuanResult assuanTransact( const char * command, std::auto_ptr<AssuanTransaction> transaction );
+    GpgME::Error startAssuanTransaction( const char * command, std::auto_ptr<AssuanTransaction> transaction );
+    AssuanResult assuanResult() const;
+
+    AssuanTransaction * lastAssuanTransaction() const;
 
     //
     //
