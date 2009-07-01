@@ -636,7 +636,6 @@ namespace GpgME {
                                            assuan_transaction_status_callback,
                                            d->lastAssuanTransaction.get() );
 #else
-    (void)command;
     d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED );
 #endif
     return AssuanResult( d->ctx, d->lasterr );
@@ -656,7 +655,6 @@ namespace GpgME {
                                                                assuan_transaction_status_callback,
                                                                d->lastAssuanTransaction.get() ) );
 #else
-    (void)command;
     return Error( d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED ) );
 #endif
   }
@@ -1110,7 +1108,7 @@ namespace GpgME {
 
   std::ostream & operator<<( std::ostream & os, Context::EncryptionFlags flags ) {
       os << "GpgME::Context::EncryptionFlags(";
-#define CHECK( x ) if ( !(flags & (Context::x)) ) {} else do { os << #x " "; } while (0) 
+#define CHECK( x ) if ( !(flags & (Context::x)) ) {} else do { os << #x " "; } while (0)
      CHECK( AlwaysTrust );
 #undef CHECK
       return os << ')';
