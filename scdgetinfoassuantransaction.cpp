@@ -122,7 +122,7 @@ void ScdGetInfoAssuanTransaction::makeCommand() const {
     assert( m_item < LastInfoItem );
     m_command = "SCD GETINFO ";
     m_command += tokens[m_item];
-};
+}
 
 const char * ScdGetInfoAssuanTransaction::command() const {
     makeCommand();
