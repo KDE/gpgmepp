@@ -97,7 +97,7 @@ void GpgAgentGetInfoAssuanTransaction::makeCommand() const {
     assert( m_item < LastInfoItem );
     m_command = "GETINFO ";
     m_command += tokens[m_item];
-};
+}
 
 const char * GpgAgentGetInfoAssuanTransaction::command() const {
     makeCommand();
