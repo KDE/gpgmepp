@@ -179,6 +179,7 @@ namespace GpgME {
     GpgME::Error startEditing( const Key & key, std::auto_ptr<EditInteractor> function, Data & out );
 
     EditInteractor * lastEditInteractor() const;
+    std::auto_ptr<EditInteractor> takeLastEditInteractor();
 
     //
     // SmartCard Editing
@@ -188,6 +189,7 @@ namespace GpgME {
     GpgME::Error startCardEditing( const Key & key, std::auto_ptr<EditInteractor> function, Data & out );
 
     EditInteractor * lastCardEditInteractor() const;
+    std::auto_ptr<EditInteractor> takeLastCardEditInteractor();
 
     //
     // Trust Item Management
@@ -201,8 +203,10 @@ namespace GpgME {
     // Assuan Transactions
     //
 
-    AssuanResult assuanTransact( std::auto_ptr<AssuanTransaction> transaction );
-    GpgME::Error startAssuanTransaction( std::auto_ptr<AssuanTransaction> transaction );
+    AssuanResult assuanTransact( const char * command, std::auto_ptr<AssuanTransaction> transaction );
+    AssuanResult assuanTransact( const char * command );
+    GpgME::Error startAssuanTransaction( const char * command, std::auto_ptr<AssuanTransaction> transaction );
+    GpgME::Error startAssuanTransaction( const char * command );
     AssuanResult assuanResult() const;
 
     AssuanTransaction * lastAssuanTransaction() const;

@@ -36,6 +36,7 @@ set(gpgme_LIB_SRCS
         gpgsetownertrusteditinteractor.cpp
         gpgsignkeyeditinteractor.cpp
         gpgadduserideditinteractor.cpp
+        defaultassuantransaction.cpp
         scdgetinfoassuantransaction.cpp
         gpgagentgetinfoassuantransaction.cpp
 )
@@ -135,6 +136,7 @@ if ( GPGME_FOUND )
         gpgsetownertrusteditinteractor.h
         gpgsignkeyeditinteractor.h
         gpgadduserideditinteractor.h
+        defaultassuantransaction.h
         scdgetinfoassuantransaction.h
         gpgagentgetinfoassuantransaction.h
         gpgme++_export.h 
