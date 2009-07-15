@@ -66,6 +66,7 @@ namespace GpgME {
     //
 
     static Context * createForProtocol( Protocol proto );
+    static std::auto_ptr<Context> createForEngine( Engine engine, Error * err=0 );
     virtual ~Context();
 
     //
@@ -200,11 +201,12 @@ namespace GpgME {
     // Assuan Transactions
     //
 
-    AssuanResult assuanTransact( const char * command, std::auto_ptr<AssuanTransaction> transaction );
-    GpgME::Error startAssuanTransaction( const char * command, std::auto_ptr<AssuanTransaction> transaction );
+    AssuanResult assuanTransact( std::auto_ptr<AssuanTransaction> transaction );
+    GpgME::Error startAssuanTransaction( std::auto_ptr<AssuanTransaction> transaction );
     AssuanResult assuanResult() const;
 
     AssuanTransaction * lastAssuanTransaction() const;
+    std::auto_ptr<AssuanTransaction> takeLastAssuanTransaction();
 
     //
     //
