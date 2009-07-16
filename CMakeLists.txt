@@ -36,9 +36,12 @@ set(gpgme_LIB_SRCS
         gpgsetownertrusteditinteractor.cpp
         gpgsignkeyeditinteractor.cpp
         gpgadduserideditinteractor.cpp
+        defaultassuantransaction.cpp
+        scdgetinfoassuantransaction.cpp
+        gpgagentgetinfoassuantransaction.cpp
 )
 
-set( _gpgmepp_version 2.3.1 )
+set( _gpgmepp_version 2.4.0 )
 set( _gpgmepp_soversion 2 )
 
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
@@ -133,6 +136,9 @@ if ( GPGME_FOUND )
         gpgsetownertrusteditinteractor.h
         gpgsignkeyeditinteractor.h
         gpgadduserideditinteractor.h
+        defaultassuantransaction.h
+        scdgetinfoassuantransaction.h
+        gpgagentgetinfoassuantransaction.h
         gpgme++_export.h 
         DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++ COMPONENT Devel
    )

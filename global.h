@@ -42,6 +42,11 @@ class QIODevice;
 namespace GpgME {
 
     GPGMEPP_EXPORT void initializeLibrary();
+    /*!
+      Initializes the library, returns Error::code() ==
+      GPG_ERR_USER_1 if underlying gpgme is too old.
+    */
+    GPGMEPP_EXPORT Error initializeLibrary(int);
 
     enum Protocol { OpenPGP, CMS, UnknownProtocol };
 

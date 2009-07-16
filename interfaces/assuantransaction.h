@@ -35,7 +35,7 @@ namespace GpgME {
     public:
         virtual ~AssuanTransaction() {}
 
-        virtual Error data( const void * data, size_t datalen ) = 0;
+        virtual Error data( const char * data, size_t datalen ) = 0;
         virtual Data  inquire( const char * name, const char * args, Error & err ) = 0;
         virtual Error status( const char * status, const char * args ) = 0;
     };
