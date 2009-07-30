@@ -57,7 +57,7 @@ static inline gpgme_keylist_mode_t add_to_gpgme_keylist_mode_t( unsigned int old
   }
   if ( newmodes & GpgME::Validate ) oldmode |= GPGME_KEYLIST_MODE_VALIDATE;
 #ifndef NDEBUG
-  if ( newmodes & ~(GpgME::Local|GpgME::Extern|GpgME::Signatures|GpgME::SignatureNotations|GpgME::Validate) )
+  if ( newmodes & ~(GpgME::Local|GpgME::Extern|GpgME::Signatures|GpgME::SignatureNotations|GpgME::Ephemeral|GpgME::Validate) )
     std::cerr << "GpgME::Context: keylist mode must be one of Local, "
       "Extern, Signatures, SignatureNotations, or Validate, or a combination thereof!" << std::endl;
 #endif
