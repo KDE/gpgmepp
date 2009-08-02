@@ -256,6 +256,16 @@ namespace GpgME {
 #endif
       me->keylist_mode     |= him->keylist_mode;
 
+#ifdef HAVE_GPGME_SUBKEY_T_IS_CARDKEY
+      // make sure the gpgme_sub_key_t::is_cardkey flag isn't lost:
+      for ( gpgme_sub_key_t mysk = me->subkeys ; mysk ; mysk = mysk->next )
+          for ( gpgme_sub_key_t hissk = him->subkeys ; hissk ; hissk = hissk->next )
+              if ( strcmp( mysk->fpr, hissk->fpr ) == 0 ) {
+                  mysk->is_cardkey |= hissk->is_cardkey;
+                  break;
+              }
+#endif
+
       return *this;
   }
 
