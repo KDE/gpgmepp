@@ -1,5 +1,5 @@
 project( gpgmepp )
-
+KDE4_NO_ENABLE_FINAL(gpgmepp)
 if (MINGW)
   set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -mms-bitfields")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mms-bitfields")
