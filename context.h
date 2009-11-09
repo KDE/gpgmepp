@@ -53,6 +53,7 @@ namespace GpgME {
   class VerificationResult;
   class SigningResult;
   class EncryptionResult;
+  class VfsMountResult;
 
   class EngineInfo;
 
@@ -294,6 +295,14 @@ namespace GpgME {
     };
     GpgME::Error startGetAuditLog( Data & output, unsigned int flags=0 );
     GpgME::Error getAuditLog( Data & output, unsigned int flags=0 );
+
+    //
+    //
+    // G13 crypto container operations
+    //
+    //
+    GpgME::Error createVFS( const char *containerFile, const std::vector<Key> &recipients );
+    VfsMountResult mountVFS( const char *containerFile, const char *mountDir );
 
     //
     //

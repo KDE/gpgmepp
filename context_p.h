@@ -59,6 +59,9 @@ namespace GpgME {
 
       AssuanTransact = 0x2000,
 
+      CreateVFS = 0x4000,
+      MountVFS = 0x8000,
+
       EndMarker
     };
 
