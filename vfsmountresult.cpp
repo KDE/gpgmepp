@@ -37,7 +37,7 @@ using namespace GpgME;
 class VfsMountResult::Private {
 public:
     explicit Private( const gpgme_vfs_mount_result_t r ) : mountDir( 0 ) {
-        if ( r )
+        if ( r && r->mount_dir )
           mountDir = strdup( r->mount_dir );
     }
 
