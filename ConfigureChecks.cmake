@@ -341,6 +341,21 @@ check_cxx_source_compiles ("
   }
 " HAVE_GPGME_OP_IMPORT_KEYS )
 
+# check for G13 VFS support
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+    gpgme_ctx_t ctx = 0;
+    gpgme_key_t users[2] = { 0, 0 };
+    gpgme_error_t err, op_err;
+    err = gpgme_set_protocol( ctx, GPGME_PROTOCOL_G13 );
+    gpgme_op_vfs_create( ctx, users, \"file\", 0, &op_err );
+    err = gpgme_op_vfs_mount( ctx, \"file\", \"mountdir\", 0, &op_err );
+    gpgme_vfs_mount_result_t res = gpgme_op_vfs_mount_result( ctx );
+    return 0;
+  }
+" HAVE_GPGME_G13_VFS )
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 
