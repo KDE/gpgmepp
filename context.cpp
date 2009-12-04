@@ -134,12 +134,11 @@ namespace GpgME {
       return os << "GpgME::Error(" << err.encodedError() << " (" << err.asString() << "))";
   }
 
-  Context::Context( gpgme_ctx_t ctx ) {
-    d = new Private( ctx );
+  Context::Context( gpgme_ctx_t ctx ) : d( new Private( ctx ) ) {
   }
 
   Context::~Context() {
-    delete d; d = 0;
+    delete d;
   }
 
   Context * Context::createForProtocol( Protocol proto ) {

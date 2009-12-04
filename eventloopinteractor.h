@@ -143,7 +143,7 @@ namespace GpgME {
   private:
     class Private;
     friend class Private;
-    Private * d;
+    Private * const d;
     static EventLoopInteractor * mSelf;
   };
 
