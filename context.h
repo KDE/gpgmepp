@@ -319,7 +319,7 @@ namespace GpgME {
     const Private * impl() const { return d; }
     Private * impl() { return d; }
   private:
-    Private * d;
+    Private * const d;
 
   private: // disable...
     Context( const Context & );

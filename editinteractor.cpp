@@ -175,7 +175,7 @@ EditInteractor::EditInteractor()
 }
 
 EditInteractor::~EditInteractor() {
-    delete d; d = 0;
+    delete d;
 }
 
 unsigned int EditInteractor::state() const {

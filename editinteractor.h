@@ -58,7 +58,7 @@ namespace GpgME {
 
     private:
         class Private;
-        Private * d;
+        Private * const d;
     };
 
 } // namespace GpgME

@@ -152,16 +152,15 @@ namespace GpgME {
 
   EventLoopInteractor * EventLoopInteractor::mSelf = 0;
 
-  EventLoopInteractor::EventLoopInteractor() {
+  EventLoopInteractor::EventLoopInteractor() : d( new Private ) {
     assert( !mSelf );
-    d = new Private();
     mSelf = this;
   }
 
   EventLoopInteractor::~EventLoopInteractor() {
     // warn if there are still callbacks registered
     mSelf = 0;
-    delete d; d = 0;
+    delete d;
   }
 
   void EventLoopInteractor::manage( Context * context ) {
