@@ -45,21 +45,22 @@ static inline gpgme_keylist_mode_t add_to_gpgme_keylist_mode_t( unsigned int old
 #ifdef HAVE_GPGME_KEYLIST_MODE_SIG_NOTATIONS
     oldmode |= GPGME_KEYLIST_MODE_SIG_NOTATIONS;
 #elif !defined(NDEBUG)
-    std::cerr << "GpgME: ignoring SignatureNotations keylist flag (gpgme too old)." << std::endl;
+    ;//std::cerr << "GpgME: ignoring SignatureNotations keylist flag (gpgme too old)." << std::endl;
 #endif
   }
   if ( newmodes & GpgME::Ephemeral ) {
 #ifdef HAVE_GPGME_KEYLIST_MODE_EPHEMERAL
     oldmode |= GPGME_KEYLIST_MODE_EPHEMERAL;
 #elif !defined(NDEBUG)
-    std::cerr << "GpgME: ignoring Ephemeral keylist flag (gpgme too old)." << std::endl;
+    ;//std::cerr << "GpgME: ignoring Ephemeral keylist flag (gpgme too old)." << std::endl;
 #endif
   }
   if ( newmodes & GpgME::Validate ) oldmode |= GPGME_KEYLIST_MODE_VALIDATE;
 #ifndef NDEBUG
-  if ( newmodes & ~(GpgME::Local|GpgME::Extern|GpgME::Signatures|GpgME::SignatureNotations|GpgME::Ephemeral|GpgME::Validate) )
-    std::cerr << "GpgME::Context: keylist mode must be one of Local, "
-      "Extern, Signatures, SignatureNotations, or Validate, or a combination thereof!" << std::endl;
+  if ( newmodes & ~(GpgME::Local|GpgME::Extern|GpgME::Signatures|GpgME::SignatureNotations|GpgME::Ephemeral|GpgME::Validate) ) {
+     //std::cerr << "GpgME::Context: keylist mode must be one of Local, "
+     //"Extern, Signatures, SignatureNotations, or Validate, or a combination thereof!" << std::endl;
+  }
 #endif
   return static_cast<gpgme_keylist_mode_t>( oldmode );
 }
@@ -86,8 +87,9 @@ static inline unsigned int convert_from_gpgme_keylist_mode_t( unsigned int mode 
 		GPGME_KEYLIST_MODE_EPHEMERAL|
 #endif
 		GPGME_KEYLIST_MODE_VALIDATE|
-		GPGME_KEYLIST_MODE_SIGS) )
-    std::cerr << "GpgME: WARNING: gpgme_get_keylist_mode() returned an unknown flag!" << std::endl;
+		GPGME_KEYLIST_MODE_SIGS) ) {
+    //std::cerr << "GpgME: WARNING: gpgme_get_keylist_mode() returned an unknown flag!" << std::endl;
+    }
 #endif // NDEBUG
   return result;
 }
@@ -113,14 +115,14 @@ static inline gpgme_sig_notation_flags_t  add_to_gpgme_sig_notation_flags_t( uns
 #ifdef HAVE_GPGME_SIG_NOTATION_HUMAN_READABLE
 	result |= GPGME_SIG_NOTATION_HUMAN_READABLE;
 #elif !defined(NDEBUG)
-	std::cerr << "GpgME::Context: ignoring HumanReadable signature notation flag (gpgme too old)" << std::endl;
+	//std::cerr << "GpgME::Context: ignoring HumanReadable signature notation flag (gpgme too old)" << std::endl;
 #endif
     }
     if ( newflags & GpgME::Notation::Critical ) {
 #ifdef HAVE_GPGME_SIG_NOTATION_CRITICAL
 	result |= GPGME_SIG_NOTATION_CRITICAL;
 #elif !defined(NDEBUG)
-	std::cerr << "GpgME::Context: ignoring Critical signature notation flag (gpgme too old)" << std::endl;
+	//std::cerr << "GpgME::Context: ignoring Critical signature notation flag (gpgme too old)" << std::endl;
 #endif
     }
     return static_cast<gpgme_sig_notation_flags_t>( result );
