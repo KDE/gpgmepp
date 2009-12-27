@@ -75,6 +75,7 @@ namespace GpgME {
       return xtoi_1( str ) * 16U + xtoi_1( str+1 );
   }
 
+#ifdef HAVE_GPGME_ASSUAN_ENGINE
   static void percent_unescape( std::string & s, bool plus2space ) {
       std::string::iterator src = s.begin(), dest = s.begin(), end = s.end();
       while ( src != end )
@@ -89,6 +90,7 @@ namespace GpgME {
           }
       s.erase( dest, end );
   }
+#endif
 
   void initializeLibrary() {
       gpgme_check_version( 0 );
