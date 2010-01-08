@@ -35,6 +35,7 @@
 #include <gpgme++/encryptionresult.h>
 #include <gpgme++/engineinfo.h>
 #include <gpgme++/editinteractor.h>
+#include <gpgme++/vfsmountresult.h>
 
 #include <gpgme++/interfaces/assuantransaction.h>
 #include <gpgme++/defaultassuantransaction.h>
@@ -161,6 +162,14 @@ namespace GpgME {
 	return 0;
       }
       break;
+#ifdef HAVE_GPGME_G13_VFS
+    case G13:
+      if ( gpgme_set_protocol( ctx, GPGME_PROTOCOL_G13 ) != 0 ) {
+        gpgme_release( ctx );
+        return 0;
+      }
+      break;
+#endif
     default:
       return 0;
     }
@@ -1048,6 +1057,38 @@ namespace GpgME {
     return Error( d->lasterr );
   }
 
+  Error Context::createVFS(const char* containerFile, const std::vector< Key >& recipients) {
+    d->lastop = Private::CreateVFS;
+#ifdef HAVE_GPGME_G13_VFS
+    gpgme_key_t * const keys = new gpgme_key_t[ recipients.size() + 1 ];
+    gpgme_key_t * keys_it = keys;
+    for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it )
+      if ( it->impl() )
+        *keys_it++ = it->impl();
+    *keys_it++ = 0;
+
+    gpgme_error_t op_err;
+    d->lasterr = gpgme_op_vfs_create( d->ctx, keys, containerFile, 0, &op_err );
+    delete[] keys;
+    Error error( d->lasterr );
+    if ( error )
+      return error;
+    return Error( d->lasterr = op_err );
+#else
+    return Error( d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED ) );
+#endif
+  }
+
+  VfsMountResult Context::mountVFS(const char* containerFile, const char* mountDir) {
+    d->lastop = Private::MountVFS;
+#ifdef HAVE_GPGME_G13_VFS
+    gpgme_error_t op_err;
+    d->lasterr = gpgme_op_vfs_mount( d->ctx, containerFile, mountDir, 0, &op_err );
+    return VfsMountResult( d->ctx, Error( d->lasterr ), Error( op_err ) );
+#else
+    return VfsMountResult( d->ctx, Error( d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED ) ), Error() );
+#endif
+  }
 
   Error Context::cancelPendingOperation() {
 #ifdef HAVE_GPGME_CANCEL_ASYNC
@@ -1333,6 +1374,9 @@ static const unsigned long supported_features = 0
 #endif
 #ifdef HAVE_GPGME_OP_IMPORT_KEYS
     | GpgME::ImportFromKeyserverFeature
+#endif
+#ifdef HAVE_GPGME_G13_VFS
+    | GpgME::G13VFSFeature
 #endif
     ;
 

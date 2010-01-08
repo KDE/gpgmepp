@@ -48,7 +48,7 @@ namespace GpgME {
     */
     GPGMEPP_EXPORT Error initializeLibrary(int);
 
-    enum Protocol { OpenPGP, CMS, UnknownProtocol };
+    enum Protocol { OpenPGP, CMS, UnknownProtocol, G13 };
 
     enum Engine { GpgEngine, GpgSMEngine, GpgConfEngine, UnknownEngine, AssuanEngine };
 
@@ -122,7 +122,7 @@ namespace GpgME {
         SignatureAlgorithmFieldsFeature            = 0x08000000,
 
         FdPointerFeature                           = 0x10000000,
-        // reserved
+        G13VFSFeature                              = 0x20000000,
         // reserved
         // unusable (max value)
 

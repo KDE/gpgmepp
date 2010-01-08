@@ -89,3 +89,6 @@
 
 /* Define to 1 if your gpgme has gpgme_op_import_keys */
 #cmakedefine HAVE_GPGME_OP_IMPORT_KEYS
+
+/* Define to 1 if your gpgme has support for G13 VFS operations */
+#cmakedefine HAVE_GPGME_G13_VFS
