@@ -1075,6 +1075,8 @@ namespace GpgME {
       return error;
     return Error( d->lasterr = op_err );
 #else
+    Q_UNUSED( containerFile );
+    Q_UNUSED( recipients );
     return Error( d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED ) );
 #endif
   }
@@ -1086,6 +1088,8 @@ namespace GpgME {
     d->lasterr = gpgme_op_vfs_mount( d->ctx, containerFile, mountDir, 0, &op_err );
     return VfsMountResult( d->ctx, Error( d->lasterr ), Error( op_err ) );
 #else
+    Q_UNUSED( containerFile );
+    Q_UNUSED( mountDir );
     return VfsMountResult( d->ctx, Error( d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED ) ), Error() );
 #endif
   }
