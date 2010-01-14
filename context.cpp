@@ -192,8 +192,8 @@ namespace GpgME {
         *error = Error( gpg_error( GPG_ERR_NOT_SUPPORTED ) );
       return std::auto_ptr<Context>();
 #endif
-#ifdef HAVE_GPGME_G13_VFS
     case G13Engine:
+#ifdef HAVE_GPGME_G13_VFS
       if ( const gpgme_error_t err = gpgme_set_protocol( ctx, GPGME_PROTOCOL_G13 ) ) {
         gpgme_release( ctx );
         if ( error )
