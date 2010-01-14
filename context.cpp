@@ -162,14 +162,6 @@ namespace GpgME {
 	return 0;
       }
       break;
-#ifdef HAVE_GPGME_G13_VFS
-    case G13:
-      if ( gpgme_set_protocol( ctx, GPGME_PROTOCOL_G13 ) != 0 ) {
-        gpgme_release( ctx );
-        return 0;
-      }
-      break;
-#endif
     default:
       return 0;
     }
@@ -189,6 +181,20 @@ namespace GpgME {
     case AssuanEngine:
 #ifdef HAVE_GPGME_ASSUAN_ENGINE
       if ( const gpgme_error_t err = gpgme_set_protocol( ctx, GPGME_PROTOCOL_ASSUAN ) ) {
+        gpgme_release( ctx );
+        if ( error )
+          *error = Error( err );
+        return std::auto_ptr<Context>();
+      }
+      break;
+#else
+      if ( error )
+        *error = Error( gpg_error( GPG_ERR_NOT_SUPPORTED ) );
+      return std::auto_ptr<Context>();
+#endif
+#ifdef HAVE_GPGME_G13_VFS
+    case G13Engine:
+      if ( const gpgme_error_t err = gpgme_set_protocol( ctx, GPGME_PROTOCOL_G13 ) ) {
         gpgme_release( ctx );
         if ( error )
           *error = Error( err );

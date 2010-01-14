@@ -48,9 +48,9 @@ namespace GpgME {
     */
     GPGMEPP_EXPORT Error initializeLibrary(int);
 
-    enum Protocol { OpenPGP, CMS, UnknownProtocol, G13 };
+    enum Protocol { OpenPGP, CMS, UnknownProtocol };
 
-    enum Engine { GpgEngine, GpgSMEngine, GpgConfEngine, UnknownEngine, AssuanEngine };
+    enum Engine { GpgEngine, GpgSMEngine, GpgConfEngine, UnknownEngine, AssuanEngine, G13Engine };
 
     enum KeyListMode {
       Local = 0x1,
