@@ -1277,6 +1277,12 @@ static gpgme_protocol_t engine2protocol( const GpgME::Engine engine ) {
 #else
         break;
 #endif
+    case GpgME::G13Engine:
+#ifdef HAVE_GPGME_G13_VFS
+        return GPGME_PROTOCOL_G13;
+#else
+        break;
+#endif
     case GpgME::UnknownEngine:
         ;
     }
