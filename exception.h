@@ -33,8 +33,15 @@ namespace GpgME {
 
     class GPGMEPP_EXPORT Exception : public std::runtime_error {
     public:
-        explicit Exception( const GpgME::Error & err, const std::string & msg=std::string() )
-            : std::runtime_error( make_message( err, msg ) ), m_error( err ), m_message( msg ) {}
+        enum Options {
+            NoOptions = 0x0,
+            MessageOnly = 0x1,
+
+            AllOptions = MessageOnly
+        };
+
+        explicit Exception( const GpgME::Error & err, const std::string & msg=std::string(), Options opt=NoOptions )
+            : std::runtime_error( make_message( err, msg, opt ) ), m_error( err ), m_message( msg ) {}
         
         ~Exception() throw();
 
@@ -42,6 +49,7 @@ namespace GpgME {
         const std::string & message() const { return m_message; }
     private:
         static std::string make_message( const GpgME::Error & err, const std::string & msg );
+        static std::string make_message( const GpgME::Error & err, const std::string & msg, Options opt );
     private:
         const GpgME::Error m_error;
         const std::string m_message;

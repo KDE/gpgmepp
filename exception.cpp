@@ -34,6 +34,13 @@ Exception::~Exception() throw() {}
 
 // static
 string Exception::make_message( const Error & err, const string & msg ) {
+    make_message( err, msg, NoOptions );
+}
+
+// static
+string Exception::make_message( const Error & err, const string & msg, Options opt ) {
+    if ( opt & MessageOnly )
+        return msg;
     char error_string[128];
     error_string[0] = '\0';
     gpg_strerror_r( err.encodedError(), error_string, sizeof error_string );
