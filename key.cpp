@@ -173,6 +173,10 @@ namespace GpgME {
     if ( key && key->protocol == GPGME_PROTOCOL_OpenPGP )
       return true;
 #endif
+    return canReallySign();
+  }
+
+  bool Key::canReallySign() const {
     return key && key->can_sign;
   }
 
