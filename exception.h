@@ -40,7 +40,10 @@ namespace GpgME {
             AllOptions = MessageOnly
         };
 
-        explicit Exception( const GpgME::Error & err, const std::string & msg=std::string(), Options opt=NoOptions )
+        explicit Exception( const GpgME::Error & err, const std::string & msg=std::string() )
+            : std::runtime_error( make_message( err, msg, NoOptions ) ), m_error( err ), m_message( msg ) {}
+
+        explicit Exception( const GpgME::Error & err, const std::string & msg, Options opt )
             : std::runtime_error( make_message( err, msg, opt ) ), m_error( err ), m_message( msg ) {}
         
         ~Exception() throw();
