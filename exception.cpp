@@ -34,7 +34,7 @@ Exception::~Exception() throw() {}
 
 // static
 string Exception::make_message( const Error & err, const string & msg ) {
-    make_message( err, msg, NoOptions );
+    return make_message( err, msg, NoOptions );
 }
 
 // static
