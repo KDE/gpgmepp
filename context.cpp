@@ -1417,6 +1417,15 @@ static const unsigned long supported_features = 0
 #endif
     ;
 
+static const unsigned long supported_features2 = 0
+    ;
+
 bool GpgME::hasFeature( unsigned long features ) {
     return features == ( features & supported_features );
+}
+
+bool GpgME::hasFeature( unsigned long features, unsigned long features2 ) {
+    return features  == ( features  & supported_features  )
+        && features2 == ( features2 & supported_features2 )
+        ;
 }

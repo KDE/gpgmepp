@@ -129,7 +129,11 @@ namespace GpgME {
 
         FeatureMaxValue                            = 0x80000000
     };
+    enum Feature2 {
+        Feature2MaxValue                           = 0x80000000
+    };
     GPGMEPP_EXPORT bool hasFeature( unsigned long feature );
+    GPGMEPP_EXPORT bool hasFeature( unsigned long feature, unsigned long feature2 );
 
 } // namespace GpgME
 
