@@ -173,6 +173,13 @@ namespace GpgME {
     GpgME::Error startKeyDeletion( const Key & key, bool allowSecretKeyDeletion=false );
 
     //
+    // Passphrase changing
+    //
+
+    GpgME::Error passwd( const Key & key );
+    GpgME::Error startPasswd( const Key & key );
+
+    //
     // Key Editing
     //
 

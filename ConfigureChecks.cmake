@@ -356,6 +356,18 @@ check_cxx_source_compiles ("
   }
 " HAVE_GPGME_G13_VFS )
 
+# check if gpgme has change-passphrase support
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+     gpgme_ctx_t ctx = 0;
+     gpgme_key_t key = 0;
+     unsigned int flags = 0;
+     const gpgme_error_t err = gpgme_op_passwd( ctx, key, flags );
+     return err ? 1 : 0 ;
+  }
+" HAVE_GPGME_OP_PASSWD )
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 

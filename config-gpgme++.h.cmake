@@ -92,3 +92,6 @@
 
 /* Define to 1 if your gpgme has support for G13 VFS operations */
 #cmakedefine HAVE_GPGME_G13_VFS
+
+/* Define to 1 if your gpgme has gpgme_op_passwd */
+#cmakedefine HAVE_GPGME_OP_PASSWD

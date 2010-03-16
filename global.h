@@ -123,6 +123,7 @@ namespace GpgME {
 
         FdPointerFeature                           = 0x10000000,
         G13VFSFeature                              = 0x20000000,
+        PasswdFeature                              = 0x40000000, // gpgme >= 1.3.0
         // reserved
         // unusable (max value)
 

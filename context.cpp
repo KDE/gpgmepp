@@ -582,6 +582,24 @@ namespace GpgME {
     return Error( d->lasterr = gpgme_op_delete_start( d->ctx, key.impl(), int( allowSecretKeyDeletion ) ) );
   }
 
+  Error Context::passwd( const Key & key ) {
+    d->lastop = Private::Passwd;
+#ifdef HAVE_GPGME_OP_PASSWD
+    return Error( d->lasterr = gpgme_op_passwd( d->ctx, key.impl(), 0U ) );
+#else
+    return Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) );
+#endif
+  }
+
+  Error Context::startPasswd( const Key & key ) {
+    d->lastop = Private::Passwd;
+#ifdef HAVE_GPGME_OP_PASSWD
+    return Error( d->lasterr = gpgme_op_passwd_start( d->ctx, key.impl(), 0U ) );
+#else
+    return Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) );
+#endif
+  }
+
   Error Context::edit( const Key & key, std::auto_ptr<EditInteractor> func, Data & data ) {
       d->lastop = Private::Edit;
       d->lastEditInteractor = func;
@@ -1393,6 +1411,9 @@ static const unsigned long supported_features = 0
 #endif
 #ifdef HAVE_GPGME_G13_VFS
     | GpgME::G13VFSFeature
+#endif
+#ifdef HAVE_GPGME_OP_PASSWD
+    | GpgME::PasswdFeature
 #endif
     ;
 

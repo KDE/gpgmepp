@@ -58,6 +58,7 @@ namespace GpgME {
       GetAuditLog = 0x1000, // no gpgme_getauditlog_result_t, but nevertheless...
 
       AssuanTransact = 0x2000,
+      Passwd    = 0x4000, // no gpgme_passwd_result_t, but nevertheless...
 
       CreateVFS = 0x4000,
       MountVFS = 0x8000,
