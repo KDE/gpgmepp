@@ -50,6 +50,9 @@ set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DI
 if ( GPGME_VANILLA_FOUND )
    kde4_add_library( gpgmepp SHARED ${gpgme_LIB_SRCS} context_vanilla.cpp )
    target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
+   if(WINCE)
+   target_link_libraries(gpgmepp ${WCECOMPAT_LIBRARIES})
+   endif(WINCE)
    set_target_properties( gpgmepp PROPERTIES
                                   VERSION     ${_gpgmepp_version}
                                   SOVERSION   ${_gpgmepp_soversion}

@@ -26,10 +26,6 @@
 #include "error.h"
 #include "data.h"
 
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/static_assert.hpp>
-
 #include <sstream>
 
 using namespace GpgME;
