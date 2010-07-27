@@ -48,7 +48,7 @@ set( _gpgmepp_soversion 2 )
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
 
 if ( GPGME_VANILLA_FOUND )
-   kde4_add_library( gpgmepp SHARED ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   kde4_add_library( gpgmepp ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
    target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
    if(WINCE)
    target_link_libraries(gpgmepp ${WCECOMPAT_LIBRARIES})
@@ -64,7 +64,7 @@ if ( GPGME_VANILLA_FOUND )
 endif ( GPGME_VANILLA_FOUND )
 
 if ( GPGME_GLIB_FOUND )
-   kde4_add_library( gpgmepp-glib SHARED ${gpgme_LIB_SRCS} context_glib.cpp )
+   kde4_add_library( gpgmepp-glib ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_glib.cpp )
    target_link_libraries( gpgmepp-glib ${GPGME_GLIB_LIBRARIES} )
    set_target_properties( gpgmepp-glib PROPERTIES
                                        VERSION     ${_gpgmepp_version}
@@ -77,7 +77,7 @@ endif ( GPGME_GLIB_FOUND )
 
 
 if ( GPGME_QT_FOUND )
-   kde4_add_library( gpgmepp-qt SHARED ${gpgme_LIB_SRCS} context_qt.cpp )
+   kde4_add_library( gpgmepp-qt ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_qt.cpp )
    target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} )
    if(WIN32)
       target_link_libraries( gpgmepp-qt ${GPGME_VANILLA_LIBRARIES} )
@@ -93,7 +93,7 @@ endif ( GPGME_QT_FOUND )
 
 
 if ( GPGME_PTHREAD_FOUND )
-   kde4_add_library( gpgmepp-pthread SHARED ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   kde4_add_library( gpgmepp-pthread ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
    target_link_libraries( gpgmepp-pthread ${GPGME_PTHREAD_LIBRARIES} )
    set_target_properties( gpgmepp-pthread PROPERTIES
                                           VERSION     ${_gpgmepp_version}
@@ -105,7 +105,7 @@ if ( GPGME_PTHREAD_FOUND )
 endif ( GPGME_PTHREAD_FOUND )
 
 if ( GPGME_PTH_FOUND )
-   kde4_add_library( gpgmepp-pth SHARED ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   kde4_add_library( gpgmepp-pth ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
    target_link_libraries( gpgmepp-pth ${GPGME_PTH_LIBRARIES} )
    set_target_properties( gpgmepp-pth PROPERTIES
                                       VERSION     ${_gpgmepp_version}
