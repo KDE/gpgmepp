@@ -99,7 +99,7 @@ namespace GpgME {
       the workaround is not necessary there (and actively harms), I've
       added a new function instead.
      */
-    GPGMEPP_DEPRECATED bool canSign() const;
+    bool canSign() const;
     bool canReallySign() const;
     bool canCertify() const;
     bool canAuthenticate() const;
