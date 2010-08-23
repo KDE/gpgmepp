@@ -95,3 +95,13 @@
 
 /* Define to 1 if your gpgme has gpgme_op_passwd */
 #cmakedefine HAVE_GPGME_OP_PASSWD
+
+/* Define to 1 if your gpgme has gpgme_io_read and gpgme_io_write */
+#cmakedefine HAVE_GPGME_IO_READWRITE 1
+
+/* Define to 1 if your gpgme has gpgme_err_set_errno(int) and friends */
+#cmakedefine HAVE_GPGME_GPG_ERROR_WRAPPERS 1
+
+#define GPGMEPP_ERR_SOURCE_DEFAULT 22
+#define   GPGME_ERR_SOURCE_DEFAULT ((gpgme_err_source_t)22)
+#define     GPG_ERR_SOURCE_DEFAULT ((gpg_err_source_t)22)

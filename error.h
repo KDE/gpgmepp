@@ -30,11 +30,18 @@
 #include <string>
 #include <iosfwd>
 
+#include <gpg-error.h>
+
+#ifndef GPGMEPP_ERR_SOURCE_DEFAULT
+# define GPGMEPP_ERR_SOURCE_DEFAULT GPG_ERR_SOURCE_USER_1
+#endif
+
 namespace GpgME {
 
   class GPGMEPP_EXPORT Error {
   public:
-    explicit Error( unsigned int e=0 ) : mErr( e ), mMessage() {}
+    Error() : mErr( 0 ), mMessage() {}
+    explicit Error( unsigned int e ) : mErr( e ), mMessage() {}
 
     const char * source() const;
     const char * asString() const;
@@ -45,6 +52,14 @@ namespace GpgME {
     bool isCanceled() const;
 
     unsigned int encodedError() const { return mErr; }
+    int toErrno() const;
+
+    static bool hasSystemError();
+    static Error fromSystemError( unsigned int src=GPGMEPP_ERR_SOURCE_DEFAULT );
+    static void setSystemError( gpg_err_code_t err );
+    static void setErrno( int err );
+    static Error fromErrno( int err, unsigned int src=GPGMEPP_ERR_SOURCE_DEFAULT );
+    static Error fromCode( unsigned int err, unsigned int src=GPGMEPP_ERR_SOURCE_DEFAULT );
 
   private:
     struct __safe_bool_dummy__ { void nonnull() {} };

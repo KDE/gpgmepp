@@ -89,7 +89,7 @@ namespace GpgME {
     assert( instance() ); assert( instance()->d );
     bool ok = false;
     void * etag = instance()->registerWatcher( fd, dir ? Read : Write, ok );
-    if ( !ok ) return GPG_ERR_GENERAL;
+    if ( !ok ) return gpgme_error( GPG_ERR_GENERAL );
     instance()->d->mCallbacks.push_back( new OneFD( fd, dir, fnc, fnc_data, etag ) );
     if ( r_tag )
       *r_tag = instance()->d->mCallbacks.back();

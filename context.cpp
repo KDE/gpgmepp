@@ -60,8 +60,8 @@ using std::endl;
 
 namespace GpgME {
 
-  static inline gpgme_error_t makeError( gpg_err_code_t code ) {
-    return gpg_err_make( (gpg_err_source_t)22, code );
+  static inline gpgme_error_t make_error( gpgme_err_code_t code ) {
+    return gpgme_err_make( (gpgme_err_source_t)22, code );
   }
 
   static inline unsigned int xtoi_1( const char * str ) {
@@ -101,7 +101,7 @@ namespace GpgME {
       if ( gpgme_check_version( GPGME_VERSION ) )
           return Error();
       else
-          return Error( gpg_error( GPG_ERR_USER_1 ) );
+          return Error::fromCode( GPG_ERR_USER_1 );
   }
 
   static void format_error( gpgme_error_t err, std::string & str ) {
@@ -131,6 +131,64 @@ namespace GpgME {
 
   bool Error::isCanceled() const {
     return code() == GPG_ERR_CANCELED;
+  }
+
+  int Error::toErrno() const {
+//#ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
+    return gpgme_err_code_to_errno( static_cast<gpgme_err_code_t>( code() ) );
+//#else
+//    return gpg_err_code_to_errno( static_cast<gpg_err_code_t>( code() ) );
+//#endif
+  }
+
+  // static
+  bool Error::hasSystemError() {
+#ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
+    return gpgme_err_code_from_syserror() == GPG_ERR_MISSING_ERRNO ;
+#else
+    return gpg_err_code_from_syserror() == GPG_ERR_MISSING_ERRNO ;
+#endif
+  }
+
+  // static
+  void Error::setSystemError( gpg_err_code_t err ) {
+    setErrno( gpgme_err_code_to_errno( err ) );
+  }
+
+  // static
+  void Error::setErrno( int err ) {
+#ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
+    gpgme_err_set_errno( err );
+#else
+    gpg_err_set_errno( err );
+#endif
+  }
+
+  // static
+  Error Error::fromSystemError( unsigned int src ) {
+#ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
+    return Error( gpgme_err_make( static_cast<gpgme_err_source_t>( src ), gpgme_err_code_from_syserror() ) );
+#else
+    return Error( gpg_err_make( static_cast<gpg_err_source_t>( src ), gpg_err_code_from_syserror() ) );
+#endif
+  }
+
+  // static
+  Error Error::fromErrno( int err, unsigned int src ) {
+//#ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
+    return Error( gpgme_err_make( static_cast<gpgme_err_source_t>( src ), gpgme_err_code_from_errno( err ) ) );
+//#else
+//    return Error( gpg_err_make( static_cast<gpg_err_source_t>( src ), gpg_err_from_from_errno( err ) ) );
+//#endif
+  }
+
+  // static
+  Error Error::fromCode( unsigned int err, unsigned int src ) {
+//#ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
+    return Error( gpgme_err_make( static_cast<gpgme_err_source_t>( src ), static_cast<gpgme_err_code_t>( err ) ) );
+//#else
+//    return Error( gpg_err_make( static_cast<gpg_err_source_t>( src ), static_cast<gpgme_err_code_t>( err ) ) );
+//#endif
   }
 
   std::ostream & operator<<( std::ostream & os, const Error & err ) {
@@ -189,7 +247,7 @@ namespace GpgME {
       break;
 #else
       if ( error )
-        *error = Error( gpg_error( GPG_ERR_NOT_SUPPORTED ) );
+        *error = Error::fromCode( GPG_ERR_NOT_SUPPORTED );
       return std::auto_ptr<Context>();
 #endif
     case G13Engine:
@@ -203,12 +261,12 @@ namespace GpgME {
       break;
 #else
       if ( error )
-        *error = Error( gpg_error( GPG_ERR_NOT_SUPPORTED ) );
+        *error = Error::fromCode( GPG_ERR_NOT_SUPPORTED );
       return std::auto_ptr<Context>();
 #endif
     default:
       if ( error )
-        *error = Error( gpg_error( GPG_ERR_INV_ARG ) );
+        *error = Error::fromCode( GPG_ERR_INV_ARG );
       return std::auto_ptr<Context>();
     }
 
@@ -376,7 +434,7 @@ namespace GpgME {
       const char * const home_dir = engineInfo().homeDirectory();
       return Error( gpgme_ctx_set_engine_info( d->ctx, gpgme_get_protocol( d->ctx ), filename, home_dir ) );
 #else
-      return Error( makeError( GPG_ERR_NOT_IMPLEMENTED ) );
+      return Error::fromCode( GPG_ERR_NOT_IMPLEMENTED );
 #endif
   }
 
@@ -385,7 +443,7 @@ namespace GpgME {
       const char * const filename = engineInfo().fileName();
       return Error( gpgme_ctx_set_engine_info( d->ctx, gpgme_get_protocol( d->ctx ), filename, home_dir ) );
 #else
-      return Error( makeError( GPG_ERR_NOT_IMPLEMENTED ) );
+      return Error::fromCode( GPG_ERR_NOT_IMPLEMENTED );
 #endif
   }
 
@@ -497,7 +555,8 @@ namespace GpgME {
 
   ImportResult Context::importKeys( const std::vector<Key> & kk ) {
     d->lastop = Private::Import;
-    d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED );
+    d->lasterr = make_error( GPG_ERR_NOT_IMPLEMENTED );
+
     bool shouldHaveResult = false;
 #ifdef HAVE_GPGME_OP_IMPORT_KEYS
     const boost::scoped_array<gpgme_key_t> keys( new gpgme_key_t[ kk.size() + 1 ] );
@@ -561,7 +620,7 @@ namespace GpgME {
     return Error( d->lasterr = gpgme_op_import_keys_start( d->ctx, keys.get() ) );
 #else
     (void)kk;
-    return Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) );
+    return Error( d->lasterr = make_error( GPG_ERR_NOT_IMPLEMENTED ) );
 #endif
   }
 
@@ -587,7 +646,8 @@ namespace GpgME {
 #ifdef HAVE_GPGME_OP_PASSWD
     return Error( d->lasterr = gpgme_op_passwd( d->ctx, key.impl(), 0U ) );
 #else
-    return Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) );
+    (void)key;
+    return Error( d->lasterr = make_error( GPG_ERR_NOT_IMPLEMENTED ) );
 #endif
   }
 
@@ -596,7 +656,8 @@ namespace GpgME {
 #ifdef HAVE_GPGME_OP_PASSWD
     return Error( d->lasterr = gpgme_op_passwd_start( d->ctx, key.impl(), 0U ) );
 #else
-    return Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) );
+    (void)key;
+    return Error( d->lasterr = make_error( GPG_ERR_NOT_IMPLEMENTED ) );
 #endif
   }
 
@@ -710,7 +771,7 @@ namespace GpgME {
     d->lastop = Private::AssuanTransact;
     d->lastAssuanTransaction = transaction;
     if ( !d->lastAssuanTransaction.get() )
-        return AssuanResult( Error( d->lasterr = gpg_error( GPG_ERR_INV_ARG ) ) );
+        return AssuanResult( Error( d->lasterr = make_error( GPG_ERR_INV_ARG ) ) );
 #ifdef HAVE_GPGME_ASSUAN_ENGINE
     d->lasterr = gpgme_op_assuan_transact( d->ctx, command,
                                            assuan_transaction_data_callback,
@@ -721,7 +782,7 @@ namespace GpgME {
                                            d->lastAssuanTransaction.get() );
 #else
     (void)command;
-    d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED );
+    d->lasterr = make_error( GPG_ERR_NOT_SUPPORTED );
 #endif
     return AssuanResult( d->ctx, d->lasterr );
   }
@@ -734,7 +795,7 @@ namespace GpgME {
     d->lastop = Private::AssuanTransact;
     d->lastAssuanTransaction = transaction;
     if ( !d->lastAssuanTransaction.get() )
-        return Error( d->lasterr = gpg_error( GPG_ERR_INV_ARG ) );
+        return Error( d->lasterr = make_error( GPG_ERR_INV_ARG ) );
 #ifdef HAVE_GPGME_ASSUAN_ENGINE
     return Error( d->lasterr = gpgme_op_assuan_transact_start( d->ctx, command,
                                                                assuan_transaction_data_callback,
@@ -745,7 +806,7 @@ namespace GpgME {
                                                                d->lastAssuanTransaction.get() ) );
 #else
     (void)command;
-    return Error( d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED ) );
+    return Error( d->lasterr = make_error( GPG_ERR_NOT_SUPPORTED ) );
 #endif
   }
 
@@ -908,7 +969,7 @@ namespace GpgME {
     return Error( gpgme_sig_notation_add( d->ctx, name, value, add_to_gpgme_sig_notation_flags_t( 0, flags ) ) );
 #else
     (void)name; (void)value; (void)flags;
-    return Error( makeError( GPG_ERR_NOT_IMPLEMENTED ) );
+    return Error( make_error( GPG_ERR_NOT_IMPLEMENTED ) );
 #endif
   }
 
@@ -917,7 +978,7 @@ namespace GpgME {
     return Error( gpgme_sig_notation_add( d->ctx, 0, url, critical ? GPGME_SIG_NOTATION_CRITICAL : 0 ) );
 #else
     (void)url; (void)critical;
-    return Error( makeError( GPG_ERR_NOT_IMPLEMENTED ) );
+    return Error( make_error( GPG_ERR_NOT_IMPLEMENTED ) );
 #endif
   }
 
@@ -997,7 +1058,7 @@ namespace GpgME {
     d->lastop = Private::Encrypt;
 #ifndef HAVE_GPGME_ENCRYPT_NO_ENCRYPT_TO
     if ( flags & NoEncryptTo )
-        return EncryptionResult( Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) ) );
+        return EncryptionResult( Error( d->lasterr = make_error( GPG_ERR_NOT_IMPLEMENTED ) ) );
 #endif
     const Data::Private * const pdp = plainText.impl();
     Data::Private * const cdp = cipherText.impl();
@@ -1025,7 +1086,7 @@ namespace GpgME {
     d->lastop = Private::Encrypt;
 #ifndef HAVE_GPGME_ENCRYPT_NO_ENCRYPT_TO
     if ( flags & NoEncryptTo )
-        return Error( d->lasterr = gpg_error( GPG_ERR_NOT_IMPLEMENTED ) );
+        return Error( d->lasterr = make_error( GPG_ERR_NOT_IMPLEMENTED ) );
 #endif
     const Data::Private * const pdp = plainText.impl();
     Data::Private * const cdp = cipherText.impl();
@@ -1101,7 +1162,7 @@ namespace GpgME {
 #else
     Q_UNUSED( containerFile );
     Q_UNUSED( recipients );
-    return Error( d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED ) );
+    return Error( d->lasterr = make_error( GPG_ERR_NOT_SUPPORTED ) );
 #endif
   }
 
@@ -1114,7 +1175,7 @@ namespace GpgME {
 #else
     Q_UNUSED( containerFile );
     Q_UNUSED( mountDir );
-    return VfsMountResult( d->ctx, Error( d->lasterr = gpg_error( GPG_ERR_NOT_SUPPORTED ) ), Error() );
+    return VfsMountResult( d->ctx, Error( d->lasterr = make_error( GPG_ERR_NOT_SUPPORTED ) ), Error() );
 #endif
   }
 

@@ -42,7 +42,7 @@ set(gpgme_LIB_SRCS
         vfsmountresult.cpp
 )
 
-set( _gpgmepp_version 2.6.0 )
+set( _gpgmepp_version 2.7.0 )
 set( _gpgmepp_soversion 2 )
 
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )

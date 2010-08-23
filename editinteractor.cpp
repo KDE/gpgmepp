@@ -62,12 +62,16 @@ private:
     static int writeAll( int fd, const void * buf, size_t count ) {
         size_t toWrite = count;
         while ( toWrite > 0 ) {
-#ifdef Q_OS_WIN
+#ifdef HAVE_GPGME_IO_READWRITE
+            const int n = gpgme_io_write( fd, buf, toWrite );
+#else
+# ifdef Q_OS_WIN
             DWORD n;
             if ( !WriteFile( (HANDLE)fd, buf, toWrite, &n, NULL ) )
                 return -1;
-#else
+# else
             const int n = write( fd, buf, toWrite );
+# endif
 #endif
             if ( n < 0 )
                 return n;
@@ -97,7 +101,7 @@ public:
 
             if ( ei->state != oldState &&
                  // if there was an error from before, we stop here (### this looks weird, can this happen at all?)
-                 gpg_err_code( ei->error.code() ) == GPG_ERR_NO_ERROR ) {
+                 ei->error.code() == GPG_ERR_NO_ERROR ) {
 
                 // successful state change -> call action
                 if ( const char * const result = ei->q->action( err ) ) {
@@ -107,20 +111,28 @@ public:
                         std::fprintf( ei->debug, "EditInteractor: action result \"%s\"\n", result );
                     // if there's a result, write it:
                     if ( *result ) {
-                        errno = 0;
+#ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
+                        gpgme_err_set_errno( 0 );
+#else
+                        gpg_err_set_errno( 0 );
+#endif
                         const ssize_t len = std::strlen( result );
                         if ( writeAll( fd, result, len ) != len ) {
-                            err = Error( gpg_error_from_syserror() );
+                            err = Error::fromSystemError();
                             if ( ei->debug )
-                                std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, strerror( errno ) );
+                                std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, err.asString() );
                             goto error;
                         }
                     }
-                    errno = 0;
+#ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
+                    gpgme_err_set_errno( 0 );
+#else
+                    gpg_err_set_errno( 0 );
+#endif
                     if ( writeAll( fd, "\n", 1 ) != 1 ) {
-                        err = Error( gpg_error_from_syserror() );
+                        err = Error::fromSystemError();
                         if ( ei->debug )
-                            std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, strerror( errno ) );
+                            std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, err.asString() );
                         goto error;
                     }
                 } else {
@@ -207,13 +219,13 @@ bool EditInteractor::needsNoResponse( unsigned int status ) const {
 Error status_to_error( unsigned int status ) {
     switch ( status ) {
     case GPGME_STATUS_MISSING_PASSPHRASE:
-        return Error( gpg_error( GPG_ERR_NO_PASSPHRASE ) );
+        return Error::fromCode( GPG_ERR_NO_PASSPHRASE );
     case GPGME_STATUS_ALREADY_SIGNED:
-        return Error( gpg_error( GPG_ERR_ALREADY_SIGNED ) );
+        return Error::fromCode( GPG_ERR_ALREADY_SIGNED );
     case GPGME_STATUS_KEYEXPIRED:
-        return Error( gpg_error( GPG_ERR_CERT_EXPIRED ) );
+        return Error::fromCode( GPG_ERR_CERT_EXPIRED );
     case GPGME_STATUS_SIGEXPIRED:
-        return Error( gpg_error( GPG_ERR_SIG_EXPIRED ) );
+        return Error::fromCode( GPG_ERR_SIG_EXPIRED );
     }
     return Error();
 }

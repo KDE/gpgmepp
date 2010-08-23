@@ -368,6 +368,31 @@ check_cxx_source_compiles ("
   }
 " HAVE_GPGME_OP_PASSWD )
 
+# check if gpgme has gpgme_io_{read,write} (new in 1.2.0)
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+     int fd;
+     void * cv;
+     void * v;
+     size_t sz;
+     ssize_t r = gpgme_io_read( fd, v, sz );
+     r = gpgme_io_write( fd, cv, sz );
+     return 0;
+  }
+" HAVE_GPGME_IO_READWRITE )
+
+# check if gpgme has gpg-error wrappers
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+     const gpgme_error_t err = gpgme_error_from_syserror();
+     int i;
+     gpgme_err_set_errno( i );
+     return 0;
+  }
+" HAVE_GPGME_GPG_ERROR_WRAPPERS )
+
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 

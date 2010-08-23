@@ -27,6 +27,8 @@
 
 #include <gpgme++/gpgme++_export.h>
 
+#include <gpg-error.h>
+
 namespace GpgME {
 
   class GPGMEPP_EXPORT DataProvider {

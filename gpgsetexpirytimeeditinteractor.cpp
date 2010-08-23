@@ -75,15 +75,15 @@ const char * GpgSetExpiryTimeEditInteractor::action( Error & err ) const {
     case ERROR:
         return 0;
     default:
-        err = Error( gpg_error( GPG_ERR_GENERAL ) );
+        err = Error::fromCode( GPG_ERR_GENERAL );
         return 0;
     }
 }
 
 unsigned int GpgSetExpiryTimeEditInteractor::nextState( unsigned int status, const char * args, Error & err ) const {
 
-    static const Error GENERAL_ERROR(  gpg_error( GPG_ERR_GENERAL  ) );
-    static const Error INV_TIME_ERROR( gpg_error( GPG_ERR_INV_TIME ) );
+    static const Error GENERAL_ERROR  = Error::fromCode( GPG_ERR_GENERAL  );
+    static const Error INV_TIME_ERROR = Error::fromCode( GPG_ERR_INV_TIME );
 
     if ( needsNoResponse( status ) )
         return state();

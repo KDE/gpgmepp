@@ -96,17 +96,17 @@ const char * GpgAddUserIDEditInteractor::action( Error & err ) const {
     case ERROR:
         return 0;
     default:
-        err = Error( gpg_error( GPG_ERR_GENERAL ) );
+        err = Error::fromCode( GPG_ERR_GENERAL );
         return 0;
     }
 }
 
 unsigned int GpgAddUserIDEditInteractor::nextState( unsigned int status, const char * args, Error & err ) const {
 
-    static const Error GENERAL_ERROR(     gpg_error( GPG_ERR_GENERAL     ) );
-    static const Error INV_NAME_ERROR(    gpg_error( GPG_ERR_INV_NAME    ) );
-    static const Error INV_EMAIL_ERROR(   gpg_error( GPG_ERR_INV_USER_ID ) );
-    static const Error INV_COMMENT_ERROR( gpg_error( GPG_ERR_INV_USER_ID ) );
+    static const Error GENERAL_ERROR     = Error::fromCode( GPG_ERR_GENERAL     );
+    static const Error INV_NAME_ERROR    = Error::fromCode( GPG_ERR_INV_NAME    );
+    static const Error INV_EMAIL_ERROR   = Error::fromCode( GPG_ERR_INV_USER_ID );
+    static const Error INV_COMMENT_ERROR = Error::fromCode( GPG_ERR_INV_USER_ID );
 
     if ( needsNoResponse( status ) )
         return state();

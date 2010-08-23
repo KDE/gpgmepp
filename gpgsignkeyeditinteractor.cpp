@@ -227,7 +227,7 @@ const char * GpgSignKeyEditInteractor::action( Error & err ) const {
         }
         // fall through
     case ERROR:
-        err = Error( gpg_error( GPG_ERR_GENERAL ) );
+        err = Error::fromCode( GPG_ERR_GENERAL );
         return 0;
     }
 }
@@ -235,8 +235,8 @@ const char * GpgSignKeyEditInteractor::action( Error & err ) const {
 unsigned int GpgSignKeyEditInteractor::nextState( unsigned int status, const char * args, Error & err ) const {
     d->started = true;
     using namespace GpgSignKeyEditInteractor_Private;
-    static const Error GENERAL_ERROR(  gpg_error( GPG_ERR_GENERAL  ) );
-    //static const Error INV_TIME_ERROR( gpg_error( GPG_ERR_INV_TIME ) );
+    static const Error GENERAL_ERROR = Error::fromCode( GPG_ERR_GENERAL );
+    //static const Error INV_TIME_ERROR = Error::fromCode( GPG_ERR_INV_TIME );
     static const TransitionMap table( makeTable() );
     if ( needsNoResponse( status ) )
         return state();
@@ -255,7 +255,7 @@ unsigned int GpgSignKeyEditInteractor::nextState( unsigned int status, const cha
              strcmp( args, "keyedit.prompt" ) == 0 ) {
             if ( !d->signAll() )
                 return UIDS_LIST_SEPARATELY;
-            err = Error( gpg_error( GPG_ERR_UNUSABLE_PUBKEY ) );
+            err = Error::fromCode( GPG_ERR_UNUSABLE_PUBKEY );
             return ERROR;
         }
         break;
