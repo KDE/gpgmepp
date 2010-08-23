@@ -382,6 +382,16 @@ check_cxx_source_compiles ("
   }
 " HAVE_GPGME_IO_READWRITE )
 
+# check if gpg-error has gpg_err_set_errno (v1.8)
+check_cxx_source_compiles ("
+   #include <gpg-error.h>
+   int main() {
+     int i;
+     gpg_err_set_errno( i );
+     return 0;
+   }
+" HAVE_GPG_ERR_SET_ERRNO )
+
 # check if gpgme has gpg-error wrappers
 check_cxx_source_compiles ("
   #include <gpgme.h>
