@@ -156,7 +156,11 @@ public:
 
         if ( ei->debug )
             std::fprintf( ei->debug, "EditInteractor: error now %u (%s)\n",
+#ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
+                          ei->error.encodedError(), gpgme_strerror( ei->error.encodedError() ) );
+#else
                           ei->error.encodedError(), gpg_strerror( ei->error.encodedError() ) );
+#endif
 
         return ei->error.encodedError();
     }
