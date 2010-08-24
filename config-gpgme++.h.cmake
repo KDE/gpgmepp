@@ -102,13 +102,15 @@
 /* Define to 1 if your gpg-error has gpg_err_set_errno */
 #cmakedefine HAVE_GPG_ERR_SET_ERRNO 1
 
-#ifndef HAVE_GPG_ERR_SET_ERRNO
-# include <errno.h>
-static inline void gpg_err_set_errno( int x ) { errno = x; }
-#endif
-
 /* Define to 1 if your gpgme has gpgme_err_set_errno(int) and friends */
 #cmakedefine HAVE_GPGME_GPG_ERROR_WRAPPERS 1
+
+#ifndef HAVE_GPGME_GPG_ERROR_WRAPPERS
+# ifndef HAVE_GPG_ERR_SET_ERRNO
+#  include <errno.h>
+static inline void gpg_err_set_errno( int x ) { errno = x; }
+# endif
+#endif
 
 #define GPGMEPP_ERR_SOURCE_DEFAULT 22
 #define   GPGME_ERR_SOURCE_DEFAULT ((gpgme_err_source_t)22)
