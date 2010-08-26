@@ -23,7 +23,7 @@
 // -*- c++ -*-
 #include "exception.h"
 
-#include <gpg-error.h>
+#include <gpgme.h>
 
 #include <sstream>
 
@@ -43,10 +43,10 @@ string Exception::make_message( const Error & err, const string & msg, Options o
         return msg;
     char error_string[128];
     error_string[0] = '\0';
-    gpg_strerror_r( err.encodedError(), error_string, sizeof error_string );
+    gpgme_strerror_r( err.encodedError(), error_string, sizeof error_string );
     error_string[sizeof error_string - 1] = '\0';
     stringstream ss;
-    ss << gpg_strsource( err.encodedError() ) << ": ";
+    ss << gpgme_strsource( err.encodedError() ) << ": ";
     if ( !msg.empty() )
         ss << msg << ": ";
     ss << error_string << " (" << static_cast<unsigned long>( err.encodedError() ) << ')';
