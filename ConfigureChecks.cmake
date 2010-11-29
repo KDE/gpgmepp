@@ -254,6 +254,18 @@ check_cxx_source_compiles ("
   #include <gpgme.h>
   int main() {
     gpgme_protocol_t proto = GPGME_PROTOCOL_GPGCONF;
+    const gpgme_protocol_t proto = GPGME_PROTOCOL_GPGCONF;
+    gpgme_ctx_t ctx = 0;
+    gpgme_conf_comp_t comp = 0;
+    gpgme_error_t e = gpgme_op_conf_load( ctx, &comp );
+    e = gpgme_op_conf_save( ctx, comp );
+    gpgme_conf_arg_t arg = 0;
+    int i = 0;
+    void * value = &i;
+    e = gpgme_conf_arg_new( &arg, GPGME_CONF_INT32, value );
+    gpgme_conf_opt_t opt = comp->options;
+    e = gpgme_conf_opt_change( opt, 0, arg );
+    gpgme_conf_release( comp );
     return 0;
   }
 " HAVE_GPGME_PROTOCOL_GPGCONF
@@ -402,6 +414,18 @@ check_cxx_source_compiles ("
      return 0;
   }
 " HAVE_GPGME_GPG_ERROR_WRAPPERS )
+
+# check if gpgme_conf_arg_new takes its 'value' by const void*
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+
+  int main() {
+     gpgme_conf_arg_t arg = 0;
+     const void * value = 0;
+     gpgme_error_t e = gpgme_conf_arg_new( &arg, GPGME_CONF_STRING, value );
+     return 0;
+  }
+" HAVE_GPGME_CONF_ARG_NEW_WITH_CONST_VALUE )
 
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
