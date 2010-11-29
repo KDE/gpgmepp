@@ -61,11 +61,7 @@ namespace GpgME {
     static Error fromErrno( int err, unsigned int src=GPGMEPP_ERR_SOURCE_DEFAULT );
     static Error fromCode( unsigned int err, unsigned int src=GPGMEPP_ERR_SOURCE_DEFAULT );
 
-  private:
-    struct __safe_bool_dummy__ { void nonnull() {} };
-    typedef void ( __safe_bool_dummy__::*unspecified_bool_type )();
-  public:
-    operator unspecified_bool_type() const { return mErr && !isCanceled() ? &__safe_bool_dummy__::nonnull : 0 ; }
+    GPGMEPP_MAKE_SAFE_BOOL_OPERATOR( mErr && !isCanceled() )
   private:
     unsigned int mErr;
     mutable std::string mMessage;
