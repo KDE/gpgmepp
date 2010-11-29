@@ -40,6 +40,7 @@ set(gpgme_LIB_SRCS
         scdgetinfoassuantransaction.cpp
         gpgagentgetinfoassuantransaction.cpp
         vfsmountresult.cpp
+        configuration.cpp
 )
 
 set( _gpgmepp_version 2.7.0 )
@@ -143,6 +144,7 @@ if ( GPGME_FOUND )
         defaultassuantransaction.h
         scdgetinfoassuantransaction.h
         gpgagentgetinfoassuantransaction.h
+        configuration.h
         gpgme++_export.h vfsmountresult.h
         DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++ COMPONENT Devel
    )

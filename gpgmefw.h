@@ -58,4 +58,13 @@ typedef struct _gpgme_op_keylist_result * gpgme_keylist_result_t;
 struct _gpgme_recipient;
 typedef struct _gpgme_recipient * gpgme_recipient_t;
 
+struct gpgme_conf_opt;
+typedef struct gpgme_conf_opt * gpgme_conf_opt_t;
+
+struct gpgme_conf_comp;
+typedef struct gpgme_conf_comp * gpgme_conf_comp_t;
+
+struct gpgme_conf_arg;
+typedef struct gpgme_conf_arg * gpgme_conf_arg_t;
+
 #endif // __GPGMEPP_GPGMEFW_H__
