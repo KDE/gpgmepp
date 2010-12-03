@@ -253,7 +253,6 @@ check_function_exists ("gpgme_op_getauditlog" HAVE_GPGME_OP_GETAUDITLOG )
 check_cxx_source_compiles ("
   #include <gpgme.h>
   int main() {
-    gpgme_protocol_t proto = GPGME_PROTOCOL_GPGCONF;
     const gpgme_protocol_t proto = GPGME_PROTOCOL_GPGCONF;
     gpgme_ctx_t ctx = 0;
     gpgme_conf_comp_t comp = 0;
