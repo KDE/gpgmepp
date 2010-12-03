@@ -26,7 +26,11 @@
 #include "callbacks.h"
 #include "error.h"
 
+#ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
+#include <gpgme.h>
+#else
 #include <gpg-error.h>
+#endif
 
 #ifdef _WIN32
 # include <io.h>
