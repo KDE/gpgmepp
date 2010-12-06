@@ -32,6 +32,8 @@
 #ifndef NDEBUG
 #include <iostream>
 #endif
+#include <sstream>
+#include <string>
 
 static inline const char * protect( const char * s ) {
     return s ? s : "<null>" ;
@@ -39,6 +41,15 @@ static inline const char * protect( const char * s ) {
 
 static inline gpgme_error_t make_error( gpgme_err_code_t code ) {
     return gpgme_err_make( (gpgme_err_source_t)22, code );
+}
+
+static inline unsigned long to_pid( const std::string & s ) {
+    std::stringstream ss( s );
+    unsigned int result;
+    if ( ss >> result )
+        return result;
+    else
+        return 0U;
 }
 
 static inline gpgme_keylist_mode_t add_to_gpgme_keylist_mode_t( unsigned int oldmode, unsigned int newmodes ) {

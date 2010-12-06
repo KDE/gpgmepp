@@ -25,6 +25,7 @@
 #include "gpgagentgetinfoassuantransaction.h"
 #include "error.h"
 #include "data.h"
+#include "util.h"
 
 #include <boost/static_assert.hpp>
 
@@ -43,15 +44,6 @@ GpgAgentGetInfoAssuanTransaction::GpgAgentGetInfoAssuanTransaction( InfoItem ite
 }
 
 GpgAgentGetInfoAssuanTransaction::~GpgAgentGetInfoAssuanTransaction() {}
-
-static unsigned long to_pid( const std::string & s ) {
-    std::stringstream ss( s );
-    unsigned int result;
-    if ( ss >> result )
-        return result;
-    else
-        return 0U;
-}
 
 std::string GpgAgentGetInfoAssuanTransaction::version() const {
     if ( m_item == Version )
