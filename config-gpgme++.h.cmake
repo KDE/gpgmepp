@@ -118,8 +118,14 @@ static inline void gpg_err_set_errno( int x ) { errno = x; }
 /* Define to 1 if your gpgme_conf_arg_new takes its 'value' parameter as const void* */
 #cmakedefine HAVE_GPGME_CONF_ARG_NEW_WITH_CONST_VALUE 1
 
+#ifndef GPGMEPP_ERR_SOURCE_DEFAULT
 #define GPGMEPP_ERR_SOURCE_DEFAULT 22
+#endif
+#ifndef   GPGME_ERR_SOURCE_DEFAULT
 #define   GPGME_ERR_SOURCE_DEFAULT ((gpgme_err_source_t)22)
+#endif
+#ifndef     GPG_ERR_SOURCE_DEFAULT
 #define     GPG_ERR_SOURCE_DEFAULT ((gpg_err_source_t)22)
+#endif
 
 #endif /* __GPGMEPP_CONFIG_GPGMEPP_H__ */
