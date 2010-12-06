@@ -1,3 +1,6 @@
+#ifndef __GPGMEPP_CONFIG_GPGMEPP_H__
+#define __GPGMEPP_CONFIG_GPGMEPP_H__
+
 /* Define to 1 if your gpgme has the gpgme_data_{set,get}_file_name functions */
 #cmakedefine HAVE_GPGME_DATA_SET_FILE_NAME 1
 
@@ -118,3 +121,5 @@ static inline void gpg_err_set_errno( int x ) { errno = x; }
 #define GPGMEPP_ERR_SOURCE_DEFAULT 22
 #define   GPGME_ERR_SOURCE_DEFAULT ((gpgme_err_source_t)22)
 #define     GPG_ERR_SOURCE_DEFAULT ((gpg_err_source_t)22)
+
+#endif /* __GPGMEPP_CONFIG_GPGMEPP_H__ */
