@@ -51,10 +51,6 @@ namespace {
     struct nodelete { template <typename T> void operator()( T * ) {} };
 }
 
-static inline gpgme_error_t make_error( gpgme_err_code_t code ) {
-    return gpgme_err_make( (gpgme_err_source_t)22, code );
-}
-
 // static
 std::vector<Component> Component::load( Error & returnedError ) {
 

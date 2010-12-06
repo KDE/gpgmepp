@@ -37,6 +37,10 @@ static inline const char * protect( const char * s ) {
     return s ? s : "<null>" ;
 }
 
+static inline gpgme_error_t make_error( gpgme_err_code_t code ) {
+    return gpgme_err_make( (gpgme_err_source_t)22, code );
+}
+
 static inline gpgme_keylist_mode_t add_to_gpgme_keylist_mode_t( unsigned int oldmode, unsigned int newmodes ) {
   if ( newmodes & GpgME::Local ) oldmode |= GPGME_KEYLIST_MODE_LOCAL;
   if ( newmodes & GpgME::Extern ) oldmode |= GPGME_KEYLIST_MODE_EXTERN;

@@ -23,6 +23,7 @@
 #include <gpgme++/config-gpgme++.h>
 
 #include "callbacks.h"
+#include "util.h"
 
 #include <gpgme++/interfaces/progressprovider.h>
 #include <gpgme++/interfaces/passphraseprovider.h>
@@ -44,9 +45,6 @@ static inline gpgme_error_t make_err_from_syserror() {
 #else
   return gpg_error_from_syserror();
 #endif
-}
-static inline gpgme_error_t make_error( gpgme_err_code_t code ) {
-  return gpgme_error( code );
 }
 
 using GpgME::ProgressProvider;

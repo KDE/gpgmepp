@@ -60,10 +60,6 @@ using std::endl;
 
 namespace GpgME {
 
-  static inline gpgme_error_t make_error( gpgme_err_code_t code ) {
-    return gpgme_err_make( (gpgme_err_source_t)22, code );
-  }
-
   static inline unsigned int xtoi_1( const char * str ) {
       const unsigned int ch = *str;
       const unsigned int result =
