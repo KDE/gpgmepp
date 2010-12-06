@@ -107,7 +107,7 @@ std::vector<std::string> ScdGetInfoAssuanTransaction::applicationList() const {
         return std::vector<std::string>();
 }
 
-static const char * tokens[] = {
+static const char * scd_getinfo_tokens[] = {
     "version",
     "pid",
     "socket_name",
@@ -116,13 +116,13 @@ static const char * tokens[] = {
     "deny_admin",
     "app_list",
 };
-BOOST_STATIC_ASSERT(( sizeof tokens / sizeof *tokens == ScdGetInfoAssuanTransaction::LastInfoItem ));
+BOOST_STATIC_ASSERT(( sizeof scd_getinfo_tokens / sizeof *scd_getinfo_tokens == ScdGetInfoAssuanTransaction::LastInfoItem ));
 
 void ScdGetInfoAssuanTransaction::makeCommand() const {
     assert( m_item >= 0 );
     assert( m_item < LastInfoItem );
     m_command = "SCD GETINFO ";
-    m_command += tokens[m_item];
+    m_command += scd_getinfo_tokens[m_item];
 }
 
 const char * ScdGetInfoAssuanTransaction::command() const {
