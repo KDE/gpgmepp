@@ -1236,6 +1236,7 @@ namespace GpgME {
           break;
       case AssuanEngine:
           os << "AssuanEngine";
+          break;
       default:
       case UnknownEngine:
           os << "UnknownEngine";
