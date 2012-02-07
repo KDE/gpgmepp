@@ -3,7 +3,7 @@ project( gpgmepp )
 if (MINGW)
   set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -mms-bitfields")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mms-bitfields")
-endif (MINGW)
+endif()
 
 include_directories(  ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
@@ -53,7 +53,7 @@ if ( GPGME_VANILLA_FOUND )
    target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
    if(WINCE)
    target_link_libraries(gpgmepp ${WCECOMPAT_LIBRARIES})
-   endif(WINCE)
+   endif()
    set_target_properties( gpgmepp PROPERTIES
                                   VERSION     ${_gpgmepp_version}
                                   SOVERSION   ${_gpgmepp_soversion}
@@ -62,7 +62,7 @@ if ( GPGME_VANILLA_FOUND )
    get_target_property( GPGMEPP_VANILLA_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} COMPONENT Devel)
 
-endif ( GPGME_VANILLA_FOUND )
+endif()
 
 if ( GPGME_GLIB_FOUND )
    kde4_add_library( gpgmepp-glib ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_glib.cpp )
@@ -74,7 +74,7 @@ if ( GPGME_GLIB_FOUND )
    )
    get_target_property( GPGMEPP_GLIB_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-glib EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
-endif ( GPGME_GLIB_FOUND )
+endif()
 
 
 if ( GPGME_QT_FOUND )
@@ -82,7 +82,7 @@ if ( GPGME_QT_FOUND )
    target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} )
    if(WIN32)
       target_link_libraries( gpgmepp-qt ${GPGME_VANILLA_LIBRARIES} )
-   endif(WIN32)
+   endif()
    set_target_properties( gpgmepp-qt PROPERTIES
                                      VERSION     ${_gpgmepp_version}
                                      SOVERSION   ${_gpgmepp_soversion}
@@ -90,7 +90,7 @@ if ( GPGME_QT_FOUND )
    )
    get_target_property( GPGMEPP_QT_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-qt EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
-endif ( GPGME_QT_FOUND )
+endif()
 
 
 if ( GPGME_PTHREAD_FOUND )
@@ -103,7 +103,7 @@ if ( GPGME_PTHREAD_FOUND )
    )
    get_target_property( GPGMEPP_PTHREAD_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-pthread EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
-endif ( GPGME_PTHREAD_FOUND )
+endif()
 
 if ( GPGME_PTH_FOUND )
    kde4_add_library( gpgmepp-pth ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
@@ -115,7 +115,7 @@ if ( GPGME_PTH_FOUND )
    )
    get_target_property( GPGMEPP_PTH_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-pth EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
-endif ( GPGME_PTH_FOUND )
+endif()
 
 
 include( CMakeExportBuildSettings )
@@ -156,4 +156,4 @@ if ( GPGME_FOUND )
      DESTINATION
      ${LIB_INSTALL_DIR}/gpgmepp )
 
-endif ( GPGME_FOUND )
+endif()

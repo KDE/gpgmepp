@@ -10,8 +10,8 @@ foreach( _FLAVOUR VANILLA PTHREAD QT PTH GLIB )
   if ( NOT CMAKE_REQUIRED_LIBRARIES )
     if ( GPGME_${_FLAVOUR}_FOUND )
       set(CMAKE_REQUIRED_LIBRARIES ${GPGME_VANILLA_LIBRARIES})
-    endif( GPGME_${_FLAVOUR}_FOUND )
-  endif( NOT CMAKE_REQUIRED_LIBRARIES )
+    endif()
+  endif()
 endforeach( _FLAVOUR )
 
 # check if gpgme has gpgme_data_{get,set}_file_name (new in 1.1.0)
@@ -429,4 +429,4 @@ check_cxx_source_compiles ("
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 
-endif( GPGME_FOUND )
+endif()
