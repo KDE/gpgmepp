@@ -117,8 +117,6 @@ if ( GPGME_PTH_FOUND )
    install(TARGETS gpgmepp-pth EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif()
 
-
-include( CMakeExportBuildSettings )
 # this writes way too much, but do we care?
 EXPORT_LIBRARY_DEPENDENCIES( ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppLibraryDepends.cmake )
 
