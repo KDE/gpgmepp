@@ -1,11 +1,44 @@
+cmake_minimum_required(VERSION 2.8.7 FATAL_ERROR)
+
 project( gpgmepp )
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/modules)
+
+find_package(ECM 0.0.5 REQUIRED NO_MODULE)
+
+set(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${ECM_MODULE_PATH})
+
+include(ECMVersion)
+include(ECMWriteVersionHeader)
+
+
+# Used by find_package
+include(FeatureSummary)
+
+find_package(Qt5Transitional REQUIRED)
+
+# ECM
+include(ECMVersion)
+ecm_version(5 0 0)
+include(ECMQtFramework)
+
+find_package(Gpgme)
+set_package_properties(Gpgme PROPERTIES
+                       URL "http://www.gnupg.org/related_software/gpgme/"
+                       DESCRIPTION "The GnuPG Made Easy (GPGME) library)"
+                       TYPE REQUIRED
+)
+include (ConfigureChecks.cmake)
+
+add_definitions(-DMAKE_GPGMEPP_LIB)
+
 #KDE4_NO_ENABLE_FINAL(gpgmepp)
 if (MINGW)
   set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -mms-bitfields")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mms-bitfields")
 endif()
 
-include_directories(  ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
+include_directories( ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/.. )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gpgme++.h )
@@ -15,22 +48,22 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURREN
 ##     Unix: gpgme, gpgme-pthread, gpgme-pth
 ## We're building corresponding gpgme++ flavours
 
-set(gpgme_LIB_SRCS 
+set(gpgme_LIB_SRCS
         exception.cpp
-        context.cpp key.cpp 
-        trustitem.cpp 
-        data.cpp 
-        callbacks.cpp 
-        eventloopinteractor.cpp 
+        context.cpp key.cpp
+        trustitem.cpp
+        data.cpp
+        callbacks.cpp
+        eventloopinteractor.cpp
         editinteractor.cpp
         assuanresult.cpp
         keylistresult.cpp
-        keygenerationresult.cpp 
+        keygenerationresult.cpp
         importresult.cpp
-        decryptionresult.cpp 
-        verificationresult.cpp 
-        signingresult.cpp 
-        encryptionresult.cpp 
+        decryptionresult.cpp
+        verificationresult.cpp
+        signingresult.cpp
+        encryptionresult.cpp
         engineinfo.cpp
         gpgsetexpirytimeeditinteractor.cpp
         gpgsetownertrusteditinteractor.cpp
@@ -49,7 +82,7 @@ set( _gpgmepp_soversion 2 )
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
 
 if ( GPGME_VANILLA_FOUND )
-   kde4_add_library( gpgmepp ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   add_library( gpgmepp SHARED ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
    target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
    if(WINCE)
    target_link_libraries(gpgmepp ${WCECOMPAT_LIBRARIES})
@@ -65,7 +98,7 @@ if ( GPGME_VANILLA_FOUND )
 endif()
 
 if ( GPGME_GLIB_FOUND )
-   kde4_add_library( gpgmepp-glib ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_glib.cpp )
+   add_library( gpgmepp-glib SHARED ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_glib.cpp )
    target_link_libraries( gpgmepp-glib ${GPGME_GLIB_LIBRARIES} )
    set_target_properties( gpgmepp-glib PROPERTIES
                                        VERSION     ${_gpgmepp_version}
@@ -78,7 +111,7 @@ endif()
 
 
 if ( GPGME_QT_FOUND )
-   kde4_add_library( gpgmepp-qt ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_qt.cpp )
+   add_library( gpgmepp-qt SHARED ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_qt.cpp )
    target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} )
    if(WIN32)
       target_link_libraries( gpgmepp-qt ${GPGME_VANILLA_LIBRARIES} )
@@ -94,7 +127,7 @@ endif()
 
 
 if ( GPGME_PTHREAD_FOUND )
-   kde4_add_library( gpgmepp-pthread ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   add_library( gpgmepp-pthread SHARED ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
    target_link_libraries( gpgmepp-pthread ${GPGME_PTHREAD_LIBRARIES} )
    set_target_properties( gpgmepp-pthread PROPERTIES
                                           VERSION     ${_gpgmepp_version}
@@ -106,7 +139,7 @@ if ( GPGME_PTHREAD_FOUND )
 endif()
 
 if ( GPGME_PTH_FOUND )
-   kde4_add_library( gpgmepp-pth ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   add_library( gpgmepp-pth SHARED ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
    target_link_libraries( gpgmepp-pth ${GPGME_PTH_LIBRARIES} )
    set_target_properties( gpgmepp-pth PROPERTIES
                                       VERSION     ${_gpgmepp_version}
@@ -129,10 +162,10 @@ if ( GPGME_FOUND )
    add_subdirectory( interfaces )
 
    install(FILES
-        global.h error.h exception.h context.h key.h trustitem.h 
+        global.h error.h exception.h context.h key.h trustitem.h
         eventloopinteractor.h editinteractor.h data.h gpgmefw.h result.h
         assuanresult.h
-        keylistresult.h keygenerationresult.h 
+        keylistresult.h keygenerationresult.h
         importresult.h decryptionresult.h verificationresult.h
         signingresult.h encryptionresult.h notation.h engineinfo.h
         gpgsetexpirytimeeditinteractor.h

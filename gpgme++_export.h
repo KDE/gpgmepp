@@ -21,7 +21,15 @@
 #define GPGMEPP_EXPORT_H
 
 /* needed for GPGMEPP_EXPORT and KDE_IMPORT macros */
-#include <kdemacros.h>
+/* HACK! Port this to generated export header */
+#include <qglobal.h>
+
+/* HACK */
+#ifndef KDE_DEPRECATED
+#  define KDE_DEPRECATED __attribute__ ((__deprecated__))
+#  define KDE_DEPRECATED_EXPORT KDECORE_EXPORT __attribute__ ((__deprecated__))
+#  define KDE_DEPRECATED_NO_EXPORT KDECORE_NO_EXPORT __attribute__ ((__deprecated__))
+#endif
 
 #ifndef GPGMEPP_EXPORT
 # if defined(KDEPIM_STATIC_LIBS)
@@ -29,10 +37,10 @@
 #  define GPGMEPP_EXPORT
 # elif defined(MAKE_GPGME___LIB) || defined(MAKE_GPGMEPP_LIB)
    /* We are building this library */
-#  define GPGMEPP_EXPORT KDE_EXPORT
+#  define GPGMEPP_EXPORT Q_DECL_EXPORT
 # else
    /* We are using this library */
-#  define GPGMEPP_EXPORT KDE_IMPORT
+#  define GPGMEPP_EXPORT
 # endif
 #endif
 
