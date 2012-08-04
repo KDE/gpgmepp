@@ -46,7 +46,7 @@ public:
   }
   ~Private() {
     for ( std::vector<gpgme_import_status_t>::iterator it = imports.begin() ; it != imports.end() ; ++it ) {
-      std::free( (*it)->fpr );
+      std::free( ( *it )->fpr );
       delete *it; *it = 0;
     }
   }
@@ -68,11 +68,13 @@ GpgME::ImportResult::ImportResult( gpgme_ctx_t ctx, const Error & error )
 }
 
 void GpgME::ImportResult::init( gpgme_ctx_t ctx ) {
-  if ( !ctx )
+  if ( !ctx ) {
     return;
+  }
   gpgme_import_result_t res = gpgme_op_import_result( ctx );
-  if ( !res )
+  if ( !res ) {
     return;
+  }
   d.reset( new Private( *res ) );
 }
 
@@ -135,12 +137,14 @@ GpgME::Import GpgME::ImportResult::import( unsigned int idx ) const {
 }
 
 std::vector<GpgME::Import> GpgME::ImportResult::imports() const {
-  if ( !d )
+  if ( !d ) {
     return std::vector<Import>();
+  }
   std::vector<Import> result;
   result.reserve( d->imports.size() );
-  for ( unsigned int i = 0 ; i < d->imports.size() ; ++i )
+  for ( unsigned int i = 0 ; i < d->imports.size() ; ++i ) {
     result.push_back( Import( d, i ) );
+  }
   return result;
 }
 
@@ -173,14 +177,25 @@ GpgME::Error GpgME::Import::error() const {
 }
 
 GpgME::Import::Status GpgME::Import::status() const {
-  if ( isNull() )
+  if ( isNull() ) {
     return Unknown;
+  }
   const unsigned int s = d->imports[idx]->status;
   unsigned int result = Unknown;
-  if ( s & GPGME_IMPORT_NEW )    result |= NewKey;
-  if ( s & GPGME_IMPORT_UID )    result |= NewUserIDs;
-  if ( s & GPGME_IMPORT_SIG )    result |= NewSignatures;
-  if ( s & GPGME_IMPORT_SUBKEY ) result |= NewSubkeys;
-  if ( s & GPGME_IMPORT_SECRET ) result |= ContainedSecretKey;
+  if ( s & GPGME_IMPORT_NEW ) {
+    result |= NewKey;
+  }
+  if ( s & GPGME_IMPORT_UID ) {
+    result |= NewUserIDs;
+  }
+  if ( s & GPGME_IMPORT_SIG ) {
+    result |= NewSignatures;
+  }
+  if ( s & GPGME_IMPORT_SUBKEY ) {
+    result |= NewSubkeys;
+  }
+  if ( s & GPGME_IMPORT_SECRET ) {
+    result |= ContainedSecretKey;
+  }
   return static_cast<Status>( result );
 }

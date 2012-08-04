@@ -40,25 +40,29 @@
 class GpgME::VerificationResult::Private {
 public:
   explicit Private( const gpgme_verify_result_t r ) {
-    if ( !r )
+    if ( !r ) {
       return;
+    }
 #ifdef HAVE_GPGME_VERIFY_RESULT_T_FILE_NAME
-    if ( r->file_name )
+    if ( r->file_name ) {
       file_name = r->file_name;
+    }
 #endif
     // copy recursively, using compiler-generated copy ctor.
     // We just need to handle the pointers in the structs:
     for ( gpgme_signature_t is = r->signatures ; is ; is = is->next ) {
       gpgme_signature_t scopy = new _gpgme_signature( *is );
-      if ( is->fpr )
+      if ( is->fpr ) {
 	scopy->fpr = strdup( is->fpr );
+      }
 #ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
 // PENDING(marc) why does this crash on Windows in strdup()?
 # ifndef _WIN32
-     if ( is->pka_address )
+      if ( is->pka_address ) {
 	scopy->pka_address = strdup( is->pka_address );
+      }
 # else
-     scopy->pka_address = 0;
+      scopy->pka_address = 0;
 # endif
 #endif
       scopy->next = 0;
@@ -68,8 +72,9 @@ public:
       purls.push_back( 0 );
       for ( gpgme_sig_notation_t in = is->notations ; in ; in = in->next ) {
 	if ( !in->name ) {
-	  if ( in->value )
+	  if ( in->value ) {
 	    purls.back() = strdup( in->value ); // policy url
+          }
 	  continue;
 	}
 #ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
@@ -78,25 +83,27 @@ public:
         Nota n = { 0, 0 };
 #endif
 	n.name = strdup( in->name );
-	if ( in->value )
+	if ( in->value ) {
 	  n.value = strdup( in->value );
+        }
 	nota.back().push_back( n );
       }
     }
   }
   ~Private() {
     for ( std::vector<gpgme_signature_t>::iterator it = sigs.begin() ; it != sigs.end() ; ++it ) {
-      std::free( (*it)->fpr );
+      std::free( ( *it )->fpr );
 #ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
-      std::free( (*it)->pka_address );
+      std::free( ( *it )->pka_address );
 #endif
       delete *it; *it = 0;
     }
-    for ( std::vector< std::vector<Nota> >::iterator it = nota.begin() ; it != nota.end() ; ++it )
+    for ( std::vector< std::vector<Nota> >::iterator it = nota.begin() ; it != nota.end() ; ++it ) {
       for ( std::vector<Nota>::iterator jt = it->begin() ; jt != it->end() ; ++jt ) {
 	std::free( jt->name );  jt->name = 0;
 	std::free( jt->value ); jt->value = 0;
       }
+    }
     std::for_each( purls.begin(), purls.end(), &std::free );
   }
 
@@ -127,11 +134,13 @@ GpgME::VerificationResult::VerificationResult( gpgme_ctx_t ctx, const Error & er
 }
 
 void GpgME::VerificationResult::init( gpgme_ctx_t ctx ) {
-  if ( !ctx )
+  if ( !ctx ) {
     return;
+  }
   gpgme_verify_result_t res = gpgme_op_verify_result( ctx );
-  if ( !res )
+  if ( !res ) {
     return;
+  }
   d.reset( new Private( res ) );
 }
 
@@ -150,22 +159,20 @@ GpgME::Signature GpgME::VerificationResult::signature( unsigned int idx ) const 
 }
 
 std::vector<GpgME::Signature> GpgME::VerificationResult::signatures() const {
-  if ( !d )
+  if ( !d ) {
     return std::vector<Signature>();
+  }
   std::vector<Signature> result;
   result.reserve( d->sigs.size() );
-  for ( unsigned int i = 0 ; i < d->sigs.size() ; ++i )
+  for ( unsigned int i = 0 ; i < d->sigs.size() ; ++i ) {
     result.push_back( Signature( d, i ) );
+  }
   return result;
 }
-
-
-
 
 GpgME::Signature::Signature( const boost::shared_ptr<VerificationResult::Private> & parent, unsigned int i )
   : d( parent ), idx( i )
 {
-
 }
 
 GpgME::Signature::Signature() : d(), idx( 0 ) {}
@@ -176,21 +183,44 @@ bool GpgME::Signature::isNull() const {
 
 
 GpgME::Signature::Summary GpgME::Signature::summary() const {
-  if ( isNull() )
+  if ( isNull() ) {
     return None;
+  }
   gpgme_sigsum_t sigsum = d->sigs[idx]->summary;
   unsigned int result = 0;
-  if ( sigsum & GPGME_SIGSUM_VALID       ) result |= Valid;
-  if ( sigsum & GPGME_SIGSUM_GREEN       ) result |= Green;
-  if ( sigsum & GPGME_SIGSUM_RED         ) result |= Red;
-  if ( sigsum & GPGME_SIGSUM_KEY_REVOKED ) result |= KeyRevoked;
-  if ( sigsum & GPGME_SIGSUM_KEY_EXPIRED ) result |= KeyExpired;
-  if ( sigsum & GPGME_SIGSUM_SIG_EXPIRED ) result |= SigExpired;
-  if ( sigsum & GPGME_SIGSUM_KEY_MISSING ) result |= KeyMissing;
-  if ( sigsum & GPGME_SIGSUM_CRL_MISSING ) result |= CrlMissing;
-  if ( sigsum & GPGME_SIGSUM_CRL_TOO_OLD ) result |= CrlTooOld;
-  if ( sigsum & GPGME_SIGSUM_BAD_POLICY  ) result |= BadPolicy;
-  if ( sigsum & GPGME_SIGSUM_SYS_ERROR   ) result |= SysError;
+  if ( sigsum & GPGME_SIGSUM_VALID ) {
+    result |= Valid;
+  }
+  if ( sigsum & GPGME_SIGSUM_GREEN ) {
+    result |= Green;
+  }
+  if ( sigsum & GPGME_SIGSUM_RED ) {
+    result |= Red;
+  }
+  if ( sigsum & GPGME_SIGSUM_KEY_REVOKED ) {
+    result |= KeyRevoked;
+  }
+  if ( sigsum & GPGME_SIGSUM_KEY_EXPIRED ) {
+    result |= KeyExpired;
+  }
+  if ( sigsum & GPGME_SIGSUM_SIG_EXPIRED ) {
+    result |= SigExpired;
+  }
+  if ( sigsum & GPGME_SIGSUM_KEY_MISSING ) {
+    result |= KeyMissing;
+  }
+  if ( sigsum & GPGME_SIGSUM_CRL_MISSING ) {
+    result |= CrlMissing;
+  }
+  if ( sigsum & GPGME_SIGSUM_CRL_TOO_OLD ) {
+    result |= CrlTooOld;
+  }
+  if ( sigsum & GPGME_SIGSUM_BAD_POLICY ) {
+    result |= BadPolicy;
+  }
+  if ( sigsum & GPGME_SIGSUM_SYS_ERROR ) {
+    result |= SysError;
+  }
   return static_cast<Summary>( result );
 }
 
@@ -228,23 +258,26 @@ bool GpgME::Signature::isVerifiedUsingChainModel() const {
 
 GpgME::Signature::PKAStatus GpgME::Signature::pkaStatus() const {
 #ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
-  if ( !isNull() )
+  if ( !isNull() ) {
     return static_cast<PKAStatus>( d->sigs[idx]->pka_trust );
+  }
 #endif
   return UnknownPKAStatus;
 }
 
 const char * GpgME::Signature::pkaAddress() const {
 #ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
-  if ( !isNull() )
+  if ( !isNull() ) {
     return d->sigs[idx]->pka_address;
+  }
 #endif
   return 0;
 }
 
 GpgME::Signature::Validity GpgME::Signature::validity() const {
-  if ( isNull() )
+  if ( isNull() ) {
     return Unknown;
+  }
   switch ( d->sigs[idx]->validity ) {
   default:
   case GPGME_VALIDITY_UNKNOWN:   return Unknown;
@@ -258,8 +291,9 @@ GpgME::Signature::Validity GpgME::Signature::validity() const {
 
 
 char GpgME::Signature::validityAsString() const {
-  if ( isNull() )
+  if ( isNull() ) {
     return '?';
+  }
   switch ( d->sigs[idx]->validity ) {
   default:
   case GPGME_VALIDITY_UNKNOWN:   return '?';
@@ -277,32 +311,36 @@ GpgME::Error GpgME::Signature::nonValidityReason() const {
 
 unsigned int GpgME::Signature::publicKeyAlgorithm() const {
 #ifdef HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS
-  if ( !isNull() )
+  if ( !isNull() ) {
     return d->sigs[idx]->pubkey_algo;
+  }
 #endif
   return 0;
 }
 
 const char * GpgME::Signature::publicKeyAlgorithmAsString() const {
 #ifdef HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS
-  if ( !isNull() )
+  if ( !isNull() ) {
     return gpgme_pubkey_algo_name( d->sigs[idx]->pubkey_algo );
+  }
 #endif
   return 0;
 }
 
 unsigned int GpgME::Signature::hashAlgorithm() const {
 #ifdef HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS
-  if ( !isNull() )
+  if ( !isNull() ) {
     return d->sigs[idx]->hash_algo;
+  }
 #endif
   return 0;
 }
 
 const char * GpgME::Signature::hashAlgorithmAsString() const {
 #ifdef HAVE_GPGME_SIGNATURE_T_ALGORITHM_FIELDS
-  if ( !isNull() )
+  if ( !isNull() ) {
     return gpgme_hash_algo_name( d->sigs[idx]->hash_algo );
+  }
 #endif
   return 0;
 }
@@ -316,12 +354,14 @@ GpgME::Notation GpgME::Signature::notation( unsigned int nidx ) const {
 }
 
 std::vector<GpgME::Notation> GpgME::Signature::notations() const {
-  if ( isNull() )
+  if ( isNull() ) {
     return std::vector<GpgME::Notation>();
+  }
   std::vector<GpgME::Notation> result;
   result.reserve( d->nota[idx].size() );
-  for ( unsigned int i = 0 ; i < d->nota[idx].size() ; ++i )
+  for ( unsigned int i = 0 ; i < d->nota[idx].size() ; ++i ) {
     result.push_back( GpgME::Notation( d, idx, i ) );
+  }
   return result;
 }
 
@@ -337,10 +377,12 @@ public:
     Private( gpgme_sig_notation_t n )
 	: d(), sidx( 0 ), nidx( 0 ), nota( n ? new _gpgme_sig_notation( *n ) : 0 )
     {
-      if ( nota && nota->name )
+      if ( nota && nota->name ) {
         nota->name = strdup( nota->name );
-      if ( nota && nota->value )
+      }
+      if ( nota && nota->value ) {
         nota->value = strdup( nota->value );
+      }
     }
     Private( const Private & other )
 	: d( other.d ), sidx( other.sidx ), nidx( other.nidx ), nota( other.nota )
@@ -379,10 +421,12 @@ GpgME::Notation::Notation( gpgme_sig_notation_t nota )
 GpgME::Notation::Notation() : d() {}
 
 bool GpgME::Notation::isNull() const {
-    if ( !d )
+    if ( !d ) {
 	return true;
-    if ( d->d )
+    }
+    if ( d->d ) {
 	return d->sidx >= d->d->nota.size() || d->nidx >= d->d->nota[d->sidx].size() ;
+    }
     return !d->nota;
 }
 
@@ -420,8 +464,6 @@ bool GpgME::Notation::isHumanReadable() const {
 bool GpgME::Notation::isCritical() const {
     return flags() & Critical;
 }
-
-
 
 std::ostream & GpgME::operator<<( std::ostream & os, const VerificationResult & result ) {
     os << "GpgME::VerificationResult(";
@@ -500,10 +542,11 @@ std::ostream & GpgME::operator<<( std::ostream & os, Notation::Flags flags ) {
 
 std::ostream & GpgME::operator<<( std::ostream & os, const Notation & nota ) {
     os << "GpgME::Signature::Notation(";
-    if ( !nota.isNull() )
+    if ( !nota.isNull() ) {
         os << "\n name:  " << protect( nota.name() )
            << "\n value: " << protect( nota.value() )
            << "\n flags: " << nota.flags()
            << '\n';
+    }
     return os << ")";
 }

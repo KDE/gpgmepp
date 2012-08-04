@@ -51,11 +51,13 @@ GpgME::KeyListResult::KeyListResult( gpgme_ctx_t ctx, const Error & error )
 }
 
 void GpgME::KeyListResult::init( gpgme_ctx_t ctx ) {
-  if ( !ctx )
+  if ( !ctx ) {
     return;
+  }
   gpgme_keylist_result_t res = gpgme_op_keylist_result( ctx );
-  if ( !res )
+  if ( !res ) {
     return;
+  }
   d.reset( new Private( *res ) );
 }
 
@@ -68,14 +70,16 @@ GpgME::KeyListResult::KeyListResult( const Error & error, const _gpgme_op_keylis
 make_standard_stuff(KeyListResult)
 
 void GpgME::KeyListResult::detach() {
-  if ( !d || d.unique() )
+  if ( !d || d.unique() ) {
     return;
+  }
   d.reset( new Private( *d ) );
 }
 
 void GpgME::KeyListResult::mergeWith( const KeyListResult & other ) {
-  if ( other.isNull() )
+  if ( other.isNull() ) {
     return;
+  }
   if ( isNull() ) { // just assign
     operator=( other );
     return;
@@ -84,13 +88,15 @@ void GpgME::KeyListResult::mergeWith( const KeyListResult & other ) {
   if ( other.isTruncated() && !this->isTruncated() ) {
     assert( other.d );
     detach();
-    if ( !d )
+    if ( !d ) {
         d.reset( new Private( *other.d ) );
-    else
+    } else {
         d->res.truncated = true;
+    }
   }
-  if ( ! bool(error()) ) // only merge the error when there was none yet.
+  if ( ! bool(error() ) ) { // only merge the error when there was none yet.
     Result::operator=( other );
+  }
 }
 
 bool GpgME::KeyListResult::isTruncated() const {

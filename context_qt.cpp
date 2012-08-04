@@ -26,7 +26,7 @@
 
 #ifdef HAVE_GPGME_GET_FDPTR
 extern "C" QIODevice * gpgme_get_fdptr( int );
-#endif 
+#endif
 
 GIOChannel * GpgME::getGIOChannel( int ) {
     return 0;

@@ -68,20 +68,27 @@ public:
         const bool nonRevoc = options & NonRevocable;
         const bool trust = options & Trust;
         //TODO: check if all combinations are valid
-        if ( local && nonRevoc && trust )
+        if ( local && nonRevoc && trust ) {
             return "ltnrsign";
-        if ( local && nonRevoc )
+        }
+        if ( local && nonRevoc ) {
             return "lnrsign";
-        if ( local && trust )
+        }
+        if ( local && trust ) {
             return "ltsign";
-        if ( local )
+        }
+        if ( local ) {
             return "lsign";
-        if ( nonRevoc && trust )
+        }
+        if ( nonRevoc && trust ) {
             return "tnrsign";
-        if ( nonRevoc )
+        }
+        if ( nonRevoc ) {
             return "nrsign";
-        if ( trust )
+        }
+        if ( trust ) {
             return "tsign";
+        }
         return "sign";
     }
 
@@ -218,8 +225,7 @@ const char * GpgSignKeyEditInteractor::action( Error & err ) const {
     case SAVE:
         return answer( true );
     default:
-        if ( st >= UIDS_LIST_SEPARATELY && st < UIDS_LIST_SEPARATELY_DONE )
-        {
+        if ( st >= UIDS_LIST_SEPARATELY && st < UIDS_LIST_SEPARATELY_DONE ) {
             std::stringstream ss;
             ss << d->nextUserID();
             d->scratch = ss.str();
@@ -238,23 +244,26 @@ unsigned int GpgSignKeyEditInteractor::nextState( unsigned int status, const cha
     static const Error GENERAL_ERROR = Error::fromCode( GPG_ERR_GENERAL );
     //static const Error INV_TIME_ERROR = Error::fromCode( GPG_ERR_INV_TIME );
     static const TransitionMap table( makeTable() );
-    if ( needsNoResponse( status ) )
+    if ( needsNoResponse( status ) ) {
         return state();
+    }
 
     using namespace GpgSignKeyEditInteractor_Private;
 
     //lookup transition in map
     const TransitionMap::const_iterator it = table.find( make_tuple( static_cast<SignKeyState>( state() ), status, std::string( args ) ) );
-    if ( it != table.end() )
+    if ( it != table.end() ) {
         return it->second;
+    }
 
     //handle cases that cannot be handled via the map
     switch ( const unsigned int st = state() ) {
     case UIDS_ANSWER_SIGN_ALL:
         if ( status == GPGME_STATUS_GET_LINE &&
              strcmp( args, "keyedit.prompt" ) == 0 ) {
-            if ( !d->signAll() )
+            if ( !d->signAll() ) {
                 return UIDS_LIST_SEPARATELY;
+            }
             err = Error::fromCode( GPG_ERR_UNUSABLE_PUBKEY );
             return ERROR;
         }

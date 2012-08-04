@@ -46,7 +46,7 @@ namespace GpgME {
 
         explicit ScdGetInfoAssuanTransaction( InfoItem item );
         ~ScdGetInfoAssuanTransaction();
-            
+
         std::string version() const;
         unsigned int pid() const;
         std::string socketName() const;

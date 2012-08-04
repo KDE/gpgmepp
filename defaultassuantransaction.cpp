@@ -58,15 +58,19 @@ Error DefaultAssuanTransaction::status( const char * status, const char * args )
 
 std::vector<std::string> DefaultAssuanTransaction::statusLine( const char * tag ) const {
     std::vector<std::string> result;
-    for ( std::vector< std::pair<std::string,std::string> >::const_iterator it = m_status.begin(), end = m_status.end() ; it != end ; ++it )
-        if ( it->first == tag )
+    for ( std::vector< std::pair<std::string,std::string> >::const_iterator it = m_status.begin(), end = m_status.end() ; it != end ; ++it ) {
+        if ( it->first == tag ) {
             result.push_back( it->second );
+        }
+    }
     return result;
 }
 
 std::string DefaultAssuanTransaction::firstStatusLine( const char * tag ) const {
-    for ( std::vector< std::pair<std::string,std::string> >::const_iterator it = m_status.begin(), end = m_status.end() ; it != end ; ++it )
-        if ( it->first == tag )
+    for ( std::vector< std::pair<std::string,std::string> >::const_iterator it = m_status.begin(), end = m_status.end() ; it != end ; ++it ) {
+        if ( it->first == tag ) {
             return it->second;
+        }
+    }
     return std::string();
 }

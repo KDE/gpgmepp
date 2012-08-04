@@ -69,13 +69,13 @@ namespace GpgME {
       return result < 16 ? result : 0 ;
   }
   static inline int xtoi_2( const char * str ) {
-      return xtoi_1( str ) * 16U + xtoi_1( str+1 );
+      return xtoi_1( str ) * 16U + xtoi_1( str + 1 );
   }
 
 #ifdef HAVE_GPGME_ASSUAN_ENGINE
   static void percent_unescape( std::string & s, bool plus2space ) {
       std::string::iterator src = s.begin(), dest = s.begin(), end = s.end();
-      while ( src != end )
+      while ( src != end ) {
           if ( *src == '%' && end - src > 2 ) {
               *dest++ = xtoi_2( &*++src );
               src += 2;
@@ -85,6 +85,7 @@ namespace GpgME {
           } else {
               *dest++ = *src++;
           }
+      }
       s.erase( dest, end );
   }
 #endif
@@ -95,12 +96,13 @@ namespace GpgME {
 
   Error initializeLibrary( int ) {
 #ifndef _WIN32_WCE
-      if ( gpgme_check_version( GPGME_VERSION ) )
+      if ( gpgme_check_version( GPGME_VERSION ) ) {
 #endif
           return Error();
 #ifndef _WIN32_WCE
-      else
+      } else {
           return Error::fromCode( GPG_ERR_USER_1 );
+      }
 #endif
   }
 
@@ -116,8 +118,9 @@ namespace GpgME {
   }
 
   const char * Error::asString() const {
-    if ( mMessage.empty() )
+    if ( mMessage.empty() ) {
       format_error( static_cast<gpgme_error_t>( mErr ), mMessage );
+    }
     return mMessage.c_str();
   }
 
@@ -204,8 +207,9 @@ namespace GpgME {
 
   Context * Context::createForProtocol( Protocol proto ) {
     gpgme_ctx_t ctx = 0;
-    if ( gpgme_new ( &ctx ) != 0 )
+    if ( gpgme_new ( &ctx ) != 0 ) {
       return 0;
+    }
 
     switch ( proto ) {
     case OpenPGP:
@@ -230,8 +234,9 @@ namespace GpgME {
   std::auto_ptr<Context> Context::createForEngine( Engine eng, Error * error ) {
     gpgme_ctx_t ctx = 0;
     if ( const gpgme_error_t err = gpgme_new( &ctx ) ) {
-        if ( error )
+        if ( error ) {
             *error = Error( err );
+        }
         return std::auto_ptr<Context>();
     }
 
@@ -240,38 +245,44 @@ namespace GpgME {
 #ifdef HAVE_GPGME_ASSUAN_ENGINE
       if ( const gpgme_error_t err = gpgme_set_protocol( ctx, GPGME_PROTOCOL_ASSUAN ) ) {
         gpgme_release( ctx );
-        if ( error )
+        if ( error ) {
           *error = Error( err );
+        }
         return std::auto_ptr<Context>();
       }
       break;
 #else
-      if ( error )
+      if ( error ) {
         *error = Error::fromCode( GPG_ERR_NOT_SUPPORTED );
+      }
       return std::auto_ptr<Context>();
 #endif
     case G13Engine:
 #ifdef HAVE_GPGME_G13_VFS
       if ( const gpgme_error_t err = gpgme_set_protocol( ctx, GPGME_PROTOCOL_G13 ) ) {
         gpgme_release( ctx );
-        if ( error )
+        if ( error ) {
           *error = Error( err );
+        }
         return std::auto_ptr<Context>();
       }
       break;
 #else
-      if ( error )
+      if ( error ) {
         *error = Error::fromCode( GPG_ERR_NOT_SUPPORTED );
+      }
       return std::auto_ptr<Context>();
 #endif
     default:
-      if ( error )
+      if ( error ) {
         *error = Error::fromCode( GPG_ERR_INV_ARG );
+      }
       return std::auto_ptr<Context>();
     }
 
-    if ( error )
+    if ( error ) {
         *error = Error();
+    }
 
     return std::auto_ptr<Context>( new Context( ctx ) );
   }
@@ -296,8 +307,9 @@ namespace GpgME {
   }
 
   Context::Private::~Private() {
-      if ( ctx )
+      if ( ctx ) {
           gpgme_release( ctx );
+      }
       ctx = 0;
       delete iocbs;
   }
@@ -391,10 +403,11 @@ namespace GpgME {
 #endif
       return;
     }
-    if ( manage )
+    if ( manage ) {
       EventLoopInteractor::instance()->manage( this );
-    else
+    } else {
       EventLoopInteractor::instance()->unmanage( this );
+    }
   }
   bool Context::managedByEventLoopInteractor() const {
     return d->iocbs != 0;
@@ -461,9 +474,10 @@ namespace GpgME {
   Error Context::startKeyListing( const char * patterns[], bool secretOnly ) {
     d->lastop = Private::KeyList;
 #ifndef HAVE_GPGME_EXT_KEYLIST_MODE_EXTERNAL_NONBROKEN
-    if ( !patterns || !patterns[0] || !patterns[1] )
+    if ( !patterns || !patterns[0] || !patterns[1] ) {
       // max. one pattern -> use the non-ext version
       return startKeyListing( patterns ? patterns[0] : 0, secretOnly );
+    }
 #endif
     return Error( d->lasterr = gpgme_op_keylist_ext_start( d->ctx, patterns, int( secretOnly ), 0 ) );
   }
@@ -481,7 +495,7 @@ namespace GpgME {
   }
 
   KeyListResult Context::keyListResult() const {
-    return KeyListResult( d->ctx, Error(d->lasterr) );
+    return KeyListResult( d->ctx, Error( d->lasterr ) );
   }
 
   Key Context::key( const char * fingerprint, GpgME::Error & e , bool secret /*, bool forceUpdate*/ ) {
@@ -495,7 +509,7 @@ namespace GpgME {
     d->lastop = Private::KeyGen;
     Data::Private * const dp = pubKey.impl();
     d->lasterr = gpgme_op_genkey( d->ctx, parameters, dp ? dp->data : 0, 0 );
-    return KeyGenerationResult( d->ctx, Error(d->lasterr) );
+    return KeyGenerationResult( d->ctx, Error( d->lasterr ) );
   }
 
   Error Context::startKeyGeneration( const char * parameters, Data & pubKey ) {
@@ -505,10 +519,11 @@ namespace GpgME {
   }
 
   KeyGenerationResult Context::keyGenerationResult() const {
-    if ( d->lastop & Private::KeyGen )
-      return KeyGenerationResult( d->ctx, Error(d->lasterr) );
-    else
+    if ( d->lastop & Private::KeyGen ) {
+      return KeyGenerationResult( d->ctx, Error( d->lasterr ) );
+    } else {
       return KeyGenerationResult();
+    }
   }
 
   Error Context::exportPublicKeys( const char * pattern, Data & keyData ) {
@@ -520,9 +535,10 @@ namespace GpgME {
   Error Context::exportPublicKeys( const char * patterns[], Data & keyData ) {
     d->lastop = Private::Export;
 #ifndef HAVE_GPGME_EXT_KEYLIST_MODE_EXTERNAL_NONBROKEN
-    if ( !patterns || !patterns[0] || !patterns[1] )
+    if ( !patterns || !patterns[0] || !patterns[1] ) {
       // max. one pattern -> use the non-ext version
       return exportPublicKeys( patterns ? patterns[0] : 0, keyData );
+    }
 #endif
     Data::Private * const dp = keyData.impl();
     return Error( d->lasterr = gpgme_op_export_ext( d->ctx, patterns, 0, dp ? dp->data : 0 ) );
@@ -537,9 +553,10 @@ namespace GpgME {
   Error Context::startPublicKeyExport( const char * patterns[], Data & keyData ) {
     d->lastop = Private::Export;
 #ifndef HAVE_GPGME_EXT_KEYLIST_MODE_EXTERNAL_NONBROKEN
-    if ( !patterns || !patterns[0] || !patterns[1] )
+    if ( !patterns || !patterns[0] || !patterns[1] ) {
       // max. one pattern -> use the non-ext version
       return startPublicKeyExport( patterns ? patterns[0] : 0, keyData );
+    }
 #endif
     Data::Private * const dp = keyData.impl();
     return Error( d->lasterr = gpgme_op_export_ext_start( d->ctx, patterns, 0, dp ? dp->data : 0 ) );
@@ -550,7 +567,7 @@ namespace GpgME {
     d->lastop = Private::Import;
     const Data::Private * const dp = data.impl();
     d->lasterr = gpgme_op_import( d->ctx, dp ? dp->data : 0 );
-    return ImportResult( d->ctx, Error(d->lasterr) );
+    return ImportResult( d->ctx, Error( d->lasterr ) );
   }
 
   ImportResult Context::importKeys( const std::vector<Key> & kk ) {
@@ -561,26 +578,29 @@ namespace GpgME {
 #ifdef HAVE_GPGME_OP_IMPORT_KEYS
     const boost::scoped_array<gpgme_key_t> keys( new gpgme_key_t[ kk.size() + 1 ] );
     gpgme_key_t * keys_it = &keys[0];
-    for ( std::vector<Key>::const_iterator it = kk.begin(), end = kk.end() ; it != end ; ++it )
-      if ( it->impl() )
+    for ( std::vector<Key>::const_iterator it = kk.begin(), end = kk.end() ; it != end ; ++it ) {
+      if ( it->impl() ) {
         *keys_it++ = it->impl();
+      }
+    }
     *keys_it++ = 0;
     d->lasterr = gpgme_op_import_keys( d->ctx, keys.get() );
     shouldHaveResult = true;
 #endif
     if ( ( gpgme_err_code( d->lasterr ) == GPG_ERR_NOT_IMPLEMENTED ||
            gpgme_err_code( d->lasterr ) == GPG_ERR_NOT_SUPPORTED ) &&
-         protocol() == CMS )
-    {
+         protocol() == CMS ) {
         // ok, try the workaround (export+import):
         std::vector<const char*> fprs;
         for ( std::vector<Key>::const_iterator it = kk.begin(), end = kk.end() ; it != end ; ++it ) {
             if ( const char * fpr = it->primaryFingerprint() ) {
-                if ( *fpr )
+                if ( *fpr ) {
                     fprs.push_back( fpr );
+                }
             } else if ( const char * keyid = it->keyID() ) {
-                if ( *keyid )
+                if ( *keyid ) {
                     fprs.push_back( keyid );
+                }
             }
         }
         fprs.push_back( 0 );
@@ -596,10 +616,11 @@ namespace GpgME {
             shouldHaveResult = true;
         }
     }
-    if ( shouldHaveResult )
-        return ImportResult( d->ctx, Error(d->lasterr) );
-    else
+    if ( shouldHaveResult ) {
+        return ImportResult( d->ctx, Error( d->lasterr ) );
+    } else {
         return ImportResult( Error( d->lasterr ) );
+    }
   }
 
   Error Context::startKeyImport( const Data & data ) {
@@ -613,9 +634,11 @@ namespace GpgME {
 #ifdef HAVE_GPGME_OP_IMPORT_KEYS
     const boost::scoped_array<gpgme_key_t> keys( new gpgme_key_t[ kk.size() + 1 ] );
     gpgme_key_t * keys_it = &keys[0];
-    for ( std::vector<Key>::const_iterator it = kk.begin(), end = kk.end() ; it != end ; ++it )
-      if ( it->impl() )
+    for ( std::vector<Key>::const_iterator it = kk.begin(), end = kk.end() ; it != end ; ++it ) {
+      if ( it->impl() ) {
         *keys_it++ = it->impl();
+      }
+    }
     *keys_it++ = 0;
     return Error( d->lasterr = gpgme_op_import_keys_start( d->ctx, keys.get() ) );
 #else
@@ -625,10 +648,11 @@ namespace GpgME {
   }
 
   ImportResult Context::importResult() const {
-    if ( d->lastop & Private::Import )
-      return ImportResult( d->ctx, Error(d->lasterr) );
-    else
+    if ( d->lastop & Private::Import ) {
+      return ImportResult( d->ctx, Error( d->lasterr ) );
+    } else {
       return ImportResult();
+    }
   }
 
   Error Context::deleteKey( const Key & key, bool allowSecretKeyDeletion ) {
@@ -745,12 +769,14 @@ namespace GpgME {
     AssuanTransaction * t = p->lastAssuanTransaction.get();
     assert( t );
     Error err;
-    if ( name )
+    if ( name ) {
       p->lastAssuanInquireData = t->inquire( name, args, err );
-    else
+    } else {
       p->lastAssuanInquireData = Data::null;
-    if ( !p->lastAssuanInquireData.isNull() )
+    }
+    if ( !p->lastAssuanInquireData.isNull() ) {
       *r_data = p->lastAssuanInquireData.impl()->data;
+    }
     return err.encodedError();
   }
 
@@ -770,8 +796,9 @@ namespace GpgME {
   AssuanResult Context::assuanTransact( const char * command, std::auto_ptr<AssuanTransaction> transaction ) {
     d->lastop = Private::AssuanTransact;
     d->lastAssuanTransaction = transaction;
-    if ( !d->lastAssuanTransaction.get() )
-        return AssuanResult( Error( d->lasterr = make_error( GPG_ERR_INV_ARG ) ) );
+    if ( !d->lastAssuanTransaction.get() ) {
+      return AssuanResult( Error( d->lasterr = make_error( GPG_ERR_INV_ARG ) ) );
+    }
 #ifdef HAVE_GPGME_ASSUAN_ENGINE
     d->lasterr = gpgme_op_assuan_transact( d->ctx, command,
                                            assuan_transaction_data_callback,
@@ -794,8 +821,9 @@ namespace GpgME {
   Error Context::startAssuanTransaction( const char * command, std::auto_ptr<AssuanTransaction> transaction ) {
     d->lastop = Private::AssuanTransact;
     d->lastAssuanTransaction = transaction;
-    if ( !d->lastAssuanTransaction.get() )
-        return Error( d->lasterr = make_error( GPG_ERR_INV_ARG ) );
+    if ( !d->lastAssuanTransaction.get() ) {
+      return Error( d->lasterr = make_error( GPG_ERR_INV_ARG ) );
+    }
 #ifdef HAVE_GPGME_ASSUAN_ENGINE
     return Error( d->lasterr = gpgme_op_assuan_transact_start( d->ctx, command,
                                                                assuan_transaction_data_callback,
@@ -811,10 +839,11 @@ namespace GpgME {
   }
 
   AssuanResult Context::assuanResult() const {
-    if ( d->lastop & Private::AssuanTransact )
+    if ( d->lastop & Private::AssuanTransact ) {
       return AssuanResult( d->ctx, d->lasterr );
-    else
+    } else {
       return AssuanResult();
+    }
   }
 
   AssuanTransaction * Context::lastAssuanTransaction() const {
@@ -830,7 +859,7 @@ namespace GpgME {
     const Data::Private * const cdp = cipherText.impl();
     Data::Private * const pdp = plainText.impl();
     d->lasterr = gpgme_op_decrypt( d->ctx, cdp ? cdp->data : 0, pdp ? pdp->data : 0 );
-    return DecryptionResult( d->ctx, Error(d->lasterr) );
+    return DecryptionResult( d->ctx, Error( d->lasterr ) );
   }
 
   Error Context::startDecryption( const Data & cipherText, Data & plainText ) {
@@ -841,10 +870,11 @@ namespace GpgME {
   }
 
   DecryptionResult Context::decryptionResult() const {
-    if ( d->lastop & Private::Decrypt )
-      return DecryptionResult( d->ctx, Error(d->lasterr) );
-    else
+    if ( d->lastop & Private::Decrypt ) {
+      return DecryptionResult( d->ctx, Error( d->lasterr ) );
+    } else {
       return DecryptionResult();
+    }
   }
 
 
@@ -854,7 +884,7 @@ namespace GpgME {
     const Data::Private * const sdp = signature.impl();
     const Data::Private * const tdp = signedText.impl();
     d->lasterr = gpgme_op_verify( d->ctx, sdp ? sdp->data : 0, tdp ? tdp->data : 0, 0 );
-    return VerificationResult( d->ctx, Error(d->lasterr) );
+    return VerificationResult( d->ctx, Error( d->lasterr ) );
   }
 
   VerificationResult Context::verifyOpaqueSignature( const Data & signedData, Data & plainText ) {
@@ -862,7 +892,7 @@ namespace GpgME {
     const Data::Private * const sdp = signedData.impl();
     Data::Private * const pdp = plainText.impl();
     d->lasterr = gpgme_op_verify( d->ctx, sdp ? sdp->data : 0, 0, pdp ? pdp->data : 0 );
-    return VerificationResult( d->ctx, Error(d->lasterr) );
+    return VerificationResult( d->ctx, Error( d->lasterr ) );
   }
 
   Error Context::startDetachedSignatureVerification( const Data & signature, const Data & signedText ) {
@@ -880,20 +910,20 @@ namespace GpgME {
   }
 
   VerificationResult Context::verificationResult() const {
-    if ( d->lastop & Private::Verify )
-      return VerificationResult( d->ctx, Error(d->lasterr) );
-    else
+    if ( d->lastop & Private::Verify ) {
+      return VerificationResult( d->ctx, Error( d->lasterr ) );
+    } else {
       return VerificationResult();
+    }
   }
-
 
   std::pair<DecryptionResult,VerificationResult> Context::decryptAndVerify( const Data & cipherText, Data & plainText ) {
     d->lastop = Private::DecryptAndVerify;
     const Data::Private * const cdp = cipherText.impl();
     Data::Private * const pdp = plainText.impl();
     d->lasterr = gpgme_op_decrypt_verify( d->ctx, cdp ? cdp->data : 0, pdp ? pdp->data : 0 );
-    return std::make_pair( DecryptionResult( d->ctx, Error(d->lasterr) ),
-                           VerificationResult( d->ctx, Error(d->lasterr) ) );
+    return std::make_pair( DecryptionResult( d->ctx, Error( d->lasterr ) ),
+                           VerificationResult( d->ctx, Error( d->lasterr ) ) );
   }
 
   Error Context::startCombinedDecryptionAndVerification( const Data & cipherText, Data & plainText ) {
@@ -906,14 +936,15 @@ namespace GpgME {
 #ifdef HAVE_GPGME_OP_GETAUDITLOG
   unsigned int to_auditlog_flags( unsigned int flags ) {
       unsigned int result = 0;
-      if ( flags & Context::HtmlAuditLog )
+      if ( flags & Context::HtmlAuditLog ) {
           result |= GPGME_AUDITLOG_HTML;
-      if ( flags & Context::AuditLogWithHelp )
+      }
+      if ( flags & Context::AuditLogWithHelp ) {
           result |= GPGME_AUDITLOG_WITH_HELP;
+      }
       return result;
   }
 #endif // HAVE_GPGME_OP_GETAUDITLOG
-
 
   Error Context::startGetAuditLog( Data & output, unsigned int flags ) {
     d->lastop = Private::GetAuditLog;
@@ -953,8 +984,9 @@ namespace GpgME {
   std::vector<Key> Context::signingKeys() const {
     std::vector<Key> result;
     gpgme_key_t key;
-    for ( unsigned int i = 0 ; ( key = gpgme_signers_enum( d->ctx, i ) ) ; ++i )
+    for ( unsigned int i = 0 ; ( key = gpgme_signers_enum( d->ctx, i ) ) ; ++i ) {
       result.push_back( Key( key, false ) );
+    }
     return result;
   }
 
@@ -984,19 +1016,24 @@ namespace GpgME {
 
   const char * Context::signaturePolicyURL() const {
 #ifdef HAVE_GPGME_SIG_NOTATION_CLEARADDGET
-    for ( gpgme_sig_notation_t n = gpgme_sig_notation_get( d->ctx ) ; n ; n = n->next )
-      if ( !n->name )
+    for ( gpgme_sig_notation_t n = gpgme_sig_notation_get( d->ctx ) ; n ; n = n->next ) {
+      if ( !n->name ) {
         return n->value;
+      }
+    }
 #endif
     return 0;
   }
 
   Notation Context::signatureNotation( unsigned int idx ) const {
 #ifdef HAVE_GPGME_SIG_NOTATION_CLEARADDGET
-    for ( gpgme_sig_notation_t n = gpgme_sig_notation_get( d->ctx ) ; n ; n = n->next )
-      if ( n->name )
-        if ( idx-- == 0 )
+    for ( gpgme_sig_notation_t n = gpgme_sig_notation_get( d->ctx ) ; n ; n = n->next ) {
+      if ( n->name ) {
+        if ( idx-- == 0 ) {
           return Notation( n );
+        }
+      }
+    }
 #endif
     return Notation();
   }
@@ -1004,9 +1041,11 @@ namespace GpgME {
   std::vector<Notation> Context::signatureNotations() const {
     std::vector<Notation> result;
 #ifdef HAVE_GPGME_SIG_NOTATION_CLEARADDGET
-    for ( gpgme_sig_notation_t n = gpgme_sig_notation_get( d->ctx ) ; n ; n = n->next )
-      if ( n->name )
+    for ( gpgme_sig_notation_t n = gpgme_sig_notation_get( d->ctx ) ; n ; n = n->next ) {
+      if ( n->name ) {
         result.push_back( Notation( n ) );
+      }
+    }
 #endif
     return result;
   }
@@ -1025,7 +1064,7 @@ namespace GpgME {
     const Data::Private * const pdp = plainText.impl();
     Data::Private * const sdp = signature.impl();
     d->lasterr = gpgme_op_sign( d->ctx, pdp ? pdp->data : 0, sdp ? sdp->data : 0, sigmode2sigmode( mode ) );
-    return SigningResult( d->ctx, Error(d->lasterr) );
+    return SigningResult( d->ctx, Error( d->lasterr ) );
   }
 
 
@@ -1037,19 +1076,22 @@ namespace GpgME {
   }
 
   SigningResult Context::signingResult() const {
-    if ( d->lastop & Private::Sign )
-      return SigningResult( d->ctx, Error(d->lasterr) );
-    else
+    if ( d->lastop & Private::Sign ) {
+      return SigningResult( d->ctx, Error( d->lasterr ) );
+    } else {
       return SigningResult();
+    }
   }
 
   static gpgme_encrypt_flags_t encryptflags2encryptflags( Context::EncryptionFlags flags ) {
     unsigned int result = 0;
-    if ( flags & Context::AlwaysTrust )
+    if ( flags & Context::AlwaysTrust ) {
       result |= GPGME_ENCRYPT_ALWAYS_TRUST;
+    }
 #ifdef HAVE_GPGME_ENCRYPT_NO_ENCRYPT_TO
-    if ( flags & Context::NoEncryptTo )
+    if ( flags & Context::NoEncryptTo ) {
       result |= GPGME_ENCRYPT_NO_ENCRYPT_TO;
+    }
 #endif
     return static_cast<gpgme_encrypt_flags_t>( result );
   }
@@ -1057,21 +1099,24 @@ namespace GpgME {
   EncryptionResult Context::encrypt( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags ) {
     d->lastop = Private::Encrypt;
 #ifndef HAVE_GPGME_ENCRYPT_NO_ENCRYPT_TO
-    if ( flags & NoEncryptTo )
+    if ( flags & NoEncryptTo ) {
         return EncryptionResult( Error( d->lasterr = make_error( GPG_ERR_NOT_IMPLEMENTED ) ) );
+    }
 #endif
     const Data::Private * const pdp = plainText.impl();
     Data::Private * const cdp = cipherText.impl();
     gpgme_key_t * const keys = new gpgme_key_t[ recipients.size() + 1 ];
     gpgme_key_t * keys_it = keys;
-    for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it )
-      if ( it->impl() )
+    for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it ) {
+      if ( it->impl() ) {
 	*keys_it++ = it->impl();
+      }
+    }
     *keys_it++ = 0;
     d->lasterr = gpgme_op_encrypt( d->ctx, keys, encryptflags2encryptflags( flags ),
 				   pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
-    return EncryptionResult( d->ctx, Error(d->lasterr) );
+    return EncryptionResult( d->ctx, Error( d->lasterr ) );
   }
 
   Error Context::encryptSymmetrically( const Data & plainText, Data & cipherText ) {
@@ -1085,16 +1130,19 @@ namespace GpgME {
   Error Context::startEncryption( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags ) {
     d->lastop = Private::Encrypt;
 #ifndef HAVE_GPGME_ENCRYPT_NO_ENCRYPT_TO
-    if ( flags & NoEncryptTo )
+    if ( flags & NoEncryptTo ) {
         return Error( d->lasterr = make_error( GPG_ERR_NOT_IMPLEMENTED ) );
+    }
 #endif
     const Data::Private * const pdp = plainText.impl();
     Data::Private * const cdp = cipherText.impl();
     gpgme_key_t * const keys = new gpgme_key_t[ recipients.size() + 1 ];
     gpgme_key_t * keys_it = keys;
-    for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it )
-      if ( it->impl() )
+    for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it ) {
+      if ( it->impl() ) {
 	*keys_it++ = it->impl();
+      }
+    }
     *keys_it++ = 0;
     d->lasterr = gpgme_op_encrypt_start( d->ctx, keys, encryptflags2encryptflags( flags ),
 					 pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
@@ -1103,10 +1151,11 @@ namespace GpgME {
   }
 
   EncryptionResult Context::encryptionResult() const {
-    if ( d->lastop & Private::Encrypt )
-      return EncryptionResult( d->ctx, Error(d->lasterr) );
-    else
+    if ( d->lastop & Private::Encrypt ) {
+      return EncryptionResult( d->ctx, Error( d->lasterr ) );
+    } else {
       return EncryptionResult();
+    }
   }
 
   std::pair<SigningResult,EncryptionResult> Context::signAndEncrypt( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags ) {
@@ -1115,15 +1164,17 @@ namespace GpgME {
     Data::Private * const cdp = cipherText.impl();
     gpgme_key_t * const keys = new gpgme_key_t[ recipients.size() + 1 ];
     gpgme_key_t * keys_it = keys;
-    for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it )
-      if ( it->impl() )
+    for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it ) {
+      if ( it->impl() ) {
 	*keys_it++ = it->impl();
+      }
+    }
     *keys_it++ = 0;
     d->lasterr = gpgme_op_encrypt_sign( d->ctx, keys, encryptflags2encryptflags( flags ),
 					pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
-    return std::make_pair( SigningResult( d->ctx, Error(d->lasterr) ),
-                           EncryptionResult( d->ctx, Error(d->lasterr) ) );
+    return std::make_pair( SigningResult( d->ctx, Error( d->lasterr ) ),
+                           EncryptionResult( d->ctx, Error( d->lasterr ) ) );
   }
 
   Error Context::startCombinedSigningAndEncryption( const std::vector<Key> & recipients, const Data & plainText, Data & cipherText, EncryptionFlags flags ) {
@@ -1132,9 +1183,11 @@ namespace GpgME {
     Data::Private * const cdp = cipherText.impl();
     gpgme_key_t * const keys = new gpgme_key_t[ recipients.size() + 1 ];
     gpgme_key_t * keys_it = keys;
-    for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it )
-      if ( it->impl() )
+    for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it ) {
+      if ( it->impl() ) {
 	*keys_it++ = it->impl();
+      }
+    }
     *keys_it++ = 0;
     d->lasterr = gpgme_op_encrypt_sign_start( d->ctx, keys, encryptflags2encryptflags( flags ),
 					      pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
@@ -1147,17 +1200,20 @@ namespace GpgME {
 #ifdef HAVE_GPGME_G13_VFS
     gpgme_key_t * const keys = new gpgme_key_t[ recipients.size() + 1 ];
     gpgme_key_t * keys_it = keys;
-    for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it )
-      if ( it->impl() )
+    for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it ) {
+      if ( it->impl() ) {
         *keys_it++ = it->impl();
+      }
+    }
     *keys_it++ = 0;
 
     gpgme_error_t op_err;
     d->lasterr = gpgme_op_vfs_create( d->ctx, keys, containerFile, 0, &op_err );
     delete[] keys;
     Error error( d->lasterr );
-    if ( error )
+    if ( error ) {
       return error;
+    }
     return Error( d->lasterr = op_err );
 #else
     Q_UNUSED( containerFile );
@@ -1190,8 +1246,9 @@ namespace GpgME {
   bool Context::poll() {
     gpgme_error_t e = GPG_ERR_NO_ERROR;
     const bool finished = gpgme_wait( d->ctx, &e, 0 );
-    if ( finished )
+    if ( finished ) {
       d->lasterr = e;
+    }
     return finished;
   }
 
@@ -1311,8 +1368,6 @@ namespace GpgME {
       return os << ')';
   }
 
-
-
 } // namespace GpgME
 
 GpgME::Error GpgME::setDefaultLocale( int cat, const char * val ) {
@@ -1321,14 +1376,17 @@ GpgME::Error GpgME::setDefaultLocale( int cat, const char * val ) {
 
 GpgME::EngineInfo GpgME::engineInfo( GpgME::Protocol proto ) {
   gpgme_engine_info_t ei = 0;
-  if ( gpgme_get_engine_info( &ei ) )
+  if ( gpgme_get_engine_info( &ei ) ) {
     return EngineInfo();
+  }
 
   const gpgme_protocol_t p = proto == CMS ? GPGME_PROTOCOL_CMS : GPGME_PROTOCOL_OpenPGP ;
 
-  for ( gpgme_engine_info_t i = ei ; i ; i = i->next )
-    if ( i->protocol == p )
+  for ( gpgme_engine_info_t i = ei ; i ; i = i->next ) {
+    if ( i->protocol == p ) {
       return EngineInfo( i );
+    }
+  }
 
   return EngineInfo();
 }
@@ -1371,14 +1429,17 @@ static gpgme_protocol_t engine2protocol( const GpgME::Engine engine ) {
 
 GpgME::EngineInfo GpgME::engineInfo( GpgME::Engine engine ) {
   gpgme_engine_info_t ei = 0;
-  if ( gpgme_get_engine_info( &ei ) )
+  if ( gpgme_get_engine_info( &ei ) ) {
     return EngineInfo();
+  }
 
   const gpgme_protocol_t p = engine2protocol( engine );
 
-  for ( gpgme_engine_info_t i = ei ; i ; i = i->next )
-    if ( i->protocol == p )
+  for ( gpgme_engine_info_t i = ei ; i ; i = i->next ) {
+    if ( i->protocol == p ) {
       return EngineInfo( i );
+    }
+  }
 
   return EngineInfo();
 }

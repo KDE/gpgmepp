@@ -45,7 +45,7 @@ namespace GpgME {
 
         explicit GpgAgentGetInfoAssuanTransaction( InfoItem item );
         ~GpgAgentGetInfoAssuanTransaction();
-            
+
         std::string version() const;
         unsigned int pid() const;
         std::string socketName() const;

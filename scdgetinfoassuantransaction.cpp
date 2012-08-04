@@ -52,9 +52,11 @@ ScdGetInfoAssuanTransaction::~ScdGetInfoAssuanTransaction() {}
 static std::vector<std::string> to_reader_list( const std::string & s ) {
     std::vector<std::string> result;
 #ifdef _WIN32_WCE
-    for ( std::string::size_type b = 0, e = s.find( '\n', 0 ) ; e != std::string::npos ; b = e+1, e = s.find( '\n', b ) )
-        if ( e > b )
-            result.push_back( s.substr( b, e-b ) );
+    for ( std::string::size_type b = 0, e = s.find( '\n', 0 ); e != std::string::npos ; b = e + 1, e = s.find( '\n', b ) ) {
+        if ( e > b ) {
+            result.push_back( s.substr( b, e - b ) );
+        }
+    }
     return result;
 #else
     return split( result, s, is_any_of( "\n" ), token_compress_on );
@@ -66,45 +68,51 @@ static std::vector<std::string> to_app_list( const std::string & s ) {
 }
 
 std::string ScdGetInfoAssuanTransaction::version() const {
-    if ( m_item == Version )
+    if ( m_item == Version ) {
         return m_data;
-    else
+    } else {
         return std::string();
+    }
 }
 
 unsigned int ScdGetInfoAssuanTransaction::pid() const {
-    if ( m_item == Pid )
+    if ( m_item == Pid ) {
         return to_pid( m_data );
-    else
+    } else {
         return 0U;
+    }
 }
 
 std::string ScdGetInfoAssuanTransaction::socketName() const {
-    if ( m_item == SocketName )
+    if ( m_item == SocketName ) {
         return m_data;
-    else
+    } else {
         return std::string();
+    }
 }
 
 char ScdGetInfoAssuanTransaction::status() const {
-    if ( m_item == Status && !m_data.empty() )
+    if ( m_item == Status && !m_data.empty() ) {
         return m_data[0];
-    else
+    } else {
         return '\0';
+    }
 }
 
 std::vector<std::string> ScdGetInfoAssuanTransaction::readerList() const {
-    if ( m_item == ReaderList )
+    if ( m_item == ReaderList ) {
         return to_reader_list( m_data );
-    else
+    } else {
         return std::vector<std::string>();
+    }
 }
 
 std::vector<std::string> ScdGetInfoAssuanTransaction::applicationList() const {
-    if ( m_item == ApplicationList )
+    if ( m_item == ApplicationList ) {
         return to_app_list( m_data );
-    else
+    } else {
         return std::vector<std::string>();
+    }
 }
 
 static const char * scd_getinfo_tokens[] = {
@@ -116,7 +124,7 @@ static const char * scd_getinfo_tokens[] = {
     "deny_admin",
     "app_list",
 };
-BOOST_STATIC_ASSERT(( sizeof scd_getinfo_tokens / sizeof *scd_getinfo_tokens == ScdGetInfoAssuanTransaction::LastInfoItem ));
+BOOST_STATIC_ASSERT( ( sizeof scd_getinfo_tokens / sizeof *scd_getinfo_tokens == ScdGetInfoAssuanTransaction::LastInfoItem ) );
 
 void ScdGetInfoAssuanTransaction::makeCommand() const {
     assert( m_item >= 0 );

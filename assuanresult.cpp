@@ -35,8 +35,9 @@ using namespace GpgME;
 class AssuanResult::Private {
 public:
     explicit Private( const gpgme_assuan_result_t r ) {
-        if ( !r )
+        if ( !r ) {
             return;
+        }
         error = r->err;
     }
 
@@ -59,11 +60,13 @@ AssuanResult::AssuanResult( gpgme_ctx_t ctx, const Error & error )
 void AssuanResult::init( gpgme_ctx_t ctx ) {
     (void)ctx;
 #ifdef HAVE_GPGME_ASSUAN_ENGINE
-    if ( !ctx )
+    if ( !ctx ) {
         return;
+    }
     gpgme_assuan_result_t res = gpgme_op_assuan_result( ctx );
-    if ( !res )
+    if ( !res ) {
         return;
+    }
     d.reset( new Private( res ) );
 #endif
 }
@@ -72,8 +75,9 @@ make_standard_stuff(AssuanResult)
 
 Error AssuanResult::assuanError() const {
 #ifdef HAVE_GPGME_ASSUAN_ENGINE
-    if ( d )
+    if ( d ) {
         return Error( d->error );
+    }
 #endif
     return Error();
 }
@@ -87,4 +91,3 @@ std::ostream & GpgME::operator<<( std::ostream & os, const AssuanResult & result
     }
     return os << ')';
 }
-

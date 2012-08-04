@@ -39,19 +39,21 @@
 class GpgME::EncryptionResult::Private {
 public:
   explicit Private( const gpgme_encrypt_result_t r ) {
-    if ( !r )
+    if ( !r ) {
       return;
+    }
     for ( gpgme_invalid_key_t ik = r->invalid_recipients ; ik ; ik = ik->next ) {
       gpgme_invalid_key_t copy = new _gpgme_invalid_key( *ik );
-      if ( ik->fpr )
+      if ( ik->fpr ) {
 	copy->fpr = strdup( ik->fpr );
+      }
       copy->next = 0;
       invalid.push_back( copy );
     }
   }
   ~Private() {
     for ( std::vector<gpgme_invalid_key_t>::iterator it = invalid.begin() ; it != invalid.end() ; ++it ) {
-      std::free( (*it)->fpr );
+      std::free( ( *it )->fpr );
       delete *it; *it = 0;
     }
   }
@@ -72,11 +74,13 @@ GpgME::EncryptionResult::EncryptionResult( gpgme_ctx_t ctx, const Error & error 
 }
 
 void GpgME::EncryptionResult::init( gpgme_ctx_t ctx ) {
-  if ( !ctx )
+  if ( !ctx ) {
     return;
+  }
   gpgme_encrypt_result_t res = gpgme_op_encrypt_result( ctx );
-  if ( !res )
+  if ( !res ) {
     return;
+  }
   d.reset( new Private( res ) );
 }
 
@@ -92,12 +96,14 @@ GpgME::InvalidRecipient GpgME::EncryptionResult::invalidEncryptionKey( unsigned 
 }
 
 std::vector<GpgME::InvalidRecipient> GpgME::EncryptionResult::invalidEncryptionKeys() const {
-  if ( !d )
+  if ( !d ) {
     return std::vector<GpgME::InvalidRecipient>();
+  }
   std::vector<GpgME::InvalidRecipient> result;
   result.reserve( d->invalid.size() );
-  for ( unsigned int i = 0 ; i < d->invalid.size() ; ++i )
+  for ( unsigned int i = 0 ; i < d->invalid.size() ; ++i ) {
     result.push_back( InvalidRecipient( d, i ) );
+  }
   return result;
 }
 
@@ -140,9 +146,10 @@ std::ostream & GpgME::operator<<( std::ostream & os, const EncryptionResult & re
 
 std::ostream & GpgME::operator<<( std::ostream & os, const InvalidRecipient & ir ) {
     os << "GpgME::InvalidRecipient(";
-    if ( !ir.isNull() )
+    if ( !ir.isNull() ) {
         os << "\n fingerprint: " << protect( ir.fingerprint() )
            << "\n reason:      " << ir.reason()
            << '\n';
+    }
     return os << ')';
 }

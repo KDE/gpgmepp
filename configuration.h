@@ -78,14 +78,14 @@ namespace Configuration {
     };
 
     enum Flag {
-        Group    = (1 << 0),
-        Optional = (1 << 1),
-        List     = (1 << 2),
-        Runtime  = (1 << 3),
-        Default  = (1 << 4),
-        DefaultDescription = (1 << 5),
-        NoArgumentDescription = (1 << 6),
-        NoChange = (1 << 7),
+        Group    = ( 1 << 0 ),
+        Optional = ( 1 << 1 ),
+        List     = ( 1 << 2 ),
+        Runtime  = ( 1 << 3 ),
+        Default  = ( 1 << 4 ),
+        DefaultDescription = ( 1 << 5 ),
+        NoArgumentDescription = ( 1 << 6 ),
+        NoChange = ( 1 << 7 ),
 
         LastFlag = NoChange
     };
@@ -103,8 +103,9 @@ namespace Configuration {
         // copy ctor is ok
 
         const Component & operator=( const Component & other ) {
-            if ( this != &other )
+            if ( this != &other ) {
                 Component( other ).swap( *this );
+            }
             return *this;
         }
 
@@ -145,8 +146,9 @@ namespace Configuration {
             : comp( comp ), opt( opt ) {}
 
         const Option & operator=( const Option & other ) {
-            if ( this != &other )
+            if ( this != &other ) {
                 Option( other ).swap( *this );
+            }
             return *this;
         }
 
@@ -222,8 +224,9 @@ namespace Configuration {
         ~Argument();
 
         const Argument & operator=( const Argument & other ) {
-            if ( this != &other )
+            if ( this != &other ) {
                 Argument( other ).swap( *this );
+            }
             return *this;
         }
 

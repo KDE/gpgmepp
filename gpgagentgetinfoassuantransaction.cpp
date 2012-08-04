@@ -46,31 +46,35 @@ GpgAgentGetInfoAssuanTransaction::GpgAgentGetInfoAssuanTransaction( InfoItem ite
 GpgAgentGetInfoAssuanTransaction::~GpgAgentGetInfoAssuanTransaction() {}
 
 std::string GpgAgentGetInfoAssuanTransaction::version() const {
-    if ( m_item == Version )
+    if ( m_item == Version ) {
         return m_data;
-    else
+    } else {
         return std::string();
+    }
 }
 
 unsigned int GpgAgentGetInfoAssuanTransaction::pid() const {
-    if ( m_item == Pid )
+    if ( m_item == Pid ) {
         return to_pid( m_data );
-    else
+    } else {
         return 0U;
+    }
 }
 
 std::string GpgAgentGetInfoAssuanTransaction::socketName() const {
-    if ( m_item == SocketName )
+    if ( m_item == SocketName ) {
         return m_data;
-    else
+    } else {
         return std::string();
+    }
 }
 
 std::string GpgAgentGetInfoAssuanTransaction::sshSocketName() const {
-    if ( m_item == SshSocketName )
+    if ( m_item == SshSocketName ) {
         return m_data;
-    else
+    } else {
         return std::string();
+    }
 }
 
 static const char * gpgagent_getinfo_tokens[] = {
@@ -80,7 +84,7 @@ static const char * gpgagent_getinfo_tokens[] = {
     "ssh_socket_name",
     "scd_running",
 };
-BOOST_STATIC_ASSERT(( sizeof gpgagent_getinfo_tokens / sizeof *gpgagent_getinfo_tokens == GpgAgentGetInfoAssuanTransaction::LastInfoItem ));
+BOOST_STATIC_ASSERT( ( sizeof gpgagent_getinfo_tokens / sizeof *gpgagent_getinfo_tokens == GpgAgentGetInfoAssuanTransaction::LastInfoItem ) );
 
 void GpgAgentGetInfoAssuanTransaction::makeCommand() const {
     assert( m_item >= 0 );

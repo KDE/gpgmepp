@@ -89,49 +89,56 @@ unsigned int GpgSetOwnerTrustEditInteractor::nextState( unsigned int status, con
     static const Error GENERAL_ERROR = Error::fromCode( GPG_ERR_GENERAL );
     //static const Error INV_TIME_ERROR = Error::fromCode( GPG_ERR_INV_TIME );
 
-    if ( needsNoResponse( status ) )
+    if ( needsNoResponse( status ) ) {
         return state();
+    }
 
     using namespace GpgSetOwnerTrustEditInteractor_Private;
 
     switch ( state() ) {
     case START:
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 )
+             strcmp( args, "keyedit.prompt" ) == 0 ) {
             return COMMAND;
+        }
         err = GENERAL_ERROR;
         return ERROR;
     case COMMAND:
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "edit_ownertrust.value" ) == 0 )
+             strcmp( args, "edit_ownertrust.value" ) == 0 ) {
             return VALUE;
+        }
         err = GENERAL_ERROR;
         return ERROR;
     case VALUE:
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 )
+             strcmp( args, "keyedit.prompt" ) == 0 ) {
             return QUIT;
-        else if ( status == GPGME_STATUS_GET_BOOL &&
-                  strcmp( args, "edit_ownertrust.set_ultimate.okay" ) == 0 )
+        } else if ( status == GPGME_STATUS_GET_BOOL &&
+                  strcmp( args, "edit_ownertrust.set_ultimate.okay" ) == 0 ) {
             return REALLY_ULTIMATE;
+        }
         err = GENERAL_ERROR;
         return ERROR;
     case REALLY_ULTIMATE:
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 )
+             strcmp( args, "keyedit.prompt" ) == 0 ) {
             return QUIT;
+        }
         err = GENERAL_ERROR;
         return ERROR;
     case QUIT:
         if ( status == GPGME_STATUS_GET_BOOL &&
-             strcmp( args, "keyedit.save.okay" ) == 0 )
+             strcmp( args, "keyedit.save.okay" ) == 0 ) {
             return SAVE;
+        }
         err = GENERAL_ERROR;
         return ERROR;
     case ERROR:
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 )
+             strcmp( args, "keyedit.prompt" ) == 0 ) {
             return QUIT;
+        }
         err = lastError();
         return ERROR;
     default:

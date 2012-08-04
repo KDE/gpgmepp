@@ -42,7 +42,7 @@ namespace GpgME {
 
         explicit Exception( const GpgME::Error & err, const std::string & msg=std::string(), Options opt=NoOptions )
             : std::runtime_error( make_message( err, msg, opt ) ), m_error( err ), m_message( msg ) {}
-        
+
         ~Exception() throw();
 
         Error error() const { return m_error; }

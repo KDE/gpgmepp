@@ -42,19 +42,22 @@ namespace GpgME {
 
   TrustItem::TrustItem( gpgme_trust_item_t item ) {
     d = new Private( item );
-    if ( d->item )
+    if ( d->item ) {
       gpgme_trust_item_ref( d->item );
+    }
   }
 
   TrustItem::TrustItem( const TrustItem & other ) {
     d = new Private( other.d->item );
-    if ( d->item )
+    if ( d->item ) {
       gpgme_trust_item_ref( d->item );
+    }
   }
 
   TrustItem::~TrustItem() {
-    if ( d->item )
+    if ( d->item ) {
       gpgme_trust_item_unref( d->item );
+    }
     delete d; d = 0;
   }
 
@@ -88,13 +91,14 @@ namespace GpgME {
   }
 
   TrustItem::Type TrustItem::type() const {
-    if ( !d->item )
+    if ( !d->item ) {
       return Unknown;
-    else
+    } else {
       return
 	d->item->type == 1 ? Key :
 	d->item->type == 2 ? UserID :
 	Unknown ;
+    }
   }
 
 } // namespace GpgME
