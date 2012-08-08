@@ -28,10 +28,10 @@
    /* No export/import for static libraries */
 #  define GPGMEPP_EXPORT
 # elif defined(MAKE_GPGME___LIB) || defined(MAKE_GPGMEPP_LIB)
-   /* We are building this library */ 
+   /* We are building this library */
 #  define GPGMEPP_EXPORT KDE_EXPORT
 # else
-   /* We are using this library */ 
+   /* We are using this library */
 #  define GPGMEPP_EXPORT KDE_IMPORT
 # endif
 #endif

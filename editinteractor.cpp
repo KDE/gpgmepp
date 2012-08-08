@@ -71,14 +71,16 @@ private:
 #else
 # ifdef Q_OS_WIN
             DWORD n;
-            if ( !WriteFile( (HANDLE)fd, buf, toWrite, &n, NULL ) )
+            if ( !WriteFile( (HANDLE)fd, buf, toWrite, &n, NULL ) ) {
                 return -1;
+            }
 # else
             const int n = write( fd, buf, toWrite );
 # endif
 #endif
-            if ( n < 0 )
+            if ( n < 0 ) {
                 return n;
+            }
             toWrite -= n;
         }
         return count;
@@ -95,9 +97,10 @@ public:
             // advance to next state based on input:
             const unsigned int oldState = ei->state;
             ei->state = ei->q->nextState( status, args, err );
-            if ( ei->debug )
+            if ( ei->debug ) {
                 std::fprintf( ei->debug, "EditInteractor: %u -> nextState( %s, %s ) -> %u\n",
-                              oldState, status_to_string(status), args ? args : "<null>", ei->state );
+                              oldState, status_to_string( status ), args ? args : "<null>", ei->state );
+            }
             if ( err ) {
                 ei->state = oldState;
                 goto error;
@@ -109,10 +112,12 @@ public:
 
                 // successful state change -> call action
                 if ( const char * const result = ei->q->action( err ) ) {
-                    if ( err )
+                    if ( err ) {
                         goto error;
-                    if ( ei->debug )
+                    }
+                    if ( ei->debug ) {
                         std::fprintf( ei->debug, "EditInteractor: action result \"%s\"\n", result );
+                    }
                     // if there's a result, write it:
                     if ( *result ) {
 #ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
@@ -123,8 +128,9 @@ public:
                         const ssize_t len = std::strlen( result );
                         if ( writeAll( fd, result, len ) != len ) {
                             err = Error::fromSystemError();
-                            if ( ei->debug )
+                            if ( ei->debug ) {
                                 std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, err.asString() );
+                            }
                             goto error;
                         }
                     }
@@ -135,19 +141,23 @@ public:
 #endif
                     if ( writeAll( fd, "\n", 1 ) != 1 ) {
                         err = Error::fromSystemError();
-                        if ( ei->debug )
+                        if ( ei->debug ) {
                             std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, err.asString() );
+                        }
                         goto error;
                     }
                 } else {
-                    if ( err )
+                    if ( err ) {
                         goto error;
-                    if ( ei->debug )
+                    }
+                    if ( ei->debug ) {
                         std::fprintf( ei->debug, "EditInteractor: no action result\n" );
+                    }
                 }
             } else {
-                if ( ei->debug )
+                if ( ei->debug ) {
                     std::fprintf( ei->debug, "EditInteractor: no action executed\n" );
+                }
             }
         }
 
@@ -158,9 +168,10 @@ public:
             ei->state = EditInteractor::ErrorState;
         }
 
-        if ( ei->debug )
+        if ( ei->debug ) {
             std::fprintf( ei->debug, "EditInteractor: error now %u (%s)\n",
                           ei->error.encodedError(), gpgme_strerror( ei->error.encodedError() ) );
+        }
 
         return ei->error.encodedError();
     }
@@ -335,8 +346,9 @@ static const char * status_strings[] = {
 static const unsigned int num_status_strings = sizeof status_strings / sizeof *status_strings ;
 
 const char * status_to_string( unsigned int idx ) {
-    if ( idx < num_status_strings )
+    if ( idx < num_status_strings ) {
         return status_strings[idx];
-    else
+    } else {
         return "(unknown)";
+    }
 }

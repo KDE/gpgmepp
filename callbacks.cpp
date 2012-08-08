@@ -54,13 +54,15 @@ using GpgME::DataProvider;
 void progress_callback( void * opaque, const char * what,
 			int type, int current, int total ) {
   ProgressProvider * provider = static_cast<ProgressProvider*>( opaque );
-  if ( provider )
+  if ( provider ) {
     provider->showProgress( what, type, current, total );
+  }
 }
 
 static void wipe( char * buf, size_t len ) {
-  for ( size_t i = 0 ; i < len ; ++i )
+  for ( size_t i = 0 ; i < len ; ++i ) {
     buf[i] = '\0';
+  }
 }
 
 gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const char * desc,
@@ -69,9 +71,9 @@ gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const c
   bool canceled = false;
   gpgme_error_t err = GPG_ERR_NO_ERROR;
   char * passphrase = provider ? provider->getPassphrase( uid_hint, desc, prev_was_bad, canceled ) : 0 ;
-  if ( canceled )
+  if ( canceled ) {
     err = make_error( GPG_ERR_CANCELED );
-  else
+  } else {
     if ( passphrase && *passphrase ) {
       size_t passphrase_length = std::strlen( passphrase );
       size_t written = 0;
@@ -88,9 +90,11 @@ gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const c
 	written += now_written;
       } while ( written < passphrase_length );
     }
+  }
 
-  if ( passphrase && *passphrase )
+  if ( passphrase && *passphrase ) {
     wipe( passphrase, std::strlen( passphrase ) );
+  }
   free( passphrase );
 #ifdef HAVE_GPGME_IO_READWRITE
   gpgme_io_write( fd, "\n", 1 );
@@ -154,8 +158,9 @@ data_seek_callback( void * opaque, off_t offset, int whence ) {
 
 static void data_release_callback( void * opaque ) {
   DataProvider * provider = static_cast<DataProvider*>( opaque );
-  if ( provider )
+  if ( provider ) {
     provider->release();
+  }
 }
 
 gpgme_data_cbs GpgME::data_provider_callbacks = {

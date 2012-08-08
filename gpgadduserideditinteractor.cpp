@@ -108,65 +108,76 @@ unsigned int GpgAddUserIDEditInteractor::nextState( unsigned int status, const c
     static const Error INV_EMAIL_ERROR   = Error::fromCode( GPG_ERR_INV_USER_ID );
     static const Error INV_COMMENT_ERROR = Error::fromCode( GPG_ERR_INV_USER_ID );
 
-    if ( needsNoResponse( status ) )
+    if ( needsNoResponse( status ) ) {
         return state();
+    }
 
     using namespace GpgAddUserIDEditInteractor_Private;
 
     switch ( state() ) {
     case START:
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 )
+             strcmp( args, "keyedit.prompt" ) == 0 ) {
             return COMMAND;
+        }
         err = GENERAL_ERROR;
         return ERROR;
     case COMMAND:
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.name" ) == 0 )
+             strcmp( args, "keygen.name" ) == 0 ) {
             return NAME;
+        }
         err = GENERAL_ERROR;
         return ERROR;
     case NAME:
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.email" ) == 0 )
+             strcmp( args, "keygen.email" ) == 0 ) {
             return EMAIL;
+        }
         err = GENERAL_ERROR;
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.name" ) == 0 )
+             strcmp( args, "keygen.name" ) == 0 ) {
             err = INV_NAME_ERROR;
+        }
         return ERROR;
     case EMAIL:
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.comment" ) == 0 )
+             strcmp( args, "keygen.comment" ) == 0 ) {
             return COMMENT;
+        }
         err = GENERAL_ERROR;
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.email" ) == 0 )
+             strcmp( args, "keygen.email" ) == 0 ) {
             err = INV_EMAIL_ERROR;
+        }
         return ERROR;
     case COMMENT:
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 )
+             strcmp( args, "keyedit.prompt" ) == 0 ) {
             return QUIT;
+        }
         err = GENERAL_ERROR;
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.comment" ) == 0 )
+             strcmp( args, "keygen.comment" ) == 0 ) {
             err = INV_COMMENT_ERROR;
+        }
         return ERROR;
     case QUIT:
         if ( status == GPGME_STATUS_GET_BOOL &&
-             strcmp( args, "keyedit.save.okay" ) == 0 )
+             strcmp( args, "keyedit.save.okay" ) == 0 ) {
             return SAVE;
+        }
         err = GENERAL_ERROR;
         return ERROR;
     case ERROR:
         if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 )
+             strcmp( args, "keyedit.prompt" ) == 0 ) {
             return QUIT;
+        }
         err = lastError();
         return ERROR;
     default:
         err = GENERAL_ERROR;
         return ERROR;
-    };
+    }
 }

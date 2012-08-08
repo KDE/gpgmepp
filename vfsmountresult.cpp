@@ -37,8 +37,9 @@ using namespace GpgME;
 class VfsMountResult::Private {
 public:
     explicit Private( const gpgme_vfs_mount_result_t r ) : mountDir( 0 ) {
-        if ( r && r->mount_dir )
+        if ( r && r->mount_dir ) {
           mountDir = strdup( r->mount_dir );
+        }
     }
 
     ~Private() {
@@ -58,11 +59,13 @@ VfsMountResult::VfsMountResult( gpgme_ctx_t ctx, const Error & error, const Erro
 void VfsMountResult::init( gpgme_ctx_t ctx ) {
     (void)ctx;
 #ifdef HAVE_GPGME_G13_VFS
-    if ( !ctx )
+    if ( !ctx ) {
         return;
+    }
     gpgme_vfs_mount_result_t res = gpgme_op_vfs_mount_result( ctx );
-    if ( !res )
+    if ( !res ) {
         return;
+    }
     d.reset( new Private( res ) );
 #endif
 }
@@ -71,8 +74,9 @@ make_standard_stuff(VfsMountResult)
 
 const char* VfsMountResult::mountDir() const {
 #ifdef HAVE_GPGME_G13_VFS
-  if ( d )
+  if ( d ) {
     return d->mountDir;
+  }
 #endif
   return 0;
 }

@@ -45,8 +45,9 @@ namespace GpgME {
            ? shared_gpgme_key_t( k, &gpgme_key_unref )
            : shared_gpgme_key_t() )
   {
-    if ( ref && impl() )
+    if ( ref && impl() ) {
       gpgme_key_ref( impl() );
+    }
   }
 
   UserID Key::userID( unsigned int index ) const {
@@ -59,48 +60,57 @@ namespace GpgME {
 
 
   unsigned int Key::numUserIDs() const {
-    if ( !key )
+    if ( !key ) {
       return 0;
+    }
     unsigned int count = 0;
-    for ( gpgme_user_id_t uid = key->uids ; uid ; uid = uid->next )
+    for ( gpgme_user_id_t uid = key->uids ; uid ; uid = uid->next ) {
       ++count;
+    }
     return count;
   }
 
   unsigned int Key::numSubkeys() const {
-    if ( !key )
+    if ( !key ) {
       return 0;
+    }
     unsigned int count = 0;
-    for ( gpgme_sub_key_t subkey = key->subkeys ; subkey ; subkey = subkey->next )
+    for ( gpgme_sub_key_t subkey = key->subkeys ; subkey ; subkey = subkey->next ) {
       ++count;
+    }
     return count;
   }
 
   std::vector<UserID> Key::userIDs() const {
-    if ( !key )
+    if ( !key ) {
       return std::vector<UserID>();
+    }
 
     std::vector<UserID> v;
     v.reserve( numUserIDs() );
-    for ( gpgme_user_id_t uid = key->uids ; uid ; uid = uid->next )
+    for ( gpgme_user_id_t uid = key->uids ; uid ; uid = uid->next ) {
       v.push_back( UserID( key, uid ) );
+    }
     return v;
   }
 
   std::vector<Subkey> Key::subkeys() const {
-    if ( !key )
+    if ( !key ) {
       return std::vector<Subkey>();
+    }
 
     std::vector<Subkey> v;
     v.reserve( numSubkeys() );
-    for ( gpgme_sub_key_t subkey = key->subkeys ; subkey ; subkey = subkey->next )
+    for ( gpgme_sub_key_t subkey = key->subkeys ; subkey ; subkey = subkey->next ) {
       v.push_back( Subkey( key, subkey ) );
+    }
     return v;
   }
 
   Key::OwnerTrust Key::ownerTrust() const {
-    if ( !key )
+    if ( !key ) {
       return Unknown;
+    }
     switch ( key->owner_trust ) {
     default:
     case GPGME_VALIDITY_UNKNOWN:   return Unknown;
@@ -112,8 +122,9 @@ namespace GpgME {
     }
   }
   char Key::ownerTrustAsString() const {
-    if ( !key )
+    if ( !key ) {
       return '?';
+    }
     switch ( key->owner_trust ) {
     default:
     case GPGME_VALIDITY_UNKNOWN:   return '?';
@@ -126,8 +137,9 @@ namespace GpgME {
   }
 
   Protocol Key::protocol() const {
-    if ( !key )
+    if ( !key ) {
       return UnknownProtocol;
+    }
     switch ( key->protocol ) {
     case GPGME_PROTOCOL_CMS:     return CMS;
     case GPGME_PROTOCOL_OpenPGP: return OpenPGP;
@@ -170,8 +182,9 @@ namespace GpgME {
 
   bool Key::canSign() const {
 #ifndef GPGME_CAN_SIGN_ON_SECRET_OPENPGP_KEYLISTING_NOT_BROKEN
-    if ( key && key->protocol == GPGME_PROTOCOL_OpenPGP )
+    if ( key && key->protocol == GPGME_PROTOCOL_OpenPGP ) {
       return true;
+    }
 #endif
     return canReallySign();
   }
@@ -211,21 +224,24 @@ namespace GpgME {
   }
 
   const char * Key::shortKeyID() const {
-    if ( !key || !key->subkeys || !key->subkeys->keyid )
+    if ( !key || !key->subkeys || !key->subkeys->keyid ) {
       return 0;
+    }
     const int len = strlen( key->subkeys->keyid );
-    if ( len > 8 )
+    if ( len > 8 ) {
       return key->subkeys->keyid + len - 8; // return the last 8 bytes (in hex notation)
-    else
-      return key->subkeys->keyid ; 
+    } else {
+      return key->subkeys->keyid;
+    }
   }
 
   const char * Key::primaryFingerprint() const {
     const char * fpr = key && key->subkeys ? key->subkeys->fpr : 0 ;
-    if ( fpr )
+    if ( fpr ) {
         return fpr;
-    else
+    } else {
         return keyID();
+    }
   }
 
   unsigned int Key::keyListMode() const {
@@ -236,15 +252,18 @@ namespace GpgME {
       // ### incomplete. Just merges has* and can*, nothing else atm
       // ### detach also missing
 
-      if ( !this->primaryFingerprint() || !other.primaryFingerprint()
-           || strcasecmp( this->primaryFingerprint(), other.primaryFingerprint() ) != 0 )
-          return *this; // only merge the Key object which describe the same key
+      if ( !this->primaryFingerprint() ||
+           !other.primaryFingerprint() ||
+           strcasecmp( this->primaryFingerprint(), other.primaryFingerprint() ) != 0 ) {
+        return *this; // only merge the Key object which describe the same key
+      }
 
       const gpgme_key_t me = impl();
       const gpgme_key_t him = other.impl();
 
-      if ( !me || !him )
+      if ( !me || !him ) {
           return *this;
+      }
 
       me->revoked          |= him->revoked;
       me->expired          |= him->expired;
@@ -262,12 +281,14 @@ namespace GpgME {
 
 #ifdef HAVE_GPGME_SUBKEY_T_IS_CARDKEY
       // make sure the gpgme_sub_key_t::is_cardkey flag isn't lost:
-      for ( gpgme_sub_key_t mysk = me->subkeys ; mysk ; mysk = mysk->next )
-          for ( gpgme_sub_key_t hissk = him->subkeys ; hissk ; hissk = hissk->next )
+      for ( gpgme_sub_key_t mysk = me->subkeys ; mysk ; mysk = mysk->next ) {
+          for ( gpgme_sub_key_t hissk = him->subkeys ; hissk ; hissk = hissk->next ) {
               if ( strcmp( mysk->fpr, hissk->fpr ) == 0 ) {
                   mysk->is_cardkey |= hissk->is_cardkey;
                   break;
               }
+          }
+      }
 #endif
 
       return *this;
@@ -280,18 +301,24 @@ namespace GpgME {
   //
 
     gpgme_sub_key_t find_subkey( const shared_gpgme_key_t & key, unsigned int idx ) {
-      if ( key )
-        for ( gpgme_sub_key_t s = key->subkeys ; s ; s = s->next, --idx )
-          if ( idx == 0 )
+      if ( key ) {
+        for ( gpgme_sub_key_t s = key->subkeys ; s ; s = s->next, --idx ) {
+          if ( idx == 0 ) {
             return s;
+          }
+        }
+      }
       return 0;
     }
 
   gpgme_sub_key_t verify_subkey( const shared_gpgme_key_t & key, gpgme_sub_key_t subkey ) {
-    if ( key )
-      for ( gpgme_sub_key_t s = key->subkeys ; s ; s = s->next )
-        if ( s == subkey )
+    if ( key ) {
+      for ( gpgme_sub_key_t s = key->subkeys ; s ; s = s->next ) {
+        if ( s == subkey ) {
           return subkey;
+        }
+      }
+    }
     return 0;
   }
 
@@ -386,7 +413,7 @@ namespace GpgME {
   }
 
   bool Subkey::neverExpires() const {
-    return expirationTime() == time_t(0);
+    return expirationTime() == time_t( 0 );
   }
 
   bool Subkey::isRevoked() const {
@@ -412,18 +439,24 @@ namespace GpgME {
   //
 
     gpgme_user_id_t find_uid( const shared_gpgme_key_t & key, unsigned int idx ) {
-      if ( key )
-        for ( gpgme_user_id_t u = key->uids ; u ; u = u->next, --idx )
-          if ( idx == 0 )
+      if ( key ) {
+        for ( gpgme_user_id_t u = key->uids ; u ; u = u->next, --idx ) {
+          if ( idx == 0 ) {
             return u;
+          }
+        }
+      }
       return 0;
     }
 
     gpgme_user_id_t verify_uid( const shared_gpgme_key_t & key, gpgme_user_id_t uid ) {
-      if ( key )
-	for ( gpgme_user_id_t u = key->uids ; u ; u = u->next )
-	  if ( u == uid )
+      if ( key ) {
+	for ( gpgme_user_id_t u = key->uids ; u ; u = u->next ) {
+	  if ( u == uid ) {
             return uid;
+          }
+        }
+      }
       return 0;
     }
 
@@ -450,22 +483,26 @@ namespace GpgME {
   }
 
   unsigned int UserID::numSignatures() const {
-    if ( !uid )
+    if ( !uid ) {
       return 0;
+    }
     unsigned int count = 0;
-    for ( gpgme_key_sig_t sig = uid->signatures ; sig ; sig = sig->next )
+    for ( gpgme_key_sig_t sig = uid->signatures ; sig ; sig = sig->next ) {
       ++count;
+    }
     return count;
   }
 
   std::vector<UserID::Signature> UserID::signatures() const {
-    if ( !uid )
+    if ( !uid ) {
       return std::vector<Signature>();
+    }
 
     std::vector<Signature> v;
     v.reserve( numSignatures() );
-    for ( gpgme_key_sig_t sig = uid->signatures ; sig ; sig = sig->next )
+    for ( gpgme_key_sig_t sig = uid->signatures ; sig ; sig = sig->next ) {
       v.push_back( Signature( key, uid, sig ) );
+    }
     return v;
   }
 
@@ -486,8 +523,9 @@ namespace GpgME {
   }
 
   UserID::Validity UserID::validity() const {
-    if ( !uid )
+    if ( !uid ) {
       return Unknown;
+    }
     switch ( uid->validity ) {
     default:
     case GPGME_VALIDITY_UNKNOWN:   return Unknown;
@@ -500,8 +538,9 @@ namespace GpgME {
   }
 
   char UserID::validityAsString() const {
-    if ( !uid )
+    if ( !uid ) {
       return '?';
+    }
     switch ( uid->validity ) {
     default:
     case GPGME_VALIDITY_UNKNOWN:   return '?';
@@ -528,18 +567,24 @@ namespace GpgME {
   //
 
     gpgme_key_sig_t find_signature( gpgme_user_id_t uid, unsigned int idx ) {
-      if ( uid )
-        for ( gpgme_key_sig_t s = uid->signatures ; s ; s = s->next, --idx )
-          if ( idx == 0 )
+      if ( uid ) {
+        for ( gpgme_key_sig_t s = uid->signatures ; s ; s = s->next, --idx ) {
+          if ( idx == 0 ) {
             return s;
+          }
+        }
+      }
       return 0;
     }
 
     gpgme_key_sig_t verify_signature( gpgme_user_id_t uid, gpgme_key_sig_t sig ) {
-      if ( uid )
-        for ( gpgme_key_sig_t s = uid->signatures ; s ; s = s->next )
-          if ( s == sig )
+      if ( uid ) {
+        for ( gpgme_key_sig_t s = uid->signatures ; s ; s = s->next ) {
+          if ( s == sig ) {
             return sig;
+          }
+        }
+      }
       return 0;
     }
 
@@ -583,7 +628,7 @@ namespace GpgME {
   }
 
   bool UserID::Signature::neverExpires() const {
-    return expirationTime() == time_t(0);
+    return expirationTime() == time_t( 0 );
   }
 
   bool UserID::Signature::isRevokation() const {
@@ -623,10 +668,11 @@ namespace GpgME {
   }
 
   UserID::Signature::Status UserID::Signature::status() const {
-    if ( !sig )
+    if ( !sig ) {
       return GeneralError;
+    }
 
-    switch ( gpgme_err_code(sig->status) ) {
+    switch ( gpgme_err_code( sig->status ) ) {
     case GPG_ERR_NO_ERROR:      return NoError;
     case GPG_ERR_SIG_EXPIRED:   return SigExpired;
     case GPG_ERR_KEY_EXPIRED:   return KeyExpired;
@@ -638,8 +684,9 @@ namespace GpgME {
   }
 
   std::string UserID::Signature::statusAsString() const {
-    if ( !sig )
+    if ( !sig ) {
       return std::string();
+    }
     char buf[ 1024 ];
     gpgme_strerror_r( sig->status, buf, sizeof buf );
     buf[ sizeof buf - 1 ] = '\0';
@@ -647,48 +694,62 @@ namespace GpgME {
   }
 
   GpgME::Notation UserID::Signature::notation( unsigned int idx ) const {
-    if ( !sig )
+    if ( !sig ) {
       return GpgME::Notation();
+    }
 #ifdef HAVE_GPGME_KEY_SIG_NOTATIONS
-    for ( gpgme_sig_notation_t nota = sig->notations ; nota ; nota = nota->next )
-      if ( nota->name )
-	  if ( idx-- == 0 )
+    for ( gpgme_sig_notation_t nota = sig->notations ; nota ; nota = nota->next ) {
+      if ( nota->name ) {
+	  if ( idx-- == 0 ) {
 	      return GpgME::Notation( nota );
+          }
+      }
+    }
 #endif
     return GpgME::Notation();
   }
 
   unsigned int UserID::Signature::numNotations() const {
-    if ( !sig )
+    if ( !sig ) {
       return 0;
+    }
     unsigned int count = 0;
 #ifdef HAVE_GPGME_KEY_SIG_NOTATIONS
-    for ( gpgme_sig_notation_t nota = sig->notations ; nota ; nota = nota->next )
-      if ( nota->name ) ++count; // others are policy URLs...
+    for ( gpgme_sig_notation_t nota = sig->notations ; nota ; nota = nota->next ) {
+      if ( nota->name ) {
+        ++count; // others are policy URLs...
+      }
+    }
 #endif
     return count;
   }
 
   std::vector<Notation> UserID::Signature::notations() const {
-    if ( !sig )
+    if ( !sig ) {
       return std::vector<GpgME::Notation>();
+    }
     std::vector<GpgME::Notation> v;
 #ifdef HAVE_GPGME_KEY_SIG_NOTATIONS
     v.reserve( numNotations() );
-    for ( gpgme_sig_notation_t nota = sig->notations ; nota ; nota = nota->next )
-      if ( nota->name )
+    for ( gpgme_sig_notation_t nota = sig->notations ; nota ; nota = nota->next ) {
+      if ( nota->name ) {
 	v.push_back( GpgME::Notation( nota ) );
+      }
+    }
 #endif
     return v;
   }
 
   const char * UserID::Signature::policyURL() const {
 #ifdef HAVE_GPGME_KEY_SIG_NOTATIONS
-    if ( !sig )
+    if ( !sig ) {
       return 0;
-    for ( gpgme_sig_notation_t nota = sig->notations ; nota ; nota = nota->next )
-      if ( !nota->name )
+    }
+    for ( gpgme_sig_notation_t nota = sig->notations ; nota ; nota = nota->next ) {
+      if ( !nota->name ) {
 	return nota->value;
+      }
+    }
 #endif
     return 0;
   }

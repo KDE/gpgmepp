@@ -35,12 +35,14 @@
 class GpgME::KeyGenerationResult::Private {
 public:
   Private( const _gpgme_op_genkey_result & r ) : res( r ) {
-    if ( res.fpr )
+    if ( res.fpr ) {
       res.fpr = strdup( res.fpr );
+    }
   }
   ~Private() {
-    if ( res.fpr )
+    if ( res.fpr ) {
       std::free( res.fpr );
+    }
     res.fpr = 0;
   }
 
@@ -60,11 +62,13 @@ GpgME::KeyGenerationResult::KeyGenerationResult( gpgme_ctx_t ctx, const Error & 
 }
 
 void GpgME::KeyGenerationResult::init( gpgme_ctx_t ctx ) {
-  if ( !ctx )
+  if ( !ctx ) {
     return;
+  }
   gpgme_genkey_result_t res = gpgme_op_genkey_result( ctx );
-  if ( !res )
+  if ( !res ) {
     return;
+  }
   d.reset( new Private( *res ) );
 }
 

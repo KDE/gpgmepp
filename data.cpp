@@ -33,8 +33,9 @@
 #endif
 
 GpgME::Data::Private::~Private()  {
-  if ( data )
+  if ( data ) {
     gpgme_data_release( data );
+  }
 }
 
 GpgME::Data::Null GpgME::Data::null;
@@ -67,8 +68,9 @@ GpgME::Data::Data( const char * filename ) {
   gpgme_data_t data;
   const gpgme_error_t e = gpgme_data_new( &data );
   d.reset( new Private( e ? 0 : data ) );
-  if ( !e )
+  if ( !e ) {
     setFileName( filename );
+  }
 }
 
 GpgME::Data::Data( const char * filename, off_t offset, size_t length ) {
@@ -97,19 +99,25 @@ GpgME::Data::Data( int fd ) {
 
 GpgME::Data::Data( DataProvider * dp ) {
   d.reset( new Private );
-  if ( !dp )
+  if ( !dp ) {
     return;
-  if ( !dp->isSupported( DataProvider::Read ) )
+  }
+  if ( !dp->isSupported( DataProvider::Read ) ) {
     d->cbs.read = 0;
-  if ( !dp->isSupported( DataProvider::Write ) )
+  }
+  if ( !dp->isSupported( DataProvider::Write ) ) {
     d->cbs.write = 0;
-  if ( !dp->isSupported( DataProvider::Seek ) )
+  }
+  if ( !dp->isSupported( DataProvider::Seek ) ) {
     d->cbs.seek = 0;
-  if ( !dp->isSupported( DataProvider::Release ) )
+  }
+  if ( !dp->isSupported( DataProvider::Release ) ) {
     d->cbs.release = 0;
+  }
   const gpgme_error_t e = gpgme_data_new_from_cbs( &d->data, &d->cbs, dp );
-  if ( e )
+  if ( e ) {
     d->data = 0;
+  }
 #ifndef NDEBUG
   //std::cerr << "GpgME::Data(): DataProvider supports: "
 	//    << ( d->cbs.read ? "read" : "no read" ) << ", "

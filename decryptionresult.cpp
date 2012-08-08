@@ -39,27 +39,32 @@
 class GpgME::DecryptionResult::Private {
 public:
   explicit Private( const _gpgme_op_decrypt_result & r ) : res( r ) {
-    if ( res.unsupported_algorithm )
+    if ( res.unsupported_algorithm ) {
       res.unsupported_algorithm = strdup( res.unsupported_algorithm );
+    }
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_FILE_NAME
-    if ( res.file_name )
+    if ( res.file_name ) {
       res.file_name = strdup( res.file_name );
+    }
 #endif
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
     //FIXME: copying gpgme_recipient_t objects invalidates the keyid member,
     //thus we use _keyid for now (internal API)
-    for ( gpgme_recipient_t r = res.recipients ; r ; r = r->next )
+    for ( gpgme_recipient_t r = res.recipients ; r ; r = r->next ) {
       recipients.push_back( *r );
+    }
     res.recipients = 0;
 #endif
   }
   ~Private() {
-    if ( res.unsupported_algorithm )
+    if ( res.unsupported_algorithm ) {
       std::free( res.unsupported_algorithm );
+    }
     res.unsupported_algorithm = 0;
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_FILE_NAME
-    if ( res.file_name )
+    if ( res.file_name ) {
       std::free( res.file_name );
+    }
     res.file_name = 0;
 #endif
   }
@@ -83,11 +88,13 @@ GpgME::DecryptionResult::DecryptionResult( gpgme_ctx_t ctx, const Error & error 
 }
 
 void GpgME::DecryptionResult::init( gpgme_ctx_t ctx ) {
-  if ( !ctx )
+  if ( !ctx ) {
       return;
+  }
   gpgme_decrypt_result_t res = gpgme_op_decrypt_result( ctx );
-  if ( !res )
+  if ( !res ) {
     return;
+  }
   d.reset( new Private( *res ) );
 }
 
@@ -119,8 +126,9 @@ unsigned int GpgME::DecryptionResult::numRecipients() const {
 
 GpgME::DecryptionResult::Recipient GpgME::DecryptionResult::recipient( unsigned int idx ) const {
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
-  if ( d && idx < d->recipients.size() )
+  if ( d && idx < d->recipients.size() ) {
     return Recipient( &d->recipients[idx] );
+  }
 #endif
   return Recipient();
 }
@@ -162,8 +170,9 @@ GpgME::DecryptionResult::Recipient::Recipient( gpgme_recipient_t r )
   : d()
 {
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
-  if ( r )
+  if ( r ) {
     d.reset( new Private( r ) );
+  }
 #endif
 }
 
@@ -174,8 +183,9 @@ bool GpgME::DecryptionResult::Recipient::isNull() const {
 const char * GpgME::DecryptionResult::Recipient::keyID() const {
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
   //_keyid is internal API, but the public keyid is invalid after copying (see above)
-  if ( d )
+  if ( d ) {
     return d->_keyid;
+  }
 #endif
   return 0;
 }
@@ -183,32 +193,36 @@ const char * GpgME::DecryptionResult::Recipient::keyID() const {
 const char * GpgME::DecryptionResult::Recipient::shortKeyID() const {
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
   //_keyid is internal API, but the public keyid is invalid after copying (see above)
-  if ( d )
+  if ( d ) {
     return d->_keyid + 8;
+  }
 #endif
   return 0;
 }
 
 unsigned int GpgME::DecryptionResult::Recipient::publicKeyAlgorithm() const {
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
-  if ( d )
+  if ( d ) {
     return d->pubkey_algo;
+  }
 #endif
   return 0;
 }
 
 const char * GpgME::DecryptionResult::Recipient::publicKeyAlgorithmAsString() const {
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
-  if ( d )
+  if ( d ) {
     return gpgme_pubkey_algo_name( d->pubkey_algo );
+  }
 #endif
   return 0;
 }
 
 GpgME::Error GpgME::DecryptionResult::Recipient::status() const {
 #ifdef HAVE_GPGME_DECRYPT_RESULT_T_RECIPIENTS
-  if ( d )
+  if ( d ) {
     return Error( d->status );
+  }
 #endif
   return Error();
 }
@@ -230,10 +244,11 @@ std::ostream & GpgME::operator<<( std::ostream & os, const DecryptionResult & re
 
 std::ostream & GpgME::operator<<( std::ostream & os, const DecryptionResult::Recipient & reci ) {
     os << "GpgME::DecryptionResult::Recipient(";
-    if ( !reci.isNull() )
+    if ( !reci.isNull() ) {
         os << "\n keyID:              " << protect( reci.keyID() )
            << "\n shortKeyID:         " << protect( reci.shortKeyID() )
            << "\n publicKeyAlgorithm: " << protect( reci.publicKeyAlgorithmAsString() )
            << "\n status:             " << reci.status();
+    }
     return os << ')';
 }

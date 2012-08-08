@@ -39,30 +39,33 @@
 class GpgME::SigningResult::Private {
 public:
   Private( const gpgme_sign_result_t r ) {
-    if ( !r )
+    if ( !r ) {
       return;
+    }
     for ( gpgme_new_signature_t is = r->signatures ; is ; is = is->next ) {
       gpgme_new_signature_t copy = new _gpgme_new_signature( *is );
-      if ( is->fpr )
+      if ( is->fpr ) {
 	copy->fpr = strdup( is->fpr );
+      }
       copy->next = 0;
       created.push_back( copy );
     }
     for ( gpgme_invalid_key_t ik = r->invalid_signers ; ik ; ik = ik->next ) {
       gpgme_invalid_key_t copy = new _gpgme_invalid_key( *ik );
-      if ( ik->fpr )
+      if ( ik->fpr ) {
 	copy->fpr = strdup( ik->fpr );
+      }
       copy->next = 0;
       invalid.push_back( copy );
     }
   }
   ~Private() {
     for ( std::vector<gpgme_new_signature_t>::iterator it = created.begin() ; it != created.end() ; ++it ) {
-      std::free( (*it)->fpr );
+      std::free( ( *it )->fpr );
       delete *it; *it = 0;
     }
     for ( std::vector<gpgme_invalid_key_t>::iterator it = invalid.begin() ; it != invalid.end() ; ++it ) {
-      std::free( (*it)->fpr );
+      std::free( ( *it )->fpr );
       delete *it; *it = 0;
     }
   }
@@ -84,11 +87,13 @@ GpgME::SigningResult::SigningResult( gpgme_ctx_t ctx, const Error & error )
 }
 
 void GpgME::SigningResult::init( gpgme_ctx_t ctx ) {
-  if ( !ctx )
+  if ( !ctx ) {
     return;
+  }
   gpgme_sign_result_t res = gpgme_op_sign_result( ctx );
-  if ( !res )
+  if ( !res ) {
     return;
+  }
   d.reset( new Private( res ) );
 }
 
@@ -99,12 +104,14 @@ GpgME::CreatedSignature GpgME::SigningResult::createdSignature( unsigned int idx
 }
 
 std::vector<GpgME::CreatedSignature> GpgME::SigningResult::createdSignatures() const {
-  if ( !d )
+  if ( !d ) {
     return std::vector<CreatedSignature>();
+  }
   std::vector<CreatedSignature> result;
   result.reserve( d->created.size() );
-  for ( unsigned int i = 0 ; i < d->created.size() ; ++i )
+  for ( unsigned int i = 0 ; i < d->created.size() ; ++i ) {
     result.push_back( CreatedSignature( d, i ) );
+  }
   return result;
 }
 
@@ -114,12 +121,14 @@ GpgME::InvalidSigningKey GpgME::SigningResult::invalidSigningKey( unsigned int i
 }
 
 std::vector<GpgME::InvalidSigningKey> GpgME::SigningResult::invalidSigningKeys() const {
-  if ( !d )
+  if ( !d ) {
     return std::vector<GpgME::InvalidSigningKey>();
+  }
   std::vector<GpgME::InvalidSigningKey> result;
   result.reserve( d->invalid.size() );
-  for ( unsigned int i = 0 ; i < d->invalid.size() ; ++i )
+  for ( unsigned int i = 0 ; i < d->invalid.size() ; ++i ) {
     result.push_back( InvalidSigningKey( d, i ) );
+  }
   return result;
 }
 
@@ -169,8 +178,9 @@ time_t GpgME::CreatedSignature::creationTime() const {
 }
 
 GpgME::SignatureMode GpgME::CreatedSignature::mode() const {
-  if ( isNull() )
+  if ( isNull() ) {
     return NormalSignatureMode;
+  }
   switch ( d->created[idx]->type ) {
   default:
   case GPGME_SIG_MODE_NORMAL: return NormalSignatureMode;
@@ -218,7 +228,7 @@ std::ostream & GpgME::operator<<( std::ostream & os, const SigningResult & resul
 
 std::ostream & GpgME::operator<<( std::ostream & os, const CreatedSignature & sig ) {
     os << "GpgME::CreatedSignature(";
-    if ( !sig.isNull() )
+    if ( !sig.isNull() ) {
         os << "\n fingerprint:        " << protect( sig.fingerprint() )
            << "\n creationTime:       " << sig.creationTime()
            << "\n mode:               " << sig.mode()
@@ -226,14 +236,16 @@ std::ostream & GpgME::operator<<( std::ostream & os, const CreatedSignature & si
            << "\n hashAlgorithm:      " << protect( sig.hashAlgorithmAsString() )
            << "\n signatureClass:     " << sig.signatureClass()
            << '\n';
+    }
     return os << ')';
 }
 
 std::ostream & GpgME::operator<<( std::ostream & os, const InvalidSigningKey & key ) {
     os << "GpgME::InvalidSigningKey(";
-    if ( !key.isNull() )
+    if ( !key.isNull() ) {
         os << "\n fingerprint: " << protect( key.fingerprint() )
            << "\n reason:      " << key.reason()
            << '\n';
+    }
     return os << ')';
 }

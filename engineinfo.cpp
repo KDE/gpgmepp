@@ -48,8 +48,9 @@ bool GpgME::EngineInfo::isNull() const {
 }
 
 GpgME::Protocol GpgME::EngineInfo::protocol() const {
-  if ( isNull() )
+  if ( isNull() ) {
     return UnknownProtocol;
+  }
   switch( d->info->protocol ) {
   case GPGME_PROTOCOL_OpenPGP: return OpenPGP;
   case GPGME_PROTOCOL_CMS:     return CMS;
