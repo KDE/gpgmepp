@@ -57,10 +57,14 @@ namespace GpgME {
 
     bool isNull() const;
 
-    GPGMEPP_DEPRECATED const char * unsupportedAlgortihm() const { return unsupportedAlgorithm(); }
+    GPGMEPP_DEPRECATED const char * unsupportedAlgortihm() const {
+        return unsupportedAlgorithm();
+    }
     const char * unsupportedAlgorithm() const;
 
-    GPGMEPP_DEPRECATED bool wrongKeyUsage() const { return isWrongKeyUsage(); }
+    GPGMEPP_DEPRECATED bool wrongKeyUsage() const {
+        return isWrongKeyUsage();
+    }
     bool isWrongKeyUsage() const;
 
     const char * fileName() const;

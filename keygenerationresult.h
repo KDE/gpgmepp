@@ -53,8 +53,12 @@ namespace GpgME {
 
     bool isNull() const;
 
-    GPGMEPP_DEPRECATED bool primaryKeyGenerated() const { return isPrimaryKeyGenerated(); }
-    GPGMEPP_DEPRECATED bool subkeyGenerated() const { return isSubkeyGenerated(); }
+    GPGMEPP_DEPRECATED bool primaryKeyGenerated() const {
+        return isPrimaryKeyGenerated();
+    }
+    GPGMEPP_DEPRECATED bool subkeyGenerated() const {
+        return isSubkeyGenerated();
+    }
     bool isPrimaryKeyGenerated() const;
     bool isSubkeyGenerated() const;
     const char * fingerprint() const;

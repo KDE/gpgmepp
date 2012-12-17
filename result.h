@@ -39,7 +39,9 @@ namespace GpgME {
     void swap( Result & other ) { std::swap( other.mError, mError ); }
 
   public:
-    const Error & error() const { return mError; }
+    const Error & error() const {
+        return mError;
+    }
 
   protected:
     Error mError;

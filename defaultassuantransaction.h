@@ -36,11 +36,15 @@ namespace GpgME {
         explicit DefaultAssuanTransaction();
         ~DefaultAssuanTransaction();
 
-        const std::vector< std::pair<std::string,std::string> > & statusLines() const { return m_status; }
+        const std::vector< std::pair<std::string,std::string> > & statusLines() const {
+            return m_status;
+        }
         std::vector<std::string> statusLine( const char * tag ) const;
         std::string firstStatusLine( const char * tag ) const;
 
-        const std::string & data() const { return m_data; }
+        const std::string & data() const {
+            return m_data;
+        }
 
     private:
         /* reimp */ Error data( const char * data, size_t datalen );

@@ -114,7 +114,9 @@ namespace Configuration {
             swap( this->comp, other.comp );
         }
 
-        bool isNull() const { return !comp; }
+        bool isNull() const {
+            return !comp;
+        }
 
         static std::vector<Component> load( Error & err );
         Error save() const;
@@ -158,7 +160,9 @@ namespace Configuration {
             swap( this->opt,  other.opt );
         }
 
-        bool isNull() const { return comp.expired() || !opt; }
+        bool isNull() const {
+            return comp.expired() || !opt;
+        }
 
         Component parent() const;
 
@@ -237,7 +241,9 @@ namespace Configuration {
             swap( this->arg,  other.arg );
         }
 
-        bool isNull() const { return comp.expired() || !opt || !arg; }
+        bool isNull() const {
+            return comp.expired() || !opt || !arg;
+        }
 
         Option parent() const;
 

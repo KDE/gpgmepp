@@ -113,7 +113,9 @@ namespace GpgME {
   public:
     virtual ~EventLoopInteractor();
 
-    static EventLoopInteractor * instance() { return mSelf; }
+    static EventLoopInteractor * instance() {
+        return mSelf;
+    }
 
     void manage( Context * context );
     void unmanage( Context * context );

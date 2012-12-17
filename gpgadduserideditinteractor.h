@@ -35,13 +35,19 @@ namespace GpgME {
         ~GpgAddUserIDEditInteractor();
 
         void setNameUtf8( const std::string & name );
-        const std::string & nameUtf8() const { return m_name; }
+        const std::string & nameUtf8() const { 
+            return m_name; 
+        }
 
         void setEmailUtf8( const std::string & email );
-        const std::string & emailUtf8() const { return m_email; }
+        const std::string & emailUtf8() const { 
+            return m_email; 
+        }
 
         void setCommentUtf8( const std::string & comment );
-        const std::string & commentUtf8() const { return m_comment; }
+        const std::string & commentUtf8() const { 
+            return m_comment;   
+        }
 
     private:
         /* reimp */ const char * action( Error & err ) const;

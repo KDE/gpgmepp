@@ -120,7 +120,9 @@ namespace GpgME {
     time_t expirationTime() const;
     bool neverExpires() const;
 
-    GPGMEPP_DEPRECATED bool wrongKeyUsage() const { return isWrongKeyUsage(); }
+    GPGMEPP_DEPRECATED bool wrongKeyUsage() const {
+        return isWrongKeyUsage();
+    }
     bool isWrongKeyUsage() const;
     bool isVerifiedUsingChainModel() const;
 

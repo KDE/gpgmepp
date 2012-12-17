@@ -45,8 +45,12 @@ namespace GpgME {
 
         ~Exception() throw();
 
-        Error error() const { return m_error; }
-        const std::string & message() const { return m_message; }
+        Error error() const { 
+            return m_error; 
+        }
+        const std::string & message() const { 
+            return m_message;   
+        }
     private:
         static std::string make_message( const GpgME::Error & err, const std::string & msg );
         static std::string make_message( const GpgME::Error & err, const std::string & msg, Options opt );

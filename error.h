@@ -51,7 +51,9 @@ namespace GpgME {
 
     bool isCanceled() const;
 
-    unsigned int encodedError() const { return mErr; }
+    unsigned int encodedError() const {
+        return mErr;
+    }
     int toErrno() const;
 
     static bool hasSystemError();
