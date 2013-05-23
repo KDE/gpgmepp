@@ -108,6 +108,12 @@
 /* Define to 1 if your gpgme has gpgme_err_set_errno(int) and friends */
 #cmakedefine HAVE_GPGME_GPG_ERROR_WRAPPERS 1
 
+/* Define to 1 if your gpgme defines gpgme_ssize_t */
+#cmakedefine HAVE_GPGME_SSIZE_T 1
+
+/* Define to 1 if your gpgme defines gpgme_off_t */
+#cmakedefine HAVE_GPGME_OFF_T 1
+
 #ifndef HAVE_GPGME_GPG_ERROR_WRAPPERS
 # ifndef HAVE_GPG_ERR_SET_ERRNO
 #  include <errno.h>

@@ -1,5 +1,6 @@
 # gpgme configure checks
 include(CheckFunctionExists)
+include(CheckTypeSize)
 
 if ( GPGME_FOUND )
 
@@ -427,6 +428,12 @@ check_cxx_source_compiles ("
      return 0;
   }
 " HAVE_GPGME_CONF_ARG_NEW_WITH_CONST_VALUE )
+
+set(CMAKE_EXTRA_INCLUDE_FILES gpgme.h)
+# defined in gpgme versions >= 1.4.2
+check_type_size(gpgme_ssize_t GPGME_SSIZE_T)
+check_type_size(gpgme_off_t GPGME_OFF_T)
+set(CMAKE_EXTRA_INCLUDE_FILES)
 
 set(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES_SAVE})
 set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES_SAVE})
