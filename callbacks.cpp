@@ -39,6 +39,15 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#ifndef HAVE_GPGME_SSIZE_T
+# define gpgme_ssize_t ssize_t
+#endif
+
+#ifndef HAVE_GPGME_OFF_T
+# define gpgme_off_t off_t
+#endif
+
+
 static inline gpgme_error_t make_err_from_syserror() {
 #ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
   return gpgme_error_from_syserror();
@@ -109,7 +118,7 @@ gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const c
 
 
 
-static ssize_t
+static gpgme_ssize_t
 data_read_callback( void * opaque, void * buf, size_t buflen ) {
   DataProvider * provider = static_cast<DataProvider*>( opaque );
   if ( !provider ) {
@@ -120,10 +129,10 @@ data_read_callback( void * opaque, void * buf, size_t buflen ) {
 #endif
     return -1;
   }
-  return provider->read( buf, buflen );
+  return (gpgme_ssize_t)provider->read( buf, buflen );
 }
 
-static ssize_t
+static gpgme_ssize_t
 data_write_callback( void * opaque, const void * buf, size_t buflen ) {
   DataProvider * provider = static_cast<DataProvider*>( opaque );
   if ( !provider ) {
@@ -134,11 +143,11 @@ data_write_callback( void * opaque, const void * buf, size_t buflen ) {
 #endif
     return -1;
   }
-  return provider->write( buf, buflen );
+  return (gpgme_ssize_t)provider->write( buf, buflen );
 }
 
-static off_t
-data_seek_callback( void * opaque, off_t offset, int whence ) {
+static gpgme_off_t
+data_seek_callback( void * opaque, gpgme_off_t offset, int whence ) {
   DataProvider * provider = static_cast<DataProvider*>( opaque );
   if ( !provider ) {
 #ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
@@ -156,7 +165,7 @@ data_seek_callback( void * opaque, off_t offset, int whence ) {
 #endif
     return -1;
   }
-  return provider->seek( offset, whence );
+  return provider->seek( (off_t)offset, whence );
 }
 
 static void data_release_callback( void * opaque ) {
