@@ -39,6 +39,15 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#ifndef HAVE_GPGME_SSIZE_T
+# define gpgme_ssize_t ssize_t
+#endif
+
+#ifndef HAVE_GPGME_OFF_T
+# define gpgme_off_t off_t
+#endif
+
+
 static inline gpgme_error_t make_err_from_syserror() {
 #ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
   return gpgme_error_from_syserror();
@@ -59,11 +68,14 @@ void progress_callback( void * opaque, const char * what,
   }
 }
 
-static void wipe( char * buf, size_t len ) {
-  for ( size_t i = 0 ; i < len ; ++i ) {
-    buf[i] = '\0';
-  }
-}
+/* To avoid that a compiler optimizes certain memset calls away, these
+   macros may be used instead. */
+#define wipememory2(_ptr,_set,_len) do { \
+              volatile char *_vptr=(volatile char *)(_ptr); \
+              size_t _vlen=(_len); \
+              while(_vlen) { *_vptr=(_set); _vptr++; _vlen--; } \
+                  } while(0)
+#define wipememory(_ptr,_len) wipememory2(_ptr,0,_len)
 
 gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const char * desc,
 				   int prev_was_bad, int fd ) {
@@ -93,7 +105,7 @@ gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const c
   }
 
   if ( passphrase && *passphrase ) {
-    wipe( passphrase, std::strlen( passphrase ) );
+    wipememory( passphrase, std::strlen( passphrase ) );
   }
   free( passphrase );
 #ifdef HAVE_GPGME_IO_READWRITE
@@ -106,7 +118,7 @@ gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const c
 
 
 
-static ssize_t
+static gpgme_ssize_t
 data_read_callback( void * opaque, void * buf, size_t buflen ) {
   DataProvider * provider = static_cast<DataProvider*>( opaque );
   if ( !provider ) {
@@ -117,10 +129,10 @@ data_read_callback( void * opaque, void * buf, size_t buflen ) {
 #endif
     return -1;
   }
-  return provider->read( buf, buflen );
+  return (gpgme_ssize_t)provider->read( buf, buflen );
 }
 
-static ssize_t
+static gpgme_ssize_t
 data_write_callback( void * opaque, const void * buf, size_t buflen ) {
   DataProvider * provider = static_cast<DataProvider*>( opaque );
   if ( !provider ) {
@@ -131,11 +143,11 @@ data_write_callback( void * opaque, const void * buf, size_t buflen ) {
 #endif
     return -1;
   }
-  return provider->write( buf, buflen );
+  return (gpgme_ssize_t)provider->write( buf, buflen );
 }
 
-static off_t
-data_seek_callback( void * opaque, off_t offset, int whence ) {
+static gpgme_off_t
+data_seek_callback( void * opaque, gpgme_off_t offset, int whence ) {
   DataProvider * provider = static_cast<DataProvider*>( opaque );
   if ( !provider ) {
 #ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
@@ -153,7 +165,7 @@ data_seek_callback( void * opaque, off_t offset, int whence ) {
 #endif
     return -1;
   }
-  return provider->seek( offset, whence );
+  return provider->seek( (off_t)offset, whence );
 }
 
 static void data_release_callback( void * opaque ) {
