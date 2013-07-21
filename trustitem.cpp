@@ -95,9 +95,9 @@ namespace GpgME {
       return Unknown;
     } else {
       return
-	d->item->type == 1 ? Key :
-	d->item->type == 2 ? UserID :
-	Unknown ;
+        d->item->type == 1 ? Key :
+        d->item->type == 2 ? UserID :
+        Unknown ;
     }
   }
 

@@ -75,7 +75,7 @@ namespace GpgME {
       \verbatim
       void * registerWatcher( int fd, Direction dir ) {
         return new QSocketNotifier( fd, dir == Read ? QSocketNotifier::Read : QSocketNotifier::Write );
-	// misses connecting to the activated() signal...
+        // misses connecting to the activated() signal...
       }
       \endverbatim
 
@@ -127,7 +127,7 @@ namespace GpgME {
     //
 
     /** Call this if your event loop detected activity on file
-	descriptor fd, with direction dir */
+        descriptor fd, with direction dir */
     void actOn( int fd, Direction dir );
 
     virtual void * registerWatcher( int fd, Direction dir, bool & ok ) = 0;

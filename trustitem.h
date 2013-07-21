@@ -42,13 +42,13 @@ namespace GpgME {
     virtual ~TrustItem();
 
     const TrustItem & operator=( TrustItem other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( TrustItem & other ) {
-	using std::swap;
-	swap( this->d, other.d );
+        using std::swap;
+        swap( this->d, other.d );
     }
 
     bool isNull() const;

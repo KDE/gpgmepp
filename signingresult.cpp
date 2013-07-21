@@ -45,7 +45,7 @@ public:
     for ( gpgme_new_signature_t is = r->signatures ; is ; is = is->next ) {
       gpgme_new_signature_t copy = new _gpgme_new_signature( *is );
       if ( is->fpr ) {
-	copy->fpr = strdup( is->fpr );
+        copy->fpr = strdup( is->fpr );
       }
       copy->next = 0;
       created.push_back( copy );
@@ -53,7 +53,7 @@ public:
     for ( gpgme_invalid_key_t ik = r->invalid_signers ; ik ; ik = ik->next ) {
       gpgme_invalid_key_t copy = new _gpgme_invalid_key( *ik );
       if ( ik->fpr ) {
-	copy->fpr = strdup( ik->fpr );
+        copy->fpr = strdup( ik->fpr );
       }
       copy->next = 0;
       invalid.push_back( copy );

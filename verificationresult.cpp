@@ -53,13 +53,13 @@ public:
     for ( gpgme_signature_t is = r->signatures ; is ; is = is->next ) {
       gpgme_signature_t scopy = new _gpgme_signature( *is );
       if ( is->fpr ) {
-	scopy->fpr = strdup( is->fpr );
+        scopy->fpr = strdup( is->fpr );
       }
 #ifdef HAVE_GPGME_SIGNATURE_T_PKA_FIELDS
 // PENDING(marc) why does this crash on Windows in strdup()?
 # ifndef _WIN32
       if ( is->pka_address ) {
-	scopy->pka_address = strdup( is->pka_address );
+        scopy->pka_address = strdup( is->pka_address );
       }
 # else
       scopy->pka_address = 0;
@@ -71,22 +71,22 @@ public:
       nota.push_back( std::vector<Nota>() );
       purls.push_back( 0 );
       for ( gpgme_sig_notation_t in = is->notations ; in ; in = in->next ) {
-	if ( !in->name ) {
-	  if ( in->value ) {
-	    purls.back() = strdup( in->value ); // policy url
+        if ( !in->name ) {
+          if ( in->value ) {
+            purls.back() = strdup( in->value ); // policy url
           }
-	  continue;
-	}
+          continue;
+        }
 #ifdef HAVE_GPGME_SIG_NOTATION_FLAGS_T
-	Nota n = { 0, 0, in->flags };
+        Nota n = { 0, 0, in->flags };
 #else
         Nota n = { 0, 0 };
 #endif
-	n.name = strdup( in->name );
-	if ( in->value ) {
-	  n.value = strdup( in->value );
+        n.name = strdup( in->name );
+        if ( in->value ) {
+          n.value = strdup( in->value );
         }
-	nota.back().push_back( n );
+        nota.back().push_back( n );
       }
     }
   }
@@ -100,8 +100,8 @@ public:
     }
     for ( std::vector< std::vector<Nota> >::iterator it = nota.begin() ; it != nota.end() ; ++it ) {
       for ( std::vector<Nota>::iterator jt = it->begin() ; jt != it->end() ; ++jt ) {
-	std::free( jt->name );  jt->name = 0;
-	std::free( jt->value ); jt->value = 0;
+        std::free( jt->name );  jt->name = 0;
+        std::free( jt->value ); jt->value = 0;
       }
     }
     std::for_each( purls.begin(), purls.end(), &std::free );
@@ -370,12 +370,12 @@ class GpgME::Notation::Private {
 public:
     Private() : d(), sidx( 0 ), nidx( 0 ), nota( 0 ) {}
     Private( const boost::shared_ptr<VerificationResult::Private> & priv, unsigned int sindex, unsigned int nindex )
-	: d( priv ), sidx( sindex ), nidx( nindex ), nota( 0 )
+        : d( priv ), sidx( sindex ), nidx( nindex ), nota( 0 )
     {
 
     }
     Private( gpgme_sig_notation_t n )
-	: d(), sidx( 0 ), nidx( 0 ), nota( n ? new _gpgme_sig_notation( *n ) : 0 )
+        : d(), sidx( 0 ), nidx( 0 ), nota( n ? new _gpgme_sig_notation( *n ) : 0 )
     {
       if ( nota && nota->name ) {
         nota->name = strdup( nota->name );
@@ -385,7 +385,7 @@ public:
       }
     }
     Private( const Private & other )
-	: d( other.d ), sidx( other.sidx ), nidx( other.nidx ), nota( other.nota )
+        : d( other.d ), sidx( other.sidx ), nidx( other.nidx ), nota( other.nota )
     {
       if ( nota ) {
         nota->name = strdup( nota->name );
@@ -422,10 +422,10 @@ GpgME::Notation::Notation() : d() {}
 
 bool GpgME::Notation::isNull() const {
     if ( !d ) {
-	return true;
+        return true;
     }
     if ( d->d ) {
-	return d->sidx >= d->d->nota.size() || d->nidx >= d->d->nota[d->sidx].size() ;
+        return d->sidx >= d->d->nota.size() || d->nidx >= d->d->nota[d->sidx].size() ;
     }
     return !d->nota;
 }
@@ -433,16 +433,16 @@ bool GpgME::Notation::isNull() const {
 
 const char * GpgME::Notation::name() const {
     return
-	isNull() ? 0 :
-	d->d ? d->d->nota[d->sidx][d->nidx].name :
-	d->nota ? d->nota->name : 0 ;
+        isNull() ? 0 :
+        d->d ? d->d->nota[d->sidx][d->nidx].name :
+        d->nota ? d->nota->name : 0 ;
 }
 
 const char * GpgME::Notation::value() const {
     return
-	isNull() ? 0 :
-	d->d ? d->d->nota[d->sidx][d->nidx].value :
-	d->nota ? d->nota->value : 0 ;
+        isNull() ? 0 :
+        d->d ? d->d->nota[d->sidx][d->nidx].value :
+        d->nota ? d->nota->value : 0 ;
 }
 
 GpgME::Notation::Flags GpgME::Notation::flags() const {

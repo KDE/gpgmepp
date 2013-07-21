@@ -58,22 +58,22 @@ namespace GpgME {
     static Null null;
 
     const Data & operator=( Data other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( Data & other ) {
-	using std::swap;
-	swap( this->d, other.d );
+        using std::swap;
+        swap( this->d, other.d );
     }
 
     bool isNull() const;
 
     enum Encoding {
-	AutoEncoding,
-	BinaryEncoding,
-	Base64Encoding,
-	ArmorEncoding
+        AutoEncoding,
+        BinaryEncoding,
+        Base64Encoding,
+        ArmorEncoding
     };
     Encoding encoding() const;
     Error setEncoding( Encoding encoding );

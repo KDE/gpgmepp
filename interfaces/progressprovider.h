@@ -30,7 +30,7 @@ namespace GpgME {
     virtual ~ProgressProvider() {}
 
     virtual void showProgress( const char * what, int type,
-			       int current, int total ) = 0;
+                               int current, int total ) = 0;
   };
 
 } // namespace GpgME

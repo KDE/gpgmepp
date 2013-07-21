@@ -451,8 +451,8 @@ namespace GpgME {
 
     gpgme_user_id_t verify_uid( const shared_gpgme_key_t & key, gpgme_user_id_t uid ) {
       if ( key ) {
-	for ( gpgme_user_id_t u = key->uids ; u ; u = u->next ) {
-	  if ( u == uid ) {
+        for ( gpgme_user_id_t u = key->uids ; u ; u = u->next ) {
+          if ( u == uid ) {
             return uid;
           }
         }
@@ -700,8 +700,8 @@ namespace GpgME {
 #ifdef HAVE_GPGME_KEY_SIG_NOTATIONS
     for ( gpgme_sig_notation_t nota = sig->notations ; nota ; nota = nota->next ) {
       if ( nota->name ) {
-	  if ( idx-- == 0 ) {
-	      return GpgME::Notation( nota );
+          if ( idx-- == 0 ) {
+              return GpgME::Notation( nota );
           }
       }
     }
@@ -733,7 +733,7 @@ namespace GpgME {
     v.reserve( numNotations() );
     for ( gpgme_sig_notation_t nota = sig->notations ; nota ; nota = nota->next ) {
       if ( nota->name ) {
-	v.push_back( GpgME::Notation( nota ) );
+        v.push_back( GpgME::Notation( nota ) );
       }
     }
 #endif
@@ -747,7 +747,7 @@ namespace GpgME {
     }
     for ( gpgme_sig_notation_t nota = sig->notations ; nota ; nota = nota->next ) {
       if ( !nota->name ) {
-	return nota->value;
+        return nota->value;
       }
     }
 #endif

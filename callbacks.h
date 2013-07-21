@@ -31,9 +31,9 @@
 extern "C" {
 
   void progress_callback( void * opaque, const char * what,
-			  int type, int current, int total );
+                          int type, int current, int total );
   gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint,
-				     const char * desc, int prev_was_bad, int fd );
+                                     const char * desc, int prev_was_bad, int fd );
 }
 
 namespace GpgME {

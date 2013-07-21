@@ -44,14 +44,14 @@ namespace GpgME {
     explicit ImportResult( const Error & error );
 
     const ImportResult & operator=( ImportResult other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( ImportResult & other ) {
-	Result::swap( other );
-	using std::swap;
-	swap( this->d, other.d );
+        Result::swap( other );
+        using std::swap;
+        swap( this->d, other.d );
     }
 
     bool isNull() const;
@@ -89,14 +89,14 @@ namespace GpgME {
     Import();
 
     const Import & operator=( Import other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( Import & other ) {
-	using std::swap;
-	swap( this->d, other.d );
-	swap( this->idx, other.idx );
+        using std::swap;
+        swap( this->d, other.d );
+        swap( this->idx, other.idx );
     }
 
     bool isNull() const;

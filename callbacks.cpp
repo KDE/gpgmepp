@@ -61,7 +61,7 @@ using GpgME::PassphraseProvider;
 using GpgME::DataProvider;
 
 void progress_callback( void * opaque, const char * what,
-			int type, int current, int total ) {
+                        int type, int current, int total ) {
   ProgressProvider * provider = static_cast<ProgressProvider*>( opaque );
   if ( provider ) {
     provider->showProgress( what, type, current, total );
@@ -78,7 +78,7 @@ void progress_callback( void * opaque, const char * what,
 #define wipememory(_ptr,_len) wipememory2(_ptr,0,_len)
 
 gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const char * desc,
-				   int prev_was_bad, int fd ) {
+                                   int prev_was_bad, int fd ) {
   PassphraseProvider * provider = static_cast<PassphraseProvider*>( opaque );
   bool canceled = false;
   gpgme_error_t err = GPG_ERR_NO_ERROR;
@@ -91,15 +91,15 @@ gpgme_error_t passphrase_callback( void * opaque, const char * uid_hint, const c
       size_t written = 0;
       do {
 #ifdef HAVE_GPGME_IO_READWRITE
-	ssize_t now_written = gpgme_io_write( fd, passphrase + written, passphrase_length - written );
+        ssize_t now_written = gpgme_io_write( fd, passphrase + written, passphrase_length - written );
 #else
         ssize_t now_written = write( fd, passphrase + written, passphrase_length - written );
 #endif
-	if ( now_written < 0 ) {
-	  err = make_err_from_syserror();
-	  break;
-	}
-	written += now_written;
+        if ( now_written < 0 ) {
+          err = make_err_from_syserror();
+          break;
+        }
+        written += now_written;
       } while ( written < passphrase_length );
     }
   }

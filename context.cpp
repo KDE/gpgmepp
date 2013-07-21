@@ -214,14 +214,14 @@ namespace GpgME {
     switch ( proto ) {
     case OpenPGP:
       if ( gpgme_set_protocol( ctx, GPGME_PROTOCOL_OpenPGP ) != 0 ) {
-	gpgme_release( ctx );
-	return 0;
+        gpgme_release( ctx );
+        return 0;
       }
       break;
     case CMS:
       if ( gpgme_set_protocol( ctx, GPGME_PROTOCOL_CMS ) != 0 ) {
-	gpgme_release( ctx );
-	return 0;
+        gpgme_release( ctx );
+        return 0;
       }
       break;
     default:
@@ -398,8 +398,8 @@ namespace GpgME {
     if ( !EventLoopInteractor::instance() ) {
 #ifndef NDEBUG
       cerr << "Context::setManagedByEventLoopInteractor(): "
-	      "You must create an instance of EventLoopInteractor "
-	      "before using anything that needs one." << endl;
+              "You must create an instance of EventLoopInteractor "
+              "before using anything that needs one." << endl;
 #endif
       return;
     }
@@ -1109,12 +1109,12 @@ namespace GpgME {
     gpgme_key_t * keys_it = keys;
     for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it ) {
       if ( it->impl() ) {
-	*keys_it++ = it->impl();
+        *keys_it++ = it->impl();
       }
     }
     *keys_it++ = 0;
     d->lasterr = gpgme_op_encrypt( d->ctx, keys, encryptflags2encryptflags( flags ),
-				   pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
+                                   pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
     return EncryptionResult( d->ctx, Error( d->lasterr ) );
   }
@@ -1140,12 +1140,12 @@ namespace GpgME {
     gpgme_key_t * keys_it = keys;
     for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it ) {
       if ( it->impl() ) {
-	*keys_it++ = it->impl();
+        *keys_it++ = it->impl();
       }
     }
     *keys_it++ = 0;
     d->lasterr = gpgme_op_encrypt_start( d->ctx, keys, encryptflags2encryptflags( flags ),
-					 pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
+                                         pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
     return Error( d->lasterr );
   }
@@ -1166,12 +1166,12 @@ namespace GpgME {
     gpgme_key_t * keys_it = keys;
     for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it ) {
       if ( it->impl() ) {
-	*keys_it++ = it->impl();
+        *keys_it++ = it->impl();
       }
     }
     *keys_it++ = 0;
     d->lasterr = gpgme_op_encrypt_sign( d->ctx, keys, encryptflags2encryptflags( flags ),
-					pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
+                                        pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
     return std::make_pair( SigningResult( d->ctx, Error( d->lasterr ) ),
                            EncryptionResult( d->ctx, Error( d->lasterr ) ) );
@@ -1185,12 +1185,12 @@ namespace GpgME {
     gpgme_key_t * keys_it = keys;
     for ( std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it ) {
       if ( it->impl() ) {
-	*keys_it++ = it->impl();
+        *keys_it++ = it->impl();
       }
     }
     *keys_it++ = 0;
     d->lasterr = gpgme_op_encrypt_sign_start( d->ctx, keys, encryptflags2encryptflags( flags ),
-					      pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
+                                              pdp ? pdp->data : 0, cdp ? cdp->data : 0 );
     delete[] keys;
     return Error( d->lasterr );
   }
