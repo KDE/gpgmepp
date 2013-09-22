@@ -27,7 +27,7 @@
 # if defined(KDEPIM_STATIC_LIBS)
    /* No export/import for static libraries */
 #  define GPGMEPP_EXPORT
-# elif defined(MAKE_GPGME___LIB) || defined(MAKE_GPGMEPP_LIB)
+# elif defined(MAKE_GPGME___LIB)
    /* We are building this library */
 #  define GPGMEPP_EXPORT KDE_EXPORT
 # else
