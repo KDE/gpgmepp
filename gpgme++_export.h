@@ -44,18 +44,4 @@
 #  define GPGMEPP_DEPRECATED KDE_DEPRECATED
 # endif
 
-# ifndef GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION
-#  define GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Class ) \
-    namespace std { template <> inline void swap< GpgME::Class >( GpgME::Class & lhs, GpgME::Class & rhs ) { lhs.swap( rhs ); } }
-# endif
-
-# ifndef GPGMEPP_MAKE_SAFE_BOOL_OPERATOR
-#  define GPGMEPP_MAKE_SAFE_BOOL_OPERATOR( Cond ) \
-    private: \
-        struct __safe_bool_dummy__ { void nonnull() {} }; \
-        typedef void ( __safe_bool_dummy__::*unspecified_bool_type )(); \
-    public: \
-    operator unspecified_bool_type() const { return ( Cond ) ? &__safe_bool_dummy__::nonnull : 0 ; }
-# endif
-
 #endif

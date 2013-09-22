@@ -23,8 +23,7 @@
 #ifndef __GPGMEPP_DATA_H__
 #define __GPGMEPP_DATA_H__
 
-#include <gpgme++/gpgmefw.h>
-#include <gpgme++/gpgme++_export.h>
+#include <gpgme++/global.h>
 
 #include <boost/shared_ptr.hpp>
 

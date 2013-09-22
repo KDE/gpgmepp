@@ -24,8 +24,7 @@
 #ifndef __GPGMEPP_ERROR_H__
 #define __GPGMEPP_ERROR_H__
 
-#include <gpgme++/gpgmefw.h>
-#include <gpgme++/gpgme++_export.h>
+#include <gpgme++/global.h>
 
 #include <string>
 #include <iosfwd>
