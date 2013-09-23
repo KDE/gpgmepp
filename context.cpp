@@ -58,6 +58,8 @@ using std::endl;
 
 #include <cassert>
 
+#include <qglobal.h>
+
 namespace GpgME {
 
   static inline unsigned int xtoi_1( const char * str ) {

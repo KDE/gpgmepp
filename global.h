@@ -29,6 +29,8 @@
 
 #include <iosfwd>
 
+#include <QByteArray>
+
 namespace GpgME {
     class Error;
     class EngineInfo;
