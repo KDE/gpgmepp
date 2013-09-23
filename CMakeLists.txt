@@ -49,7 +49,7 @@ set( _gpgmepp_soversion 2 )
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
 
 if ( GPGME_VANILLA_FOUND )
-   kde4_add_library( gpgmepp ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   add_library( gpgmepp ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
    generate_export_header(gpgmepp EXPORT_FILE_NAME gpgme++_export.h)
 
    target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
@@ -67,7 +67,7 @@ if ( GPGME_VANILLA_FOUND )
 endif()
 
 if ( GPGME_GLIB_FOUND )
-   kde4_add_library( gpgmepp-glib ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_glib.cpp )
+   add_library( gpgmepp-glib ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_glib.cpp )
    generate_export_header(gpgmepp-glib)
    target_link_libraries( gpgmepp-glib ${GPGME_GLIB_LIBRARIES} )
    set_target_properties( gpgmepp-glib PROPERTIES
@@ -81,7 +81,7 @@ endif()
 
 
 if ( GPGME_QT_FOUND )
-   kde4_add_library( gpgmepp-qt ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_qt.cpp )
+   add_library( gpgmepp-qt ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_qt.cpp )
    generate_export_header(gpgmepp-qt)
    target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} )
    if(WIN32)
@@ -98,7 +98,7 @@ endif()
 
 
 if ( GPGME_PTHREAD_FOUND )
-   kde4_add_library( gpgmepp-pthread ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   add_library( gpgmepp-pthread ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
    generate_export_header(gpgmepp-pthread)
    target_link_libraries( gpgmepp-pthread ${GPGME_PTHREAD_LIBRARIES} )
    set_target_properties( gpgmepp-pthread PROPERTIES
@@ -111,7 +111,7 @@ if ( GPGME_PTHREAD_FOUND )
 endif()
 
 if ( GPGME_PTH_FOUND )
-   kde4_add_library( gpgmepp-pth ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   add_library( gpgmepp-pth ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
    generate_export_header(gpgmepp-pth)
    target_link_libraries( gpgmepp-pth ${GPGME_PTH_LIBRARIES} )
    set_target_properties( gpgmepp-pth PROPERTIES
