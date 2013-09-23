@@ -132,7 +132,7 @@ namespace GpgME {
         Feature2MaxValue                           = 0x80000000
     };
     // use hasFeature( unsigned long, unsigned long ) instead
-    GPGMEPP_EXPORT_DEPRECATED bool hasFeature( unsigned long feature );
+    GPGMEPP_DEPRECATED_EXPORT bool hasFeature( unsigned long feature );
     GPGMEPP_EXPORT bool hasFeature( unsigned long feature, unsigned long feature2 );
 
 } // namespace GpgME
