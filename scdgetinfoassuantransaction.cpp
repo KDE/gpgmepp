@@ -27,10 +27,8 @@
 #include "data.h"
 #include "util.h"
 
-#ifndef _WIN32_WCE
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
-#endif
 #include <boost/static_assert.hpp>
 
 #include <sstream>
@@ -51,16 +49,7 @@ ScdGetInfoAssuanTransaction::~ScdGetInfoAssuanTransaction() {}
 
 static std::vector<std::string> to_reader_list( const std::string & s ) {
     std::vector<std::string> result;
-#ifdef _WIN32_WCE
-    for ( std::string::size_type b = 0, e = s.find( '\n', 0 ); e != std::string::npos ; b = e + 1, e = s.find( '\n', b ) ) {
-        if ( e > b ) {
-            result.push_back( s.substr( b, e - b ) );
-        }
-    }
-    return result;
-#else
     return split( result, s, is_any_of( "\n" ), token_compress_on );
-#endif
 }
 
 static std::vector<std::string> to_app_list( const std::string & s ) {

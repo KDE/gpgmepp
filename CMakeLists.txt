@@ -53,9 +53,6 @@ if ( GPGME_VANILLA_FOUND )
    generate_export_header(gpgmepp EXPORT_FILE_NAME gpgme++_export.h)
 
    target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
-   if(WINCE)
-   target_link_libraries(gpgmepp ${WCECOMPAT_LIBRARIES})
-   endif()
    set_target_properties( gpgmepp PROPERTIES
                                   VERSION     ${_gpgmepp_version}
                                   SOVERSION   ${_gpgmepp_soversion}

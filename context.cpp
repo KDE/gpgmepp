@@ -97,15 +97,11 @@ namespace GpgME {
   }
 
   Error initializeLibrary( int ) {
-#ifndef _WIN32_WCE
       if ( gpgme_check_version( GPGME_VERSION ) ) {
-#endif
           return Error();
-#ifndef _WIN32_WCE
       } else {
           return Error::fromCode( GPG_ERR_USER_1 );
       }
-#endif
   }
 
   static void format_error( gpgme_error_t err, std::string & str ) {
