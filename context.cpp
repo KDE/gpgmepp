@@ -20,7 +20,7 @@
   Boston, MA 02110-1301, USA.
 */
 
-#include <config-gpgme++.h>
+#include "config-gpgme++.h"
 
 #include <gpgme++/context.h>
 #include <gpgme++/eventloopinteractor.h>
