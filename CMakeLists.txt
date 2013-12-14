@@ -17,10 +17,10 @@ include(FeatureSummary)
 
 find_package(Qt5Transitional REQUIRED)
 
-# ECM
-include(ECMVersion)
-ecm_version(5 0 0)
-include(ECMQtFramework)
+include(ECMSetupVersion)
+ecm_setup_version(5.0.0 VARIABLE_PREFIX GPGME
+                        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/gpgme_version.h"
+                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5GpgmeConfigVersion.cmake")
 
 find_package(Gpgme)
 set_package_properties(Gpgme PROPERTIES
