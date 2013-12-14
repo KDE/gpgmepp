@@ -4,13 +4,9 @@ project( gpgmepp )
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/modules)
 
-find_package(ECM 0.0.5 REQUIRED NO_MODULE)
+find_package(ECM 0.0.9 REQUIRED NO_MODULE)
 
 set(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${ECM_MODULE_PATH})
-
-include(ECMVersion)
-include(ECMWriteVersionHeader)
-
 
 # Used by find_package
 include(FeatureSummary)
