@@ -42,13 +42,13 @@ namespace GpgME {
     KeyListResult( const Error & err, const _gpgme_op_keylist_result & res );
 
     const KeyListResult & operator=( KeyListResult other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
     void swap( KeyListResult & other ) {
-	Result::swap( other );
-	using std::swap;
-	swap( this->d, other.d );
+        Result::swap( other );
+        using std::swap;
+        swap( this->d, other.d );
     }
 
     const KeyListResult & operator+=( const KeyListResult & other ) {

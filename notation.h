@@ -41,13 +41,13 @@ namespace GpgME {
     explicit Notation( gpgme_sig_notation_t nota );
 
     const Notation & operator=( Notation other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( Notation & other ) {
-	using std::swap;
-	swap( this->d, other.d );
+        using std::swap;
+        swap( this->d, other.d );
     }
 
     bool isNull() const;
@@ -56,9 +56,9 @@ namespace GpgME {
     const char * value() const;
 
     enum Flags {
-	NoFlags = 0,
-	HumanReadable = 1,
-	Critical = 2
+        NoFlags = 0,
+        HumanReadable = 1,
+        Critical = 2
     };
     Flags flags() const;
 

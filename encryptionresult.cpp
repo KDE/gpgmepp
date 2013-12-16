@@ -45,7 +45,7 @@ public:
     for ( gpgme_invalid_key_t ik = r->invalid_recipients ; ik ; ik = ik->next ) {
       gpgme_invalid_key_t copy = new _gpgme_invalid_key( *ik );
       if ( ik->fpr ) {
-	copy->fpr = strdup( ik->fpr );
+        copy->fpr = strdup( ik->fpr );
       }
       copy->next = 0;
       invalid.push_back( copy );

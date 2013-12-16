@@ -47,14 +47,14 @@ namespace GpgME {
     explicit SigningResult( const Error & err );
 
     const SigningResult & operator=( SigningResult other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( SigningResult & other ) {
-	Result::swap( other );
-	using std::swap;
-	swap( this->d, other.d );
+        Result::swap( other );
+        using std::swap;
+        swap( this->d, other.d );
     }
 
     bool isNull() const;
@@ -80,14 +80,14 @@ namespace GpgME {
     InvalidSigningKey();
 
     const InvalidSigningKey & operator=( InvalidSigningKey other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( InvalidSigningKey & other ) {
-	using std::swap;
-	swap( this->d, other.d );
-	swap( this->idx, other.idx );
+        using std::swap;
+        swap( this->d, other.d );
+        swap( this->idx, other.idx );
     }
 
     bool isNull() const;
@@ -110,14 +110,14 @@ namespace GpgME {
     CreatedSignature();
 
     const CreatedSignature & operator=( CreatedSignature other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( CreatedSignature & other ) {
-	using std::swap;
-	swap( this->d, other.d );
-	swap( this->idx, other.idx );
+        using std::swap;
+        swap( this->d, other.d );
+        swap( this->idx, other.idx );
     }
 
     bool isNull() const;

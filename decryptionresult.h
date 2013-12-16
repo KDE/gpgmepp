@@ -45,14 +45,14 @@ namespace GpgME {
     explicit DecryptionResult( const Error & err );
 
     const DecryptionResult & operator=( DecryptionResult other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( DecryptionResult & other ) {
-	Result::swap( other );
-	using std::swap;
-	swap( this->d, other.d );
+        Result::swap( other );
+        using std::swap;
+        swap( this->d, other.d );
     }
 
     bool isNull() const;
@@ -89,13 +89,13 @@ namespace GpgME {
       explicit Recipient( gpgme_recipient_t reci );
 
       const Recipient & operator=( Recipient other ) {
-	  swap( other );
-	  return *this;
+          swap( other );
+          return *this;
       }
 
       void swap( Recipient & other ) {
-	  using std::swap;
-	  swap( this->d, other.d );
+          using std::swap;
+          swap( this->d, other.d );
       }
 
       bool isNull() const;

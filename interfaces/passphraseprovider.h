@@ -30,7 +30,7 @@ namespace GpgME {
     virtual ~PassphraseProvider() {}
 
     virtual char * getPassphrase( const char * useridHint, const char * description,
-				  bool previousWasBad, bool & canceled ) = 0;
+                                  bool previousWasBad, bool & canceled ) = 0;
   };
 
 } // namespace GpgME

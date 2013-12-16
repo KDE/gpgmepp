@@ -47,14 +47,14 @@ namespace GpgME {
     explicit AssuanResult( const Error & err );
 
     const AssuanResult & operator=( AssuanResult other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( AssuanResult & other ) {
-	Result::swap( other );
-	using std::swap;
-	swap( this->d, other.d );
+        Result::swap( other );
+        using std::swap;
+        swap( this->d, other.d );
     }
 
     bool isNull() const;

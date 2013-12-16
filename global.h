@@ -29,6 +29,8 @@
 
 #include <iosfwd>
 
+#include <QByteArray>
+
 namespace GpgME {
     class Error;
     class EngineInfo;
@@ -132,9 +134,23 @@ namespace GpgME {
         Feature2MaxValue                           = 0x80000000
     };
     // use hasFeature( unsigned long, unsigned long ) instead
-    GPGMEPP_EXPORT_DEPRECATED bool hasFeature( unsigned long feature );
+    GPGMEPP_DEPRECATED_EXPORT bool hasFeature( unsigned long feature );
     GPGMEPP_EXPORT bool hasFeature( unsigned long feature, unsigned long feature2 );
 
 } // namespace GpgME
+
+# ifndef GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION
+#  define GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Class ) \
+    namespace std { template <> inline void swap< GpgME::Class >( GpgME::Class & lhs, GpgME::Class & rhs ) { lhs.swap( rhs ); } }
+# endif
+
+# ifndef GPGMEPP_MAKE_SAFE_BOOL_OPERATOR
+#  define GPGMEPP_MAKE_SAFE_BOOL_OPERATOR( Cond ) \
+    private: \
+        struct __safe_bool_dummy__ { void nonnull() {} }; \
+        typedef void ( __safe_bool_dummy__::*unspecified_bool_type )(); \
+    public: \
+    operator unspecified_bool_type() const { return ( Cond ) ? &__safe_bool_dummy__::nonnull : 0 ; }
+# endif
 
 #endif // __GPGMEPP_GLOBAL_H__

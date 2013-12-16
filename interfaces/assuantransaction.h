@@ -26,6 +26,8 @@
 
 #include <gpgme++/gpgme++_export.h>
 
+#include <qglobal.h>
+
 namespace GpgME {
 
     class Error;

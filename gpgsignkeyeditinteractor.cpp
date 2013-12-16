@@ -251,7 +251,7 @@ unsigned int GpgSignKeyEditInteractor::nextState( unsigned int status, const cha
     using namespace GpgSignKeyEditInteractor_Private;
 
     //lookup transition in map
-    const TransitionMap::const_iterator it = table.find( boost::tuples::make_tuple( static_cast<SignKeyState>( state() ), status, std::string( args ) ) );
+    const TransitionMap::const_iterator it = table.find( boost::make_tuple( static_cast<SignKeyState>( state() ), status, std::string( args ) ) );
     if ( it != table.end() ) {
         return it->second;
     }

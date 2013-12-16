@@ -48,14 +48,14 @@ namespace GpgME {
     explicit VerificationResult( const Error & err );
 
     const VerificationResult & operator=( VerificationResult other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( VerificationResult & other ) {
-	Result::swap( other );
-	using std::swap;
-	swap( this->d, other.d );
+        Result::swap( other );
+        using std::swap;
+        swap( this->d, other.d );
     }
 
     bool isNull() const;
@@ -83,14 +83,14 @@ namespace GpgME {
     Signature();
 
     const Signature & operator=( Signature other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( Signature & other ) {
-	using std::swap;
-	swap( this->d, other.d );
-	swap( this->idx, other.idx );
+        using std::swap;
+        swap( this->d, other.d );
+        swap( this->idx, other.idx );
     }
 
     bool isNull() const;
@@ -127,7 +127,7 @@ namespace GpgME {
     bool isVerifiedUsingChainModel() const;
 
     enum PKAStatus {
-	UnknownPKAStatus, PKAVerificationFailed, PKAVerificationSucceeded
+        UnknownPKAStatus, PKAVerificationFailed, PKAVerificationSucceeded
     };
     PKAStatus pkaStatus() const;
     const char * pkaAddress() const;

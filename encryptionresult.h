@@ -45,14 +45,14 @@ namespace GpgME {
     EncryptionResult( const Error & err );
 
     const EncryptionResult & operator=( EncryptionResult other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( EncryptionResult & other ) {
-	Result::swap( other );
-	using std::swap;
-	swap( this->d, other.d );
+        Result::swap( other );
+        using std::swap;
+        swap( this->d, other.d );
     }
 
     bool isNull() const;
@@ -77,13 +77,13 @@ namespace GpgME {
     InvalidRecipient();
 
     const InvalidRecipient & operator=( InvalidRecipient other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( InvalidRecipient & other ) {
-	using std::swap;
-	swap( this->d, other.d );
+        using std::swap;
+        swap( this->d, other.d );
     }
 
     bool isNull() const;

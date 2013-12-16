@@ -78,11 +78,10 @@ set( _gpgmepp_soversion 2 )
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
 
 if ( GPGME_VANILLA_FOUND )
-   add_library( gpgmepp SHARED ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   add_library( gpgmepp ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   generate_export_header(gpgmepp EXPORT_FILE_NAME gpgme++_export.h)
+
    target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
-   if(WINCE)
-   target_link_libraries(gpgmepp ${WCECOMPAT_LIBRARIES})
-   endif()
    set_target_properties( gpgmepp PROPERTIES
                                   VERSION     ${_gpgmepp_version}
                                   SOVERSION   ${_gpgmepp_soversion}
@@ -94,7 +93,8 @@ if ( GPGME_VANILLA_FOUND )
 endif()
 
 if ( GPGME_GLIB_FOUND )
-   add_library( gpgmepp-glib SHARED ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_glib.cpp )
+   add_library( gpgmepp-glib ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_glib.cpp )
+   generate_export_header(gpgmepp-glib)
    target_link_libraries( gpgmepp-glib ${GPGME_GLIB_LIBRARIES} )
    set_target_properties( gpgmepp-glib PROPERTIES
                                        VERSION     ${_gpgmepp_version}
@@ -107,7 +107,8 @@ endif()
 
 
 if ( GPGME_QT_FOUND )
-   add_library( gpgmepp-qt SHARED ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_qt.cpp )
+   add_library( gpgmepp-qt ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_qt.cpp )
+   generate_export_header(gpgmepp-qt)
    target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} )
    if(WIN32)
       target_link_libraries( gpgmepp-qt ${GPGME_VANILLA_LIBRARIES} )
@@ -123,7 +124,8 @@ endif()
 
 
 if ( GPGME_PTHREAD_FOUND )
-   add_library( gpgmepp-pthread SHARED ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   add_library( gpgmepp-pthread ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   generate_export_header(gpgmepp-pthread)
    target_link_libraries( gpgmepp-pthread ${GPGME_PTHREAD_LIBRARIES} )
    set_target_properties( gpgmepp-pthread PROPERTIES
                                           VERSION     ${_gpgmepp_version}
@@ -135,7 +137,8 @@ if ( GPGME_PTHREAD_FOUND )
 endif()
 
 if ( GPGME_PTH_FOUND )
-   add_library( gpgmepp-pth SHARED ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   add_library( gpgmepp-pth ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
+   generate_export_header(gpgmepp-pth)
    target_link_libraries( gpgmepp-pth ${GPGME_PTH_LIBRARIES} )
    set_target_properties( gpgmepp-pth PROPERTIES
                                       VERSION     ${_gpgmepp_version}
@@ -172,7 +175,7 @@ if ( GPGME_FOUND )
         scdgetinfoassuantransaction.h
         gpgagentgetinfoassuantransaction.h
         configuration.h
-        gpgme++_export.h vfsmountresult.h
+        ${CMAKE_CURRENT_BINARY_DIR}/gpgme++_export.h vfsmountresult.h
         DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++ COMPONENT Devel
    )
 

@@ -37,13 +37,13 @@ namespace GpgME {
     explicit EngineInfo( gpgme_engine_info_t engine );
 
     const EngineInfo & operator=( EngineInfo other ) {
-	swap( other );
-	return *this;
+        swap( other );
+        return *this;
     }
 
     void swap( EngineInfo & other ) {
-	using std::swap;
-	swap( this->d, other.d );
+        using std::swap;
+        swap( this->d, other.d );
     }
 
     bool isNull() const;
