@@ -397,7 +397,7 @@ namespace GpgME {
 #ifndef NDEBUG
       cerr << "Context::setManagedByEventLoopInteractor(): "
               "You must create an instance of EventLoopInteractor "
-              "before using anything that needs one." ;
+              "before using anything that needs one." << endl;
 #endif
       return;
     }
