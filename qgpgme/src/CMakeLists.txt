@@ -32,26 +32,32 @@ endif()
 
 if ( _any_gpgme_found )
 
-   include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${GPGME_INCLUDES} ${CMAKE_SOURCE_DIR}/gpgme++ ${Boost_INCLUDE_DIR} )
-
-   add_subdirectory( tests )
 
    set( qgpgme_LIB_SRCS
         dataprovider.cpp
         ${_qgpgme_extra_src}
    )
 
-   add_library( qgpgme ${LIBRARY_TYPE} ${qgpgme_LIB_SRCS} )
-   generate_export_header(qgpgme)
+   add_library(KF5QGpgme ${qgpgme_LIB_SRCS})
 
-   target_link_libraries( qgpgme ${QT_QTCORE_LIBRARY} ${_qgpgme_libgpgme} )
+   generate_export_header(KF5QGpgme BASE_NAME qgpgme)
 
-   set_target_properties( qgpgme PROPERTIES
-     VERSION ${_qgpgme_version}
-     SOVERSION ${_qgpgme_soversion}
+   add_library(KF5::QGpgme ALIAS KF5QGpgme)
+
+   target_link_libraries(KF5QGpgme
+     PUBLIC
+      Qt5::Core
+     PRIVATE
+      ${_qgpgme_libgpgme}
    )
 
-   install( TARGETS qgpgme EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   set_target_properties(KF5QGpgme PROPERTIES
+      VERSION ${QGPGME_VERSION_STRING}
+      SOVERSION ${QGPGME_SOVERSION}
+      EXPORT_NAME QGpgme
+   )
+
+   install(TARGETS KF5QGpgme EXPORT KF5QGpgmeTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
    install( FILES
      ${CMAKE_CURRENT_BINARY_DIR}/qgpgme_export.h
