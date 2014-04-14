@@ -20,7 +20,7 @@
 
 // -*- c++ -*-
 
-#include <qgpgme/dataprovider.h>
+#include <dataprovider.h>
 
 #include <gpgme++/error.h>
 

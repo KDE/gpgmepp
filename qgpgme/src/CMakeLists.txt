@@ -32,7 +32,6 @@ endif()
 
 if ( _any_gpgme_found )
 
-
    set( qgpgme_LIB_SRCS
         dataprovider.cpp
         ${_qgpgme_extra_src}
@@ -50,6 +49,9 @@ if ( _any_gpgme_found )
      PRIVATE
       ${_qgpgme_libgpgme}
    )
+   target_include_directories(KF5QGpgme INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/qgpgme;${GPGME_INCLUDES};${Boost_INCLUDE_DIR}>")
+   target_include_directories(KF5QGpgme PUBLIC "$<BUILD_INTERFACE:${QGpgme_SOURCE_DIR}/src;${QGpgme_BINARY_DIR}/src;${GPGME_INCLUDES};${Boost_INCLUDE_DIR}>")
+
 
    set_target_properties(KF5QGpgme PROPERTIES
       VERSION ${QGPGME_VERSION_STRING}
