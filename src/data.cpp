@@ -23,8 +23,8 @@
 #include <config-gpgme++.h>
 
 #include "data_p.h"
-#include <gpgme++/error.h>
-#include <gpgme++/interfaces/dataprovider.h>
+#include <error.h>
+#include <interfaces/dataprovider.h>
 
 #include <gpgme.h>
 

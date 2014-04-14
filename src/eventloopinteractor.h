@@ -24,7 +24,7 @@
 #ifndef __GPGMEPP_EVENTLOOPINTERACTOR_H__
 #define __GPGMEPP_EVENTLOOPINTERACTOR_H__
 
-#include <gpgme++/gpgme++_export.h>
+#include <gpgme++_export.h>
 
 namespace GpgME {
 

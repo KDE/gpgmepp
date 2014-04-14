@@ -22,7 +22,7 @@
 
 #include <config-gpgme++.h>
 
-#include <gpgme++/keylistresult.h>
+#include <keylistresult.h>
 #include "result_p.h"
 
 #include <gpgme.h>

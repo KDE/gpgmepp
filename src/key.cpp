@@ -22,7 +22,7 @@
 
 #include "config-gpgme++.h"
 
-#include <gpgme++/key.h>
+#include <key.h>
 
 #include "util.h"
 

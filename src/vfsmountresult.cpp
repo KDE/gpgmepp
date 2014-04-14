@@ -23,7 +23,7 @@
 
 #include <config-gpgme++.h>
 
-#include <gpgme++/vfsmountresult.h>
+#include <vfsmountresult.h>
 #include "result_p.h"
 
 #include <gpgme.h>

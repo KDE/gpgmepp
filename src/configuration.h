@@ -24,9 +24,9 @@
 #ifndef __GPGMEPP_CONFIGURATION_H__
 #define __GPGMEPP_CONFIGURATION_H__
 
-#include <gpgme++/global.h>
+#include <global.h>
 
-#include <gpgme++/gpgmefw.h>
+#include <gpgmefw.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>

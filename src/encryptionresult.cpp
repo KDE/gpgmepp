@@ -22,7 +22,7 @@
 
 #include <config-gpgme++.h>
 
-#include <gpgme++/encryptionresult.h>
+#include <encryptionresult.h>
 #include "result_p.h"
 #include "util.h"
 

@@ -22,7 +22,7 @@
 
 #include <config-gpgme++.h>
 
-#include <gpgme++/importresult.h>
+#include <importresult.h>
 #include "result_p.h"
 
 #include <gpgme.h>

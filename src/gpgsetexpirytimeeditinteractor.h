@@ -23,7 +23,7 @@
 #ifndef __GPGMEPP_GPGSETEXPIRYTIMEEDITINTERACTOR_H__
 #define __GPGMEPP_GPGSETEXPIRYTIMEEDITINTERACTOR_H__
 
-#include <gpgme++/editinteractor.h>
+#include <editinteractor.h>
 
 #include <string>
 

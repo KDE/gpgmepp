@@ -22,12 +22,12 @@
 
 #include <config-gpgme++.h>
 
-#include <gpgme++/eventloopinteractor.h>
+#include <eventloopinteractor.h>
 
-#include <gpgme++/context.h>
+#include <context.h>
 #include "context_p.h"
-#include <gpgme++/key.h>
-#include <gpgme++/trustitem.h>
+#include <key.h>
+#include <trustitem.h>
 
 #include <gpgme.h>
 

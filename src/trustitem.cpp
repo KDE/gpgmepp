@@ -22,7 +22,7 @@
 
 #include <config-gpgme++.h>
 
-#include <gpgme++/trustitem.h>
+#include <trustitem.h>
 
 #include <gpgme.h>
 

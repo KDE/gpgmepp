@@ -22,7 +22,7 @@
 
 #include <config-gpgme++.h>
 
-#include <gpgme++/signingresult.h>
+#include <signingresult.h>
 #include "result_p.h"
 #include "util.h"
 

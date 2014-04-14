@@ -24,8 +24,8 @@
 #ifndef __GPGMEPP_CONTEXT_P_H__
 #define __GPGMEPP_CONTEXT_P_H__
 
-#include <gpgme++/context.h>
-#include <gpgme++/data.h>
+#include <context.h>
+#include <data.h>
 
 #include <gpgme.h>
 

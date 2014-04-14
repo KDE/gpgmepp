@@ -23,8 +23,8 @@
 #ifndef __GPGMEPP_SIGNINGRESULT_H__
 #define __GPGMEPP_SIGNINGRESULT_H__
 
-#include <gpgme++/global.h>
-#include <gpgme++/result.h>
+#include <global.h>
+#include <result.h>
 
 #include <time.h>
 

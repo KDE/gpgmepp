@@ -21,8 +21,8 @@
 */
 
 #include <config-gpgme++.h>
-#include <gpgme++/verificationresult.h>
-#include <gpgme++/notation.h>
+#include <verificationresult.h>
+#include <notation.h>
 #include "result_p.h"
 #include "util.h"
 

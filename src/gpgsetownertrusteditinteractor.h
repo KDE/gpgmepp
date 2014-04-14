@@ -23,8 +23,8 @@
 #ifndef __GPGMEPP_GPGSETOWNERTRUSTEDITINTERACTOR_H__
 #define __GPGMEPP_GPGSETOWNERTRUSTEDITINTERACTOR_H__
 
-#include <gpgme++/editinteractor.h>
-#include <gpgme++/key.h>
+#include <editinteractor.h>
+#include <key.h>
 
 #include <string>
 

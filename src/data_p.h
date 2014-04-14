@@ -23,7 +23,7 @@
 #ifndef __GPGMEPP_DATA_P_H__
 #define __GPGMEPP_DATA_P_H__
 
-#include <gpgme++/data.h>
+#include <data.h>
 #include "callbacks.h"
 
 class GpgME::Data::Private {

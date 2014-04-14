@@ -24,10 +24,10 @@
 #ifndef __GPGMEPP_KEY_H__
 #define __GPGMEPP_KEY_H__
 
-#include <gpgme++/global.h>
-#include <gpgme++/notation.h>
+#include <global.h>
+#include <notation.h>
 
-#include <gpgme++/gpgmefw.h>
+#include <gpgmefw.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/type_traits/remove_pointer.hpp>

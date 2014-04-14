@@ -1,29 +1,6 @@
-cmake_minimum_required(VERSION 2.8.12)
+# Turn exceptions on
+kde_enable_exceptions()
 
-project(gpgmepp)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/modules)
-
-find_package(ECM 0.0.12 REQUIRED NO_MODULE)
-
-set(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${ECM_MODULE_PATH})
-
-# Used by find_package
-include(FeatureSummary)
-
-find_package(Qt5Transitional REQUIRED)
-
-include(ECMSetupVersion)
-ecm_setup_version(5.0.0 VARIABLE_PREFIX GPGME
-                        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/gpgme_version.h"
-                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5GpgmeConfigVersion.cmake")
-
-find_package(Gpgme)
-set_package_properties(Gpgme PROPERTIES
-                       URL "http://www.gnupg.org/related_software/gpgme/"
-                       DESCRIPTION "The GnuPG Made Easy (GPGME) library)"
-                       TYPE REQUIRED
-)
 include (ConfigureChecks.cmake)
 
 add_definitions(-DMAKE_GPGMEPP_LIB)
@@ -34,7 +11,6 @@ if (MINGW)
 endif()
 
 include_directories( ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/.. )
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gpgme++.h )
 
@@ -77,75 +53,127 @@ set( _gpgmepp_soversion 2 )
 set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
 
 if ( GPGME_VANILLA_FOUND )
-   add_library( gpgmepp ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
-   generate_export_header(gpgmepp EXPORT_FILE_NAME gpgme++_export.h)
 
-   target_link_libraries( gpgmepp ${GPGME_VANILLA_LIBRARIES} )
-   set_target_properties( gpgmepp PROPERTIES
-                                  VERSION     ${_gpgmepp_version}
-                                  SOVERSION   ${_gpgmepp_soversion}
-                                  OUTPUT_NAME gpgme++
+   add_library(KF5Gpgmepp ${gpgme_LIB_SRCS} context_vanilla.cpp)
+
+   generate_export_header(KF5Gpgmepp BASE_NAME gpgmepp)
+
+   add_library(KF5::Gpgmepp ALIAS KF5Gpgmepp)
+
+   target_link_libraries(KF5Gpgmepp
+      ${GPGME_VANILLA_LIBRARIES}
+      Qt5::Core
    )
-   get_target_property( GPGMEPP_VANILLA_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} COMPONENT Devel)
+
+   target_include_directories(KF5Gpgmepp INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/gpgme++>")
+   target_include_directories(KF5Gpgmepp PUBLIC "$<BUILD_INTERFACE:${Gpgme_SOURCE_DIR}/src;${Gpgme_BINARY_DIR}/src>")
+
+   set_target_properties(KF5Gpgmepp PROPERTIES
+      VERSION ${GPGMEPP_VERSION_STRING}
+      SOVERSION ${GPGMEPP_SOVERSION}
+      EXPORT_NAME Gpgmepp
+   )
+   install(TARGETS KF5Gpgmepp EXPORT KF5GpgmeTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 endif()
 
 if ( GPGME_GLIB_FOUND )
-   add_library( gpgmepp-glib ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_glib.cpp )
-   generate_export_header(gpgmepp-glib)
-   target_link_libraries( gpgmepp-glib ${GPGME_GLIB_LIBRARIES} )
-   set_target_properties( gpgmepp-glib PROPERTIES
-                                       VERSION     ${_gpgmepp_version}
-                                       SOVERSION   ${_gpgmepp_soversion}
-                                       OUTPUT_NAME gpgme++-glib DEFINE_SYMBOL MAKE_GPGME___LIB
+   add_library(KF5Gpgmepp-glib ${gpgme_LIB_SRCS} context_glib.cpp)
+
+   generate_export_header(KF5Gpgmepp-glib BASE_NAME gpgmepp-glib)
+
+   add_library(KF5::Gpgmepp-glib ALIAS KF5Gpgmepp-glib)
+
+   target_link_libraries(KF5Gpgmepp-glib
+      ${GPGME_GLIB_LIBRARIES}
+      Qt5::Core
    )
-   get_target_property( GPGMEPP_GLIB_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-glib EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
+
+   target_include_directories(KF5Gpgmepp-glib INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/gpgme++>")
+   target_include_directories(KF5Gpgmepp-glib PUBLIC "$<BUILD_INTERFACE:${Gpgme_SOURCE_DIR}/src;${Gpgme_BINARY_DIR}/src>")
+
+   set_target_properties(KF5Gpgmepp-glib PROPERTIES
+      VERSION ${GPGMEPP_VERSION_STRING}
+      SOVERSION ${GPGMEPP_SOVERSION}
+      EXPORT_NAME Gpgmepp-glib
+   )
+   install(TARGETS KF5Gpgmepp-glib EXPORT KF5Gpgme-glibTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif()
 
 
 if ( GPGME_QT_FOUND )
-   add_library( gpgmepp-qt ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_qt.cpp )
-   generate_export_header(gpgmepp-qt)
-   target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} )
+   add_library(KF5Gpgmepp-qt ${gpgme_LIB_SRCS} context_qt.cpp)
+
+   generate_export_header(KF5Gpgmepp-qt BASE_NAME gpgmepp-qt)
+
+   add_library(KF5::Gpgmepp-qt ALIAS KF5Gpgmepp-qt)
+
+   target_link_libraries(KF5Gpgmepp-qt
+      ${GPGME_QT_LIBRARIES}
+      Qt5::Core
+   )
+
+   target_include_directories(KF5Gpgmepp-qt INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/gpgme++>")
+   target_include_directories(KF5Gpgmepp-qt PUBLIC "$<BUILD_INTERFACE:${Gpgme_SOURCE_DIR}/src;${Gpgme_BINARY_DIR}/src>")
+
    if(WIN32)
       target_link_libraries( gpgmepp-qt ${GPGME_VANILLA_LIBRARIES} )
    endif()
-   set_target_properties( gpgmepp-qt PROPERTIES
-                                     VERSION     ${_gpgmepp_version}
-                                     SOVERSION   ${_gpgmepp_soversion}
-                                     OUTPUT_NAME gpgme++-qt DEFINE_SYMBOL MAKE_GPGME___LIB
+
+   set_target_properties(KF5Gpgmepp-qt PROPERTIES
+      VERSION ${GPGMEPP_VERSION_STRING}
+      SOVERSION ${GPGMEPP_SOVERSION}
+      EXPORT_NAME Gpgmepp-qt
    )
-   get_target_property( GPGMEPP_QT_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-qt EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
+   install(TARGETS KF5Gpgmepp-qt EXPORT KF5Gpgme-qtTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif()
 
 
 if ( GPGME_PTHREAD_FOUND )
-   add_library( gpgmepp-pthread ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
-   generate_export_header(gpgmepp-pthread)
-   target_link_libraries( gpgmepp-pthread ${GPGME_PTHREAD_LIBRARIES} )
-   set_target_properties( gpgmepp-pthread PROPERTIES
-                                          VERSION     ${_gpgmepp_version}
-                                          SOVERSION   ${_gpgmepp_soversion}
-                                          OUTPUT_NAME gpgme++-pthread DEFINE_SYMBOL MAKE_GPGME___LIB
+   add_library(KF5Gpgmepp-pthread ${gpgme_LIB_SRCS} context_vanilla.cpp)
+
+   generate_export_header(KF5Gpgmepp-pthread BASE_NAME gpgmepp-pthread)
+
+   add_library(KF5::Gpgmepp-pthread ALIAS KF5Gpgmepp-pthread)
+
+   target_link_libraries(KF5Gpgmepp-pthread
+      ${GPGME_PTHREAD_LIBRARIES}
+      Qt5::Core
    )
-   get_target_property( GPGMEPP_PTHREAD_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-pthread EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
+
+   target_include_directories(KF5Gpgmepp-pthread INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/gpgme++>")
+   target_include_directories(KF5Gpgmepp-pthread PUBLIC "$<BUILD_INTERFACE:${Gpgme_SOURCE_DIR}/src;${Gpgme_BINARY_DIR}/src>")
+
+   set_target_properties(KF5Gpgmepp-pthread PROPERTIES
+      VERSION ${GPGMEPP_VERSION_STRING}
+      SOVERSION ${GPGMEPP_SOVERSION}
+      EXPORT_NAME Gpgmepp-pthread
+   )
+   install(TARGETS KF5Gpgmepp-pthread EXPORT KF5Gpgme-pthreadTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+
 endif()
 
 if ( GPGME_PTH_FOUND )
-   add_library( gpgmepp-pth ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
-   generate_export_header(gpgmepp-pth)
-   target_link_libraries( gpgmepp-pth ${GPGME_PTH_LIBRARIES} )
-   set_target_properties( gpgmepp-pth PROPERTIES
-                                      VERSION     ${_gpgmepp_version}
-                                      SOVERSION   ${_gpgmepp_soversion}
-                                      OUTPUT_NAME gpgme++-pth DEFINE_SYMBOL MAKE_GPGME___LIB
+   add_library(KF5Gpgmepp-pth ${gpgme_LIB_SRCS} context_vanilla.cpp)
+
+   generate_export_header(KF5Gpgmepp-pth BASE_NAME gpgmepp-pthread)
+
+   add_library(KF5::Gpgmepp-pth ALIAS KF5Gpgmepp-pth)
+
+   target_link_libraries(KF5Gpgmepp-pth
+      ${GPGME_PTH_LIBRARIES}
+      Qt5::Core
    )
-   get_target_property( GPGMEPP_PTH_LIBRARY gpgmepp LOCATION )
-   install(TARGETS gpgmepp-pth EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
+
+   target_include_directories(KF5Gpgmepp-pth INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/gpgme++>")
+   target_include_directories(KF5Gpgmepp-pth PUBLIC "$<BUILD_INTERFACE:${Gpgme_SOURCE_DIR}/src;${Gpgme_BINARY_DIR}/src>")
+
+   set_target_properties(KF5Gpgmepp-pth PROPERTIES
+      VERSION ${GPGMEPP_VERSION_STRING}
+      SOVERSION ${GPGMEPP_SOVERSION}
+      EXPORT_NAME Gpgmepp-pth
+   )
+   install(TARGETS KF5Gpgmepp-pth EXPORT KF5Gpgme-pthTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif()
 
 # this writes way too much, but do we care?

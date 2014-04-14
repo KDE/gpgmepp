@@ -23,7 +23,7 @@
 #ifndef __GPGMEPP_GPGADDUSERIDEDITINTERACTOR_H__
 #define __GPGMEPP_GPGADDUSERIDEDITINTERACTOR_H__
 
-#include <gpgme++/editinteractor.h>
+#include <editinteractor.h>
 
 #include <string>
 

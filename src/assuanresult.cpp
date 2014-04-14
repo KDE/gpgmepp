@@ -22,7 +22,7 @@
 
 #include <config-gpgme++.h>
 
-#include <gpgme++/assuanresult.h>
+#include <assuanresult.h>
 #include "result_p.h"
 
 #include <gpgme.h>

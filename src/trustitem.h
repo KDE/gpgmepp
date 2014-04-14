@@ -24,9 +24,9 @@
 #ifndef __GPGMEPP_TRUSTITEM_H__
 #define __GPGMEPP_TRUSTITEM_H__
 
-#include <gpgme++/gpgmefw.h>
-#include <gpgme++/key.h>
-#include <gpgme++/gpgme++_export.h>
+#include <gpgmefw.h>
+#include <key.h>
+#include <gpgme++_export.h>
 
 #include <algorithm>
 

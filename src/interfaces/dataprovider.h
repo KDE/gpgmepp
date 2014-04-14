@@ -25,7 +25,7 @@
 
 #include <sys/types.h>
 
-#include <gpgme++/gpgme++_export.h>
+#include <gpgme++_export.h>
 
 #include <gpg-error.h>
 

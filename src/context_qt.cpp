@@ -22,7 +22,7 @@
 
 #include <config-gpgme++.h>
 
-#include <gpgme++/global.h>
+#include <global.h>
 
 #ifdef HAVE_GPGME_GET_FDPTR
 extern "C" QIODevice * gpgme_get_fdptr( int );

@@ -25,10 +25,10 @@
 #include "callbacks.h"
 #include "util.h"
 
-#include <gpgme++/interfaces/progressprovider.h>
-#include <gpgme++/interfaces/passphraseprovider.h>
-#include <gpgme++/interfaces/dataprovider.h>
-#include <gpgme++/error.h>
+#include <interfaces/progressprovider.h>
+#include <interfaces/passphraseprovider.h>
+#include <interfaces/dataprovider.h>
+#include <error.h>
 
 #include <gpgme.h>
 #include <gpg-error.h>

@@ -22,7 +22,7 @@
 
 #include <config-gpgme++.h>
 
-#include <gpgme++/global.h>
+#include <global.h>
 
 GIOChannel * GpgME::getGIOChannel( int ) {
     return 0;

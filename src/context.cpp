@@ -22,23 +22,23 @@
 
 #include "config-gpgme++.h"
 
-#include <gpgme++/context.h>
-#include <gpgme++/eventloopinteractor.h>
-#include <gpgme++/trustitem.h>
-#include <gpgme++/assuanresult.h>
-#include <gpgme++/keylistresult.h>
-#include <gpgme++/keygenerationresult.h>
-#include <gpgme++/importresult.h>
-#include <gpgme++/decryptionresult.h>
-#include <gpgme++/verificationresult.h>
-#include <gpgme++/signingresult.h>
-#include <gpgme++/encryptionresult.h>
-#include <gpgme++/engineinfo.h>
-#include <gpgme++/editinteractor.h>
-#include <gpgme++/vfsmountresult.h>
+#include <context.h>
+#include <eventloopinteractor.h>
+#include <trustitem.h>
+#include <assuanresult.h>
+#include <keylistresult.h>
+#include <keygenerationresult.h>
+#include <importresult.h>
+#include <decryptionresult.h>
+#include <verificationresult.h>
+#include <signingresult.h>
+#include <encryptionresult.h>
+#include <engineinfo.h>
+#include <editinteractor.h>
+#include <vfsmountresult.h>
 
-#include <gpgme++/interfaces/assuantransaction.h>
-#include <gpgme++/defaultassuantransaction.h>
+#include <interfaces/assuantransaction.h>
+#include <defaultassuantransaction.h>
 
 #include "callbacks.h"
 #include "data_p.h"
