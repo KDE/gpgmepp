@@ -177,7 +177,7 @@ if ( GPGME_PTH_FOUND )
 endif()
 
 # this writes way too much, but do we care?
-EXPORT_LIBRARY_DEPENDENCIES( ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppLibraryDepends.cmake )
+#EXPORT_LIBRARY_DEPENDENCIES( ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppLibraryDepends.cmake )
 
 ########### install files ###############
 
