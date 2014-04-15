@@ -47,11 +47,16 @@ if ( _any_gpgme_found )
      PUBLIC
       Qt5::Core
      PRIVATE
+      KF5::Gpgmepp
       ${_qgpgme_libgpgme}
    )
-   target_include_directories(KF5QGpgme INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/qgpgme;${GPGME_INCLUDES};${Boost_INCLUDE_DIR}>")
-   target_include_directories(KF5QGpgme PUBLIC "$<BUILD_INTERFACE:${QGpgme_SOURCE_DIR}/src;${QGpgme_BINARY_DIR}/src;${GPGME_INCLUDES};${Boost_INCLUDE_DIR}>")
-
+   target_include_directories(KF5QGpgme INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/qgpgme;${Boost_INCLUDE_DIR}>")
+   target_include_directories(KF5QGpgme PUBLIC "$<BUILD_INTERFACE:${QGpgme_SOURCE_DIR}/src;${QGpgme_BINARY_DIR}/src;${Boost_INCLUDE_DIR}>")
+   if ( GPGME_FOUND )
+      target_include_directories(KF5QGpgme INTERFACE "$<INSTALL_INTERFACE:${GPGME_INCLUDES}>")
+      #TODO fix it
+      #target_include_directories(KF5QGpgme PUBLIC "$<BUILD_INTERFACE:${GPGME_INCLUDES}>")
+   endif()
 
    set_target_properties(KF5QGpgme PROPERTIES
       VERSION ${QGPGME_VERSION_STRING}

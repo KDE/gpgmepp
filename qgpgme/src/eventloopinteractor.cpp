@@ -20,8 +20,7 @@
 
 // -*- c++ -*-
 
-#include <qgpgme/eventloopinteractor.h>
-#include <gpgme++/context.h>
+#include <eventloopinteractor.h>
 
 #include <QCoreApplication>
 #include <QSocketNotifier>

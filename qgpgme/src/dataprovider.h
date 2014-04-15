@@ -23,7 +23,7 @@
 #define __QGPGME_DATAPROVIDER_H__
 
 #include "qgpgme_export.h"
-#include <gpgme++/interfaces/dataprovider.h>
+#include <interfaces/dataprovider.h>
 
 #include <QtCore/QByteArray>
 

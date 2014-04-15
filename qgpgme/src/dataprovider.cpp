@@ -22,7 +22,7 @@
 
 #include <dataprovider.h>
 
-#include <gpgme++/error.h>
+#include <error.h>
 
 #include <QIODevice>
 #include <QProcess>
