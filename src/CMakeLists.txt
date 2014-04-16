@@ -10,8 +10,6 @@ if (MINGW)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mms-bitfields")
 endif()
 
-include_directories( ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/.. )
-
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-gpgme++.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gpgme++.h )
 
 ## gpgme comes in three flavours on each of the platforms:
@@ -49,8 +47,6 @@ set(gpgme_LIB_SRCS
 
 set( _gpgmepp_version 2.8.0 )
 set( _gpgmepp_soversion 2 )
-
-set( GPGMEPP_INCLUDE ${INCLUDE_INSTALL_DIR} ${GPGME_INCLUDES} ${Boost_INCLUDE_DIR} )
 
 if ( GPGME_VANILLA_FOUND )
 
