@@ -25,7 +25,7 @@
 
 #include <gpgmefw.h>
 #include <verificationresult.h>
-#include <gpgme++_export.h>
+#include <gpgmepp_export.h>
 
 #include <boost/shared_ptr.hpp>
 

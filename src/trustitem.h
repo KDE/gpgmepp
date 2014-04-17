@@ -26,7 +26,7 @@
 
 #include <gpgmefw.h>
 #include <key.h>
-#include <gpgme++_export.h>
+#include <gpgmepp_export.h>
 
 #include <algorithm>
 

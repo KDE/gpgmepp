@@ -198,7 +198,7 @@ if ( GPGME_FOUND )
         scdgetinfoassuantransaction.h
         gpgagentgetinfoassuantransaction.h
         configuration.h
-        ${CMAKE_CURRENT_BINARY_DIR}/gpgme++_export.h vfsmountresult.h
+        ${CMAKE_CURRENT_BINARY_DIR}/gpgmepp_export.h vfsmountresult.h
         DESTINATION ${INCLUDE_INSTALL_DIR}/gpgme++ COMPONENT Devel
    )
 

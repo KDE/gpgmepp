@@ -24,7 +24,7 @@
 #ifndef __GPGMEPP_INTERFACES_ASSUANTRANSACTION_H__
 #define __GPGMEPP_INTERFACES_ASSUANTRANSACTION_H__
 
-#include <gpgme++_export.h>
+#include <gpgmepp_export.h>
 
 #include <qglobal.h>
 

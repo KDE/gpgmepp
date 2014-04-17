@@ -25,7 +25,7 @@
 
 #include <gpgmefw.h>
 #include <result.h>
-#include <gpgme++_export.h>
+#include <gpgmepp_export.h>
 
 #include <time.h>
 

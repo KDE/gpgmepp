@@ -25,7 +25,7 @@
 #define __GPGMEPP_GLOBAL_H__
 
 #include <gpgmefw.h>
-#include <gpgme++_export.h>
+#include <gpgmepp_export.h>
 
 #include <iosfwd>
 
