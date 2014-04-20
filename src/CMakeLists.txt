@@ -205,7 +205,7 @@ if ( GPGME_FOUND )
    install(
      FILES
      ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake
-     ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppLibraryDepends.cmake
+     #${CMAKE_CURRENT_BINARY_DIR}/GpgmeppLibraryDepends.cmake
      DESTINATION
      ${LIB_INSTALL_DIR}/gpgmepp )
 
