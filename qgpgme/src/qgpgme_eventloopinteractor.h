@@ -23,7 +23,7 @@
 #define __QGPGME_EVENTLOOPINTERACTOR_H__
 
 #include "qgpgme_export.h"
-#include <gpgme++/eventloopinteractor.h>
+#include <eventloopinteractor.h>
 
 #include <QtCore/QObject>
 

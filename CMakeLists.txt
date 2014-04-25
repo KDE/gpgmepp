@@ -39,7 +39,7 @@ set_package_properties(Gpgme PROPERTIES
 
 
 ########### CMake Config Files ###########
-set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Gpmepp")
+set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Gpgmepp")
 
 
 

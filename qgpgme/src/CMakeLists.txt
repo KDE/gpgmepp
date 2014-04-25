@@ -23,8 +23,8 @@ if ( NOT WIN32 AND GPGME_PTHREAD_FOUND )
 
    set( _any_gpgme_found true )
    set( _qgpgme_libgpgme KF5::Gpgmepp-pthread )
-   set( _qgpgme_extra_src eventloopinteractor.cpp eventloopinteractor_unix.cpp )
-   set( _qgpgme_extra_headers eventloopinteractor.h )
+   set( _qgpgme_extra_src qgpgme_eventloopinteractor.cpp eventloopinteractor_unix.cpp )
+   set( _qgpgme_extra_headers qgpgme_eventloopinteractor.h )
 
 endif()
 

@@ -20,7 +20,7 @@
 
 // -*- c++ -*-
 
-#include <qgpgme/eventloopinteractor.h>
+#include <qgpgme/qgpgme_eventloopinteractor.h>
 
 #include <gpgme++/global.h>
 
