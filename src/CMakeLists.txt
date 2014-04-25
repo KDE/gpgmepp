@@ -62,14 +62,14 @@ if ( GPGME_VANILLA_FOUND )
    )
 
    target_include_directories(KF5Gpgmepp INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/gpgme++>")
-   target_include_directories(KF5Gpgmepp PUBLIC "$<BUILD_INTERFACE:${Gpgme_SOURCE_DIR}/src;${Gpgme_BINARY_DIR}/src>")
+   target_include_directories(KF5Gpgmepp PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>")
 
    set_target_properties(KF5Gpgmepp PROPERTIES
       VERSION ${GPGMEPP_VERSION_STRING}
       SOVERSION ${GPGMEPP_SOVERSION}
       EXPORT_NAME Gpgmepp
    )
-   install(TARGETS KF5Gpgmepp EXPORT KF5GpgmeTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5Gpgmepp EXPORT KF5GpgmeppTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 endif()
 
@@ -86,14 +86,14 @@ if ( GPGME_GLIB_FOUND )
    )
 
    target_include_directories(KF5Gpgmepp-glib INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/gpgme++>")
-   target_include_directories(KF5Gpgmepp-glib PUBLIC "$<BUILD_INTERFACE:${Gpgme_SOURCE_DIR}/src;${Gpgme_BINARY_DIR}/src>")
+   target_include_directories(KF5Gpgmepp-glib PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>")
 
    set_target_properties(KF5Gpgmepp-glib PROPERTIES
       VERSION ${GPGMEPP_VERSION_STRING}
       SOVERSION ${GPGMEPP_SOVERSION}
       EXPORT_NAME Gpgmepp-glib
    )
-   install(TARGETS KF5Gpgmepp-glib EXPORT KF5Gpgme-glibTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5Gpgmepp-glib EXPORT KF5GpgmeppTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif()
 
 
@@ -110,7 +110,7 @@ if ( GPGME_QT_FOUND )
    )
 
    target_include_directories(KF5Gpgmepp-qt INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/gpgme++>")
-   target_include_directories(KF5Gpgmepp-qt PUBLIC "$<BUILD_INTERFACE:${Gpgme_SOURCE_DIR}/src;${Gpgme_BINARY_DIR}/src>")
+   target_include_directories(KF5Gpgmepp-qt PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>")
 
    if(WIN32)
       target_link_libraries( gpgmepp-qt ${GPGME_VANILLA_LIBRARIES} )
@@ -121,7 +121,7 @@ if ( GPGME_QT_FOUND )
       SOVERSION ${GPGMEPP_SOVERSION}
       EXPORT_NAME Gpgmepp-qt
    )
-   install(TARGETS KF5Gpgmepp-qt EXPORT KF5Gpgme-qtTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5Gpgmepp-qt EXPORT KF5GpgmeppTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif()
 
 
@@ -138,14 +138,14 @@ if ( GPGME_PTHREAD_FOUND )
    )
 
    target_include_directories(KF5Gpgmepp-pthread INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/gpgme++>")
-   target_include_directories(KF5Gpgmepp-pthread PUBLIC "$<BUILD_INTERFACE:${Gpgme_SOURCE_DIR}/src;${Gpgme_BINARY_DIR}/src>")
+   target_include_directories(KF5Gpgmepp-pthread PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>")
 
    set_target_properties(KF5Gpgmepp-pthread PROPERTIES
       VERSION ${GPGMEPP_VERSION_STRING}
       SOVERSION ${GPGMEPP_SOVERSION}
       EXPORT_NAME Gpgmepp-pthread
    )
-   install(TARGETS KF5Gpgmepp-pthread EXPORT KF5Gpgme-pthreadTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5Gpgmepp-pthread EXPORT KF5GpgmeppTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 endif()
 
@@ -162,14 +162,14 @@ if ( GPGME_PTH_FOUND )
    )
 
    target_include_directories(KF5Gpgmepp-pth INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/gpgme++>")
-   target_include_directories(KF5Gpgmepp-pth PUBLIC "$<BUILD_INTERFACE:${Gpgme_SOURCE_DIR}/src;${Gpgme_BINARY_DIR}/src>")
+   target_include_directories(KF5Gpgmepp-pth PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>")
 
    set_target_properties(KF5Gpgmepp-pth PROPERTIES
       VERSION ${GPGMEPP_VERSION_STRING}
       SOVERSION ${GPGMEPP_SOVERSION}
       EXPORT_NAME Gpgmepp-pth
    )
-   install(TARGETS KF5Gpgmepp-pth EXPORT KF5Gpgme-pthTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5Gpgmepp-pth EXPORT KF5GpgmeppTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif()
 
 # this writes way too much, but do we care?

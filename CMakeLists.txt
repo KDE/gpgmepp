@@ -56,8 +56,12 @@ install(FILES
   COMPONENT Devel
 )
 
-#reactivate ti
-#install(EXPORT KF5QGpgmeTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE KF5QGpgmeTargets.cmake NAMESPACE KF5::)
+install(EXPORT
+    KF5GpgmeppTargets
+    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+    FILE KF5GpgmeppTargets.cmake
+    NAMESPACE KF5::)
+
 
 install(FILES
    ${CMAKE_CURRENT_BINARY_DIR}/gpgmepp_version.h

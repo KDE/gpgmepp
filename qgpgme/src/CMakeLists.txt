@@ -42,7 +42,7 @@ if ( _any_gpgme_found )
    generate_export_header(KF5QGpgme BASE_NAME qgpgme)
 
    add_library(KF5::QGpgme ALIAS KF5QGpgme)
-
+   
    target_link_libraries(KF5QGpgme
      PUBLIC
       Qt5::Core
@@ -64,8 +64,7 @@ if ( _any_gpgme_found )
       EXPORT_NAME QGpgme
    )
 
-   #REactivate it
-   #install(TARGETS KF5QGpgme EXPORT KF5QGpgmeTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5QGpgme EXPORT KF5QGpgmeTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
    install( FILES
      ${CMAKE_CURRENT_BINARY_DIR}/qgpgme_export.h
