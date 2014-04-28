@@ -51,7 +51,7 @@ if ( _any_gpgme_found )
       ${_qgpgme_libgpgme}
    )
 
-   target_include_directories(KF5QGpgme INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/qgpgme;${Boost_INCLUDE_DIR}>")
+   target_include_directories(KF5QGpgme INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/qgpgme;${Boost_INCLUDE_DIR}>")
    target_include_directories(KF5QGpgme PUBLIC "$<BUILD_INTERFACE:${QGpgme_SOURCE_DIR}/src;${QGpgme_BINARY_DIR}/src;${Boost_INCLUDE_DIR}>")
    if ( GPGME_FOUND )
       if ( GPGME_INCLUDES )
@@ -73,6 +73,6 @@ if ( _any_gpgme_found )
      ${CMAKE_CURRENT_BINARY_DIR}/qgpgme_export.h
      ${_qgpgme_extra_headers}
      dataprovider.h 
-     DESTINATION ${INCLUDE_INSTALL_DIR}/qgpgme COMPONENT Devel )
+     DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/qgpgme COMPONENT Devel )
 
 endif()
