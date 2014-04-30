@@ -67,7 +67,7 @@ if ( _any_gpgme_found )
       EXPORT_NAME QGpgme
    )
 
-   install(TARGETS KF5QGpgme EXPORT KF5QGpgmeTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5QGpgme EXPORT KF5QGpgmeTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
    install( FILES
      ${CMAKE_CURRENT_BINARY_DIR}/qgpgme_export.h

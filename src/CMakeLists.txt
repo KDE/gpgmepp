@@ -69,7 +69,7 @@ if ( GPGME_VANILLA_FOUND )
       SOVERSION ${GPGMEPP_SOVERSION}
       EXPORT_NAME Gpgmepp
    )
-   install(TARGETS KF5Gpgmepp EXPORT KF5GpgmeppTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5Gpgmepp EXPORT KF5GpgmeppTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
 endif()
 
@@ -93,7 +93,7 @@ if ( GPGME_GLIB_FOUND )
       SOVERSION ${GPGMEPP_SOVERSION}
       EXPORT_NAME Gpgmepp-glib
    )
-   install(TARGETS KF5Gpgmepp-glib EXPORT KF5GpgmeppTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5Gpgmepp-glib EXPORT KF5GpgmeppTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 endif()
 
 
@@ -121,7 +121,7 @@ if ( GPGME_QT_FOUND )
       SOVERSION ${GPGMEPP_SOVERSION}
       EXPORT_NAME Gpgmepp-qt
    )
-   install(TARGETS KF5Gpgmepp-qt EXPORT KF5GpgmeppTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5Gpgmepp-qt EXPORT KF5GpgmeppTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 endif()
 
 
@@ -145,7 +145,7 @@ if ( GPGME_PTHREAD_FOUND )
       SOVERSION ${GPGMEPP_SOVERSION}
       EXPORT_NAME Gpgmepp-pthread
    )
-   install(TARGETS KF5Gpgmepp-pthread EXPORT KF5GpgmeppTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5Gpgmepp-pthread EXPORT KF5GpgmeppTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
 endif()
 
@@ -169,7 +169,7 @@ if ( GPGME_PTH_FOUND )
       SOVERSION ${GPGMEPP_SOVERSION}
       EXPORT_NAME Gpgmepp-pth
    )
-   install(TARGETS KF5Gpgmepp-pth EXPORT KF5GpgmeppTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5Gpgmepp-pth EXPORT KF5GpgmeppTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 endif()
 
 # this writes way too much, but do we care?
