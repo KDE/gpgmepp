@@ -1,2 +1,2 @@
 #! /bin/sh
-$XGETTEXT *.cpp *.h -o $podir/libqgpgme.pot
+$XGETTEXT *.cpp *.h -o $podir/libqgpgme5.pot
