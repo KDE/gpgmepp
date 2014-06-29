@@ -23,7 +23,7 @@
 #ifndef __GPGMEPP_DATA_H__
 #define __GPGMEPP_DATA_H__
 
-#include <global.h>
+#include "global.h"
 
 #include <boost/shared_ptr.hpp>
 

@@ -24,9 +24,9 @@
 #ifndef __GPGMEPP_ASSUANRESULT_H__
 #define __GPGMEPP_ASSUANRESULT_H__
 
-#include <gpgmefw.h>
-#include <result.h>
-#include <gpgmepp_export.h>
+#include "gpgmefw.h"
+#include "result.h"
+#include "gpgmepp_export.h"
 
 #include <time.h>
 

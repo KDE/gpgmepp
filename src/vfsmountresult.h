@@ -24,9 +24,9 @@
 #ifndef __GPGMEPP_VFSMOUNTRESULT_H__
 #define __GPGMEPP_VFSMOUNTRESULT_H__
 
-#include <gpgmefw.h>
-#include <result.h>
-#include <gpgmepp_export.h>
+#include "gpgmefw.h"
+#include "result.h"
+#include "gpgmepp_export.h"
 
 #include <boost/shared_ptr.hpp>
 

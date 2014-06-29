@@ -23,8 +23,8 @@
 #ifndef __GPGMEPP_RESULT_H__
 #define __GPGMEPP_RESULT_H__
 
-#include <gpgmefw.h>
-#include <error.h>
+#include "gpgmefw.h"
+#include "error.h"
 
 #include <algorithm> // std::swap
 

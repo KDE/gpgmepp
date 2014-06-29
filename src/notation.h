@@ -23,9 +23,9 @@
 #ifndef __GPGMEPP_NOTATION_H__
 #define __GPGMEPP_NOTATION_H__
 
-#include <gpgmefw.h>
-#include <verificationresult.h>
-#include <gpgmepp_export.h>
+#include "gpgmefw.h"
+#include "verificationresult.h"
+#include "gpgmepp_export.h"
 
 #include <boost/shared_ptr.hpp>
 

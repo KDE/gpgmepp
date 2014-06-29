@@ -24,10 +24,10 @@
 #ifndef __GPGMEPP_CONTEXT_H__
 #define __GPGMEPP_CONTEXT_H__
 
-#include <global.h>
+#include "global.h"
 
-#include <error.h>
-#include <verificationresult.h> // for Signature::Notation
+#include "error.h"
+#include "verificationresult.h" // for Signature::Notation
 
 #include <memory>
 #include <vector>

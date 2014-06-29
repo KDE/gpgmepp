@@ -23,7 +23,7 @@
 #ifndef __GPGMEPP_EDITINTERACTOR_H__
 #define __GPGMEPP_EDITINTERACTOR_H__
 
-#include <gpgmepp_export.h>
+#include "gpgmepp_export.h"
 
 #include <cstdio>
 

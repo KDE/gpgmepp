@@ -24,8 +24,8 @@
 #ifndef __GPGMEPP_UTIL_H__
 #define __GPGMEPP_UTIL_H__
 
-#include <global.h>
-#include <notation.h>
+#include "global.h"
+#include "notation.h"
 
 #include <gpgme.h>
 

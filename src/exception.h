@@ -24,7 +24,7 @@
 #ifndef __GPGMEPP_EXCEPTION_H__
 #define __GPGMEPP_EXCEPTION_H__
 
-#include <error.h>
+#include "error.h"
 
 #include <stdexcept>
 #include <string>
