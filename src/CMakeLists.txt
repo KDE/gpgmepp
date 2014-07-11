@@ -62,7 +62,7 @@ if ( GPGME_VANILLA_FOUND )
    )
 
    target_include_directories(KF5Gpgmepp INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/gpgme++>")
-   target_include_directories(KF5Gpgmepp PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src;${GPGME_INCLUDES}>")
+   target_include_directories(KF5Gpgmepp PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>")
 
    set_target_properties(KF5Gpgmepp PROPERTIES
       VERSION ${GPGMEPP_VERSION_STRING}
@@ -86,7 +86,7 @@ if ( GPGME_GLIB_FOUND )
    )
 
    target_include_directories(KF5Gpgmepp-glib INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/gpgme++>")
-   target_include_directories(KF5Gpgmepp-glib PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>;${GPGME_INCLUDES}")
+   target_include_directories(KF5Gpgmepp-glib PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>")
 
    set_target_properties(KF5Gpgmepp-glib PROPERTIES
       VERSION ${GPGMEPP_VERSION_STRING}
@@ -110,7 +110,7 @@ if ( GPGME_QT_FOUND )
    )
 
    target_include_directories(KF5Gpgmepp-qt INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/gpgme++>")
-   target_include_directories(KF5Gpgmepp-qt PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>;${GPGME_INCLUDES}")
+   target_include_directories(KF5Gpgmepp-qt PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>")
 
    if(WIN32)
       target_link_libraries( gpgmepp-qt ${GPGME_VANILLA_LIBRARIES} )
@@ -138,7 +138,7 @@ if ( GPGME_PTHREAD_FOUND )
    )
 
    target_include_directories(KF5Gpgmepp-pthread INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/gpgme++>")
-   target_include_directories(KF5Gpgmepp-pthread PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>;${GPGME_INCLUDES}")
+   target_include_directories(KF5Gpgmepp-pthread PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>")
 
    set_target_properties(KF5Gpgmepp-pthread PROPERTIES
       VERSION ${GPGMEPP_VERSION_STRING}
@@ -162,7 +162,7 @@ if ( GPGME_PTH_FOUND )
    )
 
    target_include_directories(KF5Gpgmepp-pth INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/gpgme++>")
-   target_include_directories(KF5Gpgmepp-pth PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>;${GPGME_INCLUDES}")
+   target_include_directories(KF5Gpgmepp-pth PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src>")
 
    set_target_properties(KF5Gpgmepp-pth PROPERTIES
       VERSION ${GPGMEPP_VERSION_STRING}
