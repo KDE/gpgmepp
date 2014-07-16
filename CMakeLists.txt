@@ -65,12 +65,11 @@ endif()
 
 if ( GPGME_GLIB_FOUND )
    add_library( gpgmepp-glib ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_glib.cpp )
-   generate_export_header(gpgmepp-glib)
    target_link_libraries( gpgmepp-glib ${GPGME_GLIB_LIBRARIES} )
    set_target_properties( gpgmepp-glib PROPERTIES
                                        VERSION     ${_gpgmepp_version}
                                        SOVERSION   ${_gpgmepp_soversion}
-                                       OUTPUT_NAME gpgme++-glib DEFINE_SYMBOL MAKE_GPGME___LIB
+                                       OUTPUT_NAME gpgme++-glib DEFINE_SYMBOL gpgmepp_EXPORTS
    )
    get_target_property( GPGMEPP_GLIB_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-glib EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
@@ -79,7 +78,6 @@ endif()
 
 if ( GPGME_QT_FOUND )
    add_library( gpgmepp-qt ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_qt.cpp )
-   generate_export_header(gpgmepp-qt)
    target_link_libraries( gpgmepp-qt ${GPGME_QT_LIBRARIES} )
    if(WIN32)
       target_link_libraries( gpgmepp-qt ${GPGME_VANILLA_LIBRARIES} )
@@ -87,7 +85,7 @@ if ( GPGME_QT_FOUND )
    set_target_properties( gpgmepp-qt PROPERTIES
                                      VERSION     ${_gpgmepp_version}
                                      SOVERSION   ${_gpgmepp_soversion}
-                                     OUTPUT_NAME gpgme++-qt DEFINE_SYMBOL MAKE_GPGME___LIB
+                                     OUTPUT_NAME gpgme++-qt DEFINE_SYMBOL gpgmepp_EXPORTS
    )
    get_target_property( GPGMEPP_QT_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-qt EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
@@ -96,12 +94,11 @@ endif()
 
 if ( GPGME_PTHREAD_FOUND )
    add_library( gpgmepp-pthread ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
-   generate_export_header(gpgmepp-pthread)
    target_link_libraries( gpgmepp-pthread ${GPGME_PTHREAD_LIBRARIES} )
    set_target_properties( gpgmepp-pthread PROPERTIES
                                           VERSION     ${_gpgmepp_version}
                                           SOVERSION   ${_gpgmepp_soversion}
-                                          OUTPUT_NAME gpgme++-pthread DEFINE_SYMBOL MAKE_GPGME___LIB
+                                          OUTPUT_NAME gpgme++-pthread DEFINE_SYMBOL gpgmepp_EXPORTS
    )
    get_target_property( GPGMEPP_PTHREAD_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-pthread EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
@@ -109,12 +106,11 @@ endif()
 
 if ( GPGME_PTH_FOUND )
    add_library( gpgmepp-pth ${LIBRARY_TYPE} ${gpgme_LIB_SRCS} context_vanilla.cpp )
-   generate_export_header(gpgmepp-pth)
    target_link_libraries( gpgmepp-pth ${GPGME_PTH_LIBRARIES} )
    set_target_properties( gpgmepp-pth PROPERTIES
                                       VERSION     ${_gpgmepp_version}
                                       SOVERSION   ${_gpgmepp_soversion}
-                                      OUTPUT_NAME gpgme++-pth DEFINE_SYMBOL MAKE_GPGME___LIB
+                                      OUTPUT_NAME gpgme++-pth DEFINE_SYMBOL gpgmepp_EXPORTS
    )
    get_target_property( GPGMEPP_PTH_LIBRARY gpgmepp LOCATION )
    install(TARGETS gpgmepp-pth EXPORT kdepimlibsLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS} )
