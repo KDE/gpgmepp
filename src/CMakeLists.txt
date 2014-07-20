@@ -3,6 +3,8 @@ kde_enable_exceptions()
 
 include (ConfigureChecks.cmake)
 
+include_directories(${GPGME_INCLUDES})
+
 add_definitions(-DMAKE_GPGMEPP_LIB)
 
 if (MINGW)
