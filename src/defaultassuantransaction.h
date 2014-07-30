@@ -29,32 +29,36 @@
 #include <vector>
 #include <utility>
 
-namespace GpgME {
+namespace GpgME
+{
 
-    class GPGMEPP_EXPORT DefaultAssuanTransaction : public AssuanTransaction {
-    public:
-        explicit DefaultAssuanTransaction();
-        ~DefaultAssuanTransaction();
+class GPGMEPP_EXPORT DefaultAssuanTransaction : public AssuanTransaction
+{
+public:
+    explicit DefaultAssuanTransaction();
+    ~DefaultAssuanTransaction();
 
-        const std::vector< std::pair<std::string,std::string> > & statusLines() const {
-            return m_status;
-        }
-        std::vector<std::string> statusLine( const char * tag ) const;
-        std::string firstStatusLine( const char * tag ) const;
+    const std::vector< std::pair<std::string, std::string> > &statusLines() const
+    {
+        return m_status;
+    }
+    std::vector<std::string> statusLine(const char *tag) const;
+    std::string firstStatusLine(const char *tag) const;
 
-        const std::string & data() const {
-            return m_data;
-        }
+    const std::string &data() const
+    {
+        return m_data;
+    }
 
-    private:
-        /* reimp */ Error data( const char * data, size_t datalen );
-        /* reimp */ Data inquire( const char * name, const char * args, Error & err );
-        /* reimp */ Error status( const char * status, const char * args );
+private:
+    /* reimp */ Error data(const char *data, size_t datalen);
+    /* reimp */ Data inquire(const char *name, const char *args, Error &err);
+    /* reimp */ Error status(const char *status, const char *args);
 
-    private:
-        std::vector< std::pair<std::string,std::string> > m_status;
-        std::string m_data;
-    };
+private:
+    std::vector< std::pair<std::string, std::string> > m_status;
+    std::string m_data;
+};
 
 } // namespace GpgME
 

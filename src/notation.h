@@ -31,29 +31,33 @@
 
 #include <iosfwd>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class GPGMEPP_EXPORT Notation {
+class GPGMEPP_EXPORT Notation
+{
     friend class ::GpgME::Signature;
-    Notation( const boost::shared_ptr<VerificationResult::Private> & parent, unsigned int sindex, unsigned int nindex );
-  public:
+    Notation(const boost::shared_ptr<VerificationResult::Private> &parent, unsigned int sindex, unsigned int nindex);
+public:
     Notation();
-    explicit Notation( gpgme_sig_notation_t nota );
+    explicit Notation(gpgme_sig_notation_t nota);
 
-    const Notation & operator=( Notation other ) {
-        swap( other );
+    const Notation &operator=(Notation other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( Notation & other ) {
+    void swap(Notation &other)
+    {
         using std::swap;
-        swap( this->d, other.d );
+        swap(this->d, other.d);
     }
 
     bool isNull() const;
 
-    const char * name() const;
-    const char * value() const;
+    const char *name() const;
+    const char *value() const;
 
     enum Flags {
         NoFlags = 0,
@@ -65,16 +69,16 @@ namespace GpgME {
     bool isHumanReadable() const;
     bool isCritical() const;
 
-  private:
+private:
     class Private;
     boost::shared_ptr<Private> d;
-  };
+};
 
-  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const Notation & nota );
-  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, Notation::Flags flags );
+GPGMEPP_EXPORT std::ostream &operator<<(std::ostream &os, const Notation &nota);
+GPGMEPP_EXPORT std::ostream &operator<<(std::ostream &os, Notation::Flags flags);
 
 }
 
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Notation )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(Notation)
 
 #endif // __GPGMEPP_NOTATION_H__

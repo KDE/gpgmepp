@@ -48,20 +48,24 @@ GpgAddUserIDEditInteractor::GpgAddUserIDEditInteractor()
 
 GpgAddUserIDEditInteractor::~GpgAddUserIDEditInteractor() {}
 
-void GpgAddUserIDEditInteractor::setNameUtf8( const std::string & name ) {
+void GpgAddUserIDEditInteractor::setNameUtf8(const std::string &name)
+{
     m_name = name;
 }
 
-void GpgAddUserIDEditInteractor::setEmailUtf8( const std::string & email ) {
+void GpgAddUserIDEditInteractor::setEmailUtf8(const std::string &email)
+{
     m_email = email;
 }
 
-void GpgAddUserIDEditInteractor::setCommentUtf8( const std::string & comment ) {
+void GpgAddUserIDEditInteractor::setCommentUtf8(const std::string &comment)
+{
     m_comment = comment;
 }
 
 // work around --enable-final
-namespace GpgAddUserIDEditInteractor_Private {
+namespace GpgAddUserIDEditInteractor_Private
+{
 enum {
     START = EditInteractor::StartState,
     COMMAND,
@@ -75,11 +79,12 @@ enum {
 };
 }
 
-const char * GpgAddUserIDEditInteractor::action( Error & err ) const {
+const char *GpgAddUserIDEditInteractor::action(Error &err) const
+{
 
     using namespace GpgAddUserIDEditInteractor_Private;
 
-    switch ( state() ) {
+    switch (state()) {
     case COMMAND:
         return "adduid";
     case NAME:
@@ -96,82 +101,83 @@ const char * GpgAddUserIDEditInteractor::action( Error & err ) const {
     case ERROR:
         return 0;
     default:
-        err = Error::fromCode( GPG_ERR_GENERAL );
+        err = Error::fromCode(GPG_ERR_GENERAL);
         return 0;
     }
 }
 
-unsigned int GpgAddUserIDEditInteractor::nextState( unsigned int status, const char * args, Error & err ) const {
+unsigned int GpgAddUserIDEditInteractor::nextState(unsigned int status, const char *args, Error &err) const
+{
 
-    static const Error GENERAL_ERROR     = Error::fromCode( GPG_ERR_GENERAL     );
-    static const Error INV_NAME_ERROR    = Error::fromCode( GPG_ERR_INV_NAME    );
-    static const Error INV_EMAIL_ERROR   = Error::fromCode( GPG_ERR_INV_USER_ID );
-    static const Error INV_COMMENT_ERROR = Error::fromCode( GPG_ERR_INV_USER_ID );
+    static const Error GENERAL_ERROR     = Error::fromCode(GPG_ERR_GENERAL);
+    static const Error INV_NAME_ERROR    = Error::fromCode(GPG_ERR_INV_NAME);
+    static const Error INV_EMAIL_ERROR   = Error::fromCode(GPG_ERR_INV_USER_ID);
+    static const Error INV_COMMENT_ERROR = Error::fromCode(GPG_ERR_INV_USER_ID);
 
-    if ( needsNoResponse( status ) ) {
+    if (needsNoResponse(status)) {
         return state();
     }
 
     using namespace GpgAddUserIDEditInteractor_Private;
 
-    switch ( state() ) {
+    switch (state()) {
     case START:
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keyedit.prompt") == 0) {
             return COMMAND;
         }
         err = GENERAL_ERROR;
         return ERROR;
     case COMMAND:
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.name" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keygen.name") == 0) {
             return NAME;
         }
         err = GENERAL_ERROR;
         return ERROR;
     case NAME:
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.email" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keygen.email") == 0) {
             return EMAIL;
         }
         err = GENERAL_ERROR;
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.name" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keygen.name") == 0) {
             err = INV_NAME_ERROR;
         }
         return ERROR;
     case EMAIL:
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.comment" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keygen.comment") == 0) {
             return COMMENT;
         }
         err = GENERAL_ERROR;
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.email" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keygen.email") == 0) {
             err = INV_EMAIL_ERROR;
         }
         return ERROR;
     case COMMENT:
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keyedit.prompt") == 0) {
             return QUIT;
         }
         err = GENERAL_ERROR;
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.comment" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keygen.comment") == 0) {
             err = INV_COMMENT_ERROR;
         }
         return ERROR;
     case QUIT:
-        if ( status == GPGME_STATUS_GET_BOOL &&
-             strcmp( args, "keyedit.save.okay" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_BOOL &&
+                strcmp(args, "keyedit.save.okay") == 0) {
             return SAVE;
         }
         err = GENERAL_ERROR;
         return ERROR;
     case ERROR:
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keyedit.prompt") == 0) {
             return QUIT;
         }
         err = lastError();

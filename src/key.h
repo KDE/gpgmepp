@@ -38,46 +38,53 @@
 #include <algorithm>
 #include <string>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class Context;
+class Context;
 
-  class Subkey;
-  class UserID;
+class Subkey;
+class UserID;
 
-  typedef boost::shared_ptr< boost::remove_pointer<gpgme_key_t>::type > shared_gpgme_key_t;
+typedef boost::shared_ptr< boost::remove_pointer<gpgme_key_t>::type > shared_gpgme_key_t;
 
-  //
-  // class Key
-  //
+//
+// class Key
+//
 
-  class GPGMEPP_EXPORT Key {
+class GPGMEPP_EXPORT Key
+{
     friend class ::GpgME::Context;
     struct Null {};
-  public:
+public:
     Key();
-    /* implicit */ Key( const Null & );
-    Key( const shared_gpgme_key_t & key );
-    Key( gpgme_key_t key, bool acquireRef );
+    /* implicit */ Key(const Null &);
+    Key(const shared_gpgme_key_t &key);
+    Key(gpgme_key_t key, bool acquireRef);
 
     static Null null;
 
-    const Key & operator=( Key other ) {
-        swap( other );
+    const Key &operator=(Key other)
+    {
+        swap(other);
         return *this;
     }
 
-    const Key & mergeWith( const Key & other );
+    const Key &mergeWith(const Key &other);
 
-    void swap( Key & other ) {
+    void swap(Key &other)
+    {
         using std::swap;
-        swap( this->key, other.key );
+        swap(this->key, other.key);
     }
 
-    bool isNull() const { return !key; }
+    bool isNull() const
+    {
+        return !key;
+    }
 
-    UserID userID( unsigned int index ) const;
-    Subkey subkey( unsigned int index ) const;
+    UserID userID(unsigned int index) const;
+    Subkey subkey(unsigned int index) const;
 
     unsigned int numUserIDs() const;
     unsigned int numSubkeys() const;
@@ -106,7 +113,10 @@ namespace GpgME {
     bool isQualified() const;
 
     bool hasSecret() const;
-    GPGMEPP_DEPRECATED bool isSecret() const { return hasSecret(); }
+    GPGMEPP_DEPRECATED bool isSecret() const
+    {
+        return hasSecret();
+    }
 
     /*!
       @return true if this is a X.509 root certificate (currently
@@ -115,57 +125,67 @@ namespace GpgME {
     */
     bool isRoot() const;
 
-    enum OwnerTrust { Unknown=0, Undefined=1, Never=2,
-                    Marginal=3, Full=4, Ultimate=5 };
+    enum OwnerTrust { Unknown = 0, Undefined = 1, Never = 2,
+                      Marginal = 3, Full = 4, Ultimate = 5
+                    };
 
     OwnerTrust ownerTrust() const;
     char ownerTrustAsString() const;
 
     Protocol protocol() const;
-    const char * protocolAsString() const;
+    const char *protocolAsString() const;
 
-    const char * issuerSerial() const;
-    const char * issuerName() const;
-    const char * chainID() const;
+    const char *issuerSerial() const;
+    const char *issuerName() const;
+    const char *chainID() const;
 
-    const char * keyID() const;
-    const char * shortKeyID() const;
-    const char * primaryFingerprint() const;
+    const char *keyID() const;
+    const char *shortKeyID() const;
+    const char *primaryFingerprint() const;
 
     unsigned int keyListMode() const;
 
-  private:
-    gpgme_key_t impl() const { return key.get(); }
+private:
+    gpgme_key_t impl() const
+    {
+        return key.get();
+    }
     shared_gpgme_key_t key;
-  };
+};
 
-  //
-  // class Subkey
-  //
+//
+// class Subkey
+//
 
-  class GPGMEPP_EXPORT Subkey {
-  public:
+class GPGMEPP_EXPORT Subkey
+{
+public:
     Subkey();
-    Subkey( const shared_gpgme_key_t & key, gpgme_sub_key_t subkey );
-    Subkey( const shared_gpgme_key_t & key, unsigned int idx );
+    Subkey(const shared_gpgme_key_t &key, gpgme_sub_key_t subkey);
+    Subkey(const shared_gpgme_key_t &key, unsigned int idx);
 
-    const Subkey & operator=( Subkey other ) {
-        swap( other );
+    const Subkey &operator=(Subkey other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( Subkey & other ) {
+    void swap(Subkey &other)
+    {
         using std::swap;
-        swap( this->key, other.key );
-        swap( this->subkey, other.subkey );
+        swap(this->key, other.key);
+        swap(this->subkey, other.subkey);
     }
 
-    bool isNull() const { return !key || !subkey; }
+    bool isNull() const
+    {
+        return !key || !subkey;
+    }
 
     Key parent() const;
 
-    const char * keyID() const;
-    const char * fingerprint() const;
+    const char *keyID() const;
+    const char *fingerprint() const;
 
     time_t creationTime() const;
     time_t expirationTime() const;
@@ -186,55 +206,62 @@ namespace GpgME {
     bool isSecret() const;
 
     unsigned int publicKeyAlgorithm() const;
-    const char * publicKeyAlgorithmAsString() const;
+    const char *publicKeyAlgorithmAsString() const;
 
     unsigned int length() const;
 
-    const char * cardSerialNumber() const;
+    const char *cardSerialNumber() const;
 
-  private:
+private:
     shared_gpgme_key_t key;
     gpgme_sub_key_t subkey;
-  };
+};
 
-  //
-  // class UserID
-  //
+//
+// class UserID
+//
 
-  class GPGMEPP_EXPORT UserID {
-  public:
+class GPGMEPP_EXPORT UserID
+{
+public:
     class Signature;
 
     UserID();
-    UserID( const shared_gpgme_key_t & key, gpgme_user_id_t uid );
-    UserID( const shared_gpgme_key_t & key, unsigned int idx );
+    UserID(const shared_gpgme_key_t &key, gpgme_user_id_t uid);
+    UserID(const shared_gpgme_key_t &key, unsigned int idx);
 
-    const UserID & operator=( UserID other ) {
-        swap( other );
+    const UserID &operator=(UserID other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( UserID & other ) {
+    void swap(UserID &other)
+    {
         using std::swap;
-        swap( this->key, other.key );
-        swap( this->uid, other.uid );
+        swap(this->key, other.key);
+        swap(this->uid, other.uid);
     }
 
-    bool isNull() const { return !key || !uid; }
+    bool isNull() const
+    {
+        return !key || !uid;
+    }
 
     Key parent() const;
 
     unsigned int numSignatures() const;
-    Signature signature( unsigned int index ) const;
+    Signature signature(unsigned int index) const;
     std::vector<Signature> signatures() const;
 
-    const char * id() const;
-    const char * name() const;
-    const char * email() const;
-    const char * comment() const;
+    const char *id() const;
+    const char *name() const;
+    const char *email() const;
+    const char *comment() const;
 
-    enum Validity { Unknown=0, Undefined=1, Never=2,
-                    Marginal=3, Full=4, Ultimate=5 };
+    enum Validity { Unknown = 0, Undefined = 1, Never = 2,
+                    Marginal = 3, Full = 4, Ultimate = 5
+                  };
 
     Validity validity() const;
     char validityAsString() const;
@@ -242,42 +269,48 @@ namespace GpgME {
     bool isRevoked() const;
     bool isInvalid() const;
 
-  private:
+private:
     shared_gpgme_key_t key;
     gpgme_user_id_t uid;
-  };
+};
 
-  //
-  // class UserID::Signature
-  //
+//
+// class UserID::Signature
+//
 
-  class GPGMEPP_EXPORT UserID::Signature {
-  public:
+class GPGMEPP_EXPORT UserID::Signature
+{
+public:
     typedef GPGMEPP_DEPRECATED GpgME::Notation Notation;
 
     Signature();
-    Signature( const shared_gpgme_key_t & key, gpgme_user_id_t uid, gpgme_key_sig_t sig );
-    Signature( const shared_gpgme_key_t & key, gpgme_user_id_t uid, unsigned int idx );
+    Signature(const shared_gpgme_key_t &key, gpgme_user_id_t uid, gpgme_key_sig_t sig);
+    Signature(const shared_gpgme_key_t &key, gpgme_user_id_t uid, unsigned int idx);
 
-    const Signature & operator=( Signature other ) {
-        swap( other );
+    const Signature &operator=(Signature other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( Signature & other ) {
+    void swap(Signature &other)
+    {
         using std::swap;
-        swap( this->key, other.key );
-        swap( this->uid, other.uid );
-        swap( this->sig, other.sig );
+        swap(this->key, other.key);
+        swap(this->uid, other.uid);
+        swap(this->sig, other.sig);
     }
 
-    bool isNull() const { return !sig || !uid || !key ; }
+    bool isNull() const
+    {
+        return !sig || !uid || !key ;
+    }
 
     UserID parent() const;
 
-    const char * signerKeyID() const;
+    const char *signerKeyID() const;
 
-    const char * algorithmAsString() const;
+    const char *algorithmAsString() const;
     unsigned int algorithm() const;
     time_t creationTime() const;
     time_t expirationTime() const;
@@ -288,35 +321,36 @@ namespace GpgME {
     bool isExpired() const;
     bool isExportable() const;
 
-    const char * signerUserID() const;
-    const char * signerName() const;
-    const char * signerEmail() const;
-    const char * signerComment() const;
+    const char *signerUserID() const;
+    const char *signerName() const;
+    const char *signerEmail() const;
+    const char *signerComment() const;
 
     unsigned int certClass() const;
 
     enum Status { NoError = 0, SigExpired, KeyExpired,
-                  BadSignature, NoPublicKey, GeneralError };
+                  BadSignature, NoPublicKey, GeneralError
+                };
     Status status() const;
     std::string statusAsString() const;
 
-    const char * policyURL() const;
+    const char *policyURL() const;
 
     unsigned int numNotations() const;
-    GpgME::Notation notation( unsigned int idx ) const;
+    GpgME::Notation notation(unsigned int idx) const;
     std::vector<GpgME::Notation> notations() const;
 
-  private:
+private:
     shared_gpgme_key_t key;
     gpgme_user_id_t uid;
     gpgme_key_sig_t sig;
-  };
+};
 
 } // namespace GpgME
 
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Key )
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Subkey )
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( UserID )
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( UserID::Signature )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(Key)
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(Subkey)
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(UserID)
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(UserID::Signature)
 
 #endif // __GPGMEPP_KEY_H__

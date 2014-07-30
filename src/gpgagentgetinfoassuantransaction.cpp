@@ -34,9 +34,9 @@
 using namespace GpgME;
 using namespace boost;
 
-GpgAgentGetInfoAssuanTransaction::GpgAgentGetInfoAssuanTransaction( InfoItem item )
+GpgAgentGetInfoAssuanTransaction::GpgAgentGetInfoAssuanTransaction(InfoItem item)
     : AssuanTransaction(),
-      m_item( item ),
+      m_item(item),
       m_command(),
       m_data()
 {
@@ -45,70 +45,79 @@ GpgAgentGetInfoAssuanTransaction::GpgAgentGetInfoAssuanTransaction( InfoItem ite
 
 GpgAgentGetInfoAssuanTransaction::~GpgAgentGetInfoAssuanTransaction() {}
 
-std::string GpgAgentGetInfoAssuanTransaction::version() const {
-    if ( m_item == Version ) {
+std::string GpgAgentGetInfoAssuanTransaction::version() const
+{
+    if (m_item == Version) {
         return m_data;
     } else {
         return std::string();
     }
 }
 
-unsigned int GpgAgentGetInfoAssuanTransaction::pid() const {
-    if ( m_item == Pid ) {
-        return to_pid( m_data );
+unsigned int GpgAgentGetInfoAssuanTransaction::pid() const
+{
+    if (m_item == Pid) {
+        return to_pid(m_data);
     } else {
         return 0U;
     }
 }
 
-std::string GpgAgentGetInfoAssuanTransaction::socketName() const {
-    if ( m_item == SocketName ) {
+std::string GpgAgentGetInfoAssuanTransaction::socketName() const
+{
+    if (m_item == SocketName) {
         return m_data;
     } else {
         return std::string();
     }
 }
 
-std::string GpgAgentGetInfoAssuanTransaction::sshSocketName() const {
-    if ( m_item == SshSocketName ) {
+std::string GpgAgentGetInfoAssuanTransaction::sshSocketName() const
+{
+    if (m_item == SshSocketName) {
         return m_data;
     } else {
         return std::string();
     }
 }
 
-static const char * gpgagent_getinfo_tokens[] = {
+static const char *gpgagent_getinfo_tokens[] = {
     "version",
     "pid",
     "socket_name",
     "ssh_socket_name",
     "scd_running",
 };
-BOOST_STATIC_ASSERT( ( sizeof gpgagent_getinfo_tokens / sizeof *gpgagent_getinfo_tokens == GpgAgentGetInfoAssuanTransaction::LastInfoItem ) );
+BOOST_STATIC_ASSERT((sizeof gpgagent_getinfo_tokens / sizeof * gpgagent_getinfo_tokens == GpgAgentGetInfoAssuanTransaction::LastInfoItem));
 
-void GpgAgentGetInfoAssuanTransaction::makeCommand() const {
-    assert( m_item >= 0 );
-    assert( m_item < LastInfoItem );
+void GpgAgentGetInfoAssuanTransaction::makeCommand() const
+{
+    assert(m_item >= 0);
+    assert(m_item < LastInfoItem);
     m_command = "GETINFO ";
     m_command += gpgagent_getinfo_tokens[m_item];
 }
 
-const char * GpgAgentGetInfoAssuanTransaction::command() const {
+const char *GpgAgentGetInfoAssuanTransaction::command() const
+{
     makeCommand();
     return m_command.c_str();
 }
 
-Error GpgAgentGetInfoAssuanTransaction::data( const char * data, size_t len ) {
-    m_data.append( data, len );
+Error GpgAgentGetInfoAssuanTransaction::data(const char *data, size_t len)
+{
+    m_data.append(data, len);
     return Error();
 }
 
-Data GpgAgentGetInfoAssuanTransaction::inquire( const char * name, const char * args, Error & err ) {
+Data GpgAgentGetInfoAssuanTransaction::inquire(const char *name, const char *args, Error &err)
+{
     (void)name; (void)args; (void)err;
     return Data::null;
 }
 
-Error GpgAgentGetInfoAssuanTransaction::status( const char * status, const char * args ) {
+Error GpgAgentGetInfoAssuanTransaction::status(const char *status, const char *args)
+{
     (void)status; (void)args;
     return Error();
 }

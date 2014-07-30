@@ -36,9 +36,9 @@ using std::strcmp;
 
 using namespace GpgME;
 
-GpgSetExpiryTimeEditInteractor::GpgSetExpiryTimeEditInteractor( const std::string & t )
+GpgSetExpiryTimeEditInteractor::GpgSetExpiryTimeEditInteractor(const std::string &t)
     : EditInteractor(),
-      m_strtime( t )
+      m_strtime(t)
 {
 
 }
@@ -46,7 +46,8 @@ GpgSetExpiryTimeEditInteractor::GpgSetExpiryTimeEditInteractor( const std::strin
 GpgSetExpiryTimeEditInteractor::~GpgSetExpiryTimeEditInteractor() {}
 
 // work around --enable-final
-namespace GpgSetExpiryTimeEditInteractor_Private {
+namespace GpgSetExpiryTimeEditInteractor_Private
+{
 enum {
     START = EditInteractor::StartState,
     COMMAND,
@@ -58,11 +59,12 @@ enum {
 };
 }
 
-const char * GpgSetExpiryTimeEditInteractor::action( Error & err ) const {
+const char *GpgSetExpiryTimeEditInteractor::action(Error &err) const
+{
 
     using namespace GpgSetExpiryTimeEditInteractor_Private;
 
-    switch ( state() ) {
+    switch (state()) {
     case COMMAND:
         return "expire";
     case DATE:
@@ -75,58 +77,59 @@ const char * GpgSetExpiryTimeEditInteractor::action( Error & err ) const {
     case ERROR:
         return 0;
     default:
-        err = Error::fromCode( GPG_ERR_GENERAL );
+        err = Error::fromCode(GPG_ERR_GENERAL);
         return 0;
     }
 }
 
-unsigned int GpgSetExpiryTimeEditInteractor::nextState( unsigned int status, const char * args, Error & err ) const {
+unsigned int GpgSetExpiryTimeEditInteractor::nextState(unsigned int status, const char *args, Error &err) const
+{
 
-    static const Error GENERAL_ERROR  = Error::fromCode( GPG_ERR_GENERAL  );
-    static const Error INV_TIME_ERROR = Error::fromCode( GPG_ERR_INV_TIME );
+    static const Error GENERAL_ERROR  = Error::fromCode(GPG_ERR_GENERAL);
+    static const Error INV_TIME_ERROR = Error::fromCode(GPG_ERR_INV_TIME);
 
-    if ( needsNoResponse( status ) ) {
+    if (needsNoResponse(status)) {
         return state();
     }
 
     using namespace GpgSetExpiryTimeEditInteractor_Private;
 
-    switch ( state() ) {
+    switch (state()) {
     case START:
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keyedit.prompt") == 0) {
             return COMMAND;
         }
         err = GENERAL_ERROR;
         return ERROR;
     case COMMAND:
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keygen.valid" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keygen.valid") == 0) {
             return DATE;
         }
         err = GENERAL_ERROR;
         return ERROR;
     case DATE:
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keyedit.prompt") == 0) {
             return QUIT;
-        } else if ( status == GPGME_STATUS_GET_LINE &&
-                  strcmp( args, "keygen.valid" ) ) {
+        } else if (status == GPGME_STATUS_GET_LINE &&
+                   strcmp(args, "keygen.valid")) {
             err = INV_TIME_ERROR;
             return ERROR;
         }
         err = GENERAL_ERROR;
         return ERROR;
     case QUIT:
-        if ( status == GPGME_STATUS_GET_BOOL &&
-             strcmp( args, "keyedit.save.okay" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_BOOL &&
+                strcmp(args, "keyedit.save.okay") == 0) {
             return SAVE;
         }
         err = GENERAL_ERROR;
         return ERROR;
     case ERROR:
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keyedit.prompt") == 0) {
             return QUIT;
         }
         err = lastError();

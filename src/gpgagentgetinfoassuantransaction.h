@@ -28,43 +28,45 @@
 #include <string>
 #include <vector>
 
-namespace GpgME {
+namespace GpgME
+{
 
-    class GPGMEPP_EXPORT GpgAgentGetInfoAssuanTransaction : public AssuanTransaction {
-    public:
-        enum InfoItem {
-            Version,         // string
-            Pid,             // unsigned long
-            SocketName,      // string (path)
-            SshSocketName,   // string (path)
-            ScdRunning,      // (none, returns GPG_ERR_GENERAL when scdaemon isn't running)
-            //CommandHasOption, // not supported
+class GPGMEPP_EXPORT GpgAgentGetInfoAssuanTransaction : public AssuanTransaction
+{
+public:
+    enum InfoItem {
+        Version,         // string
+        Pid,             // unsigned long
+        SocketName,      // string (path)
+        SshSocketName,   // string (path)
+        ScdRunning,      // (none, returns GPG_ERR_GENERAL when scdaemon isn't running)
+        //CommandHasOption, // not supported
 
-            LastInfoItem
-        };
-
-        explicit GpgAgentGetInfoAssuanTransaction( InfoItem item );
-        ~GpgAgentGetInfoAssuanTransaction();
-
-        std::string version() const;
-        unsigned int pid() const;
-        std::string socketName() const;
-        std::string sshSocketName() const;
-
-    private:
-        /* reimp */ const char * command() const;
-        /* reimp */ Error data( const char * data, size_t datalen );
-        /* reimp */ Data inquire( const char * name, const char * args, Error & err );
-        /* reimp */ Error status( const char * status, const char * args );
-
-    private:
-        void makeCommand() const;
-
-    private:
-        InfoItem m_item;
-        mutable std::string m_command;
-        std::string m_data;
+        LastInfoItem
     };
+
+    explicit GpgAgentGetInfoAssuanTransaction(InfoItem item);
+    ~GpgAgentGetInfoAssuanTransaction();
+
+    std::string version() const;
+    unsigned int pid() const;
+    std::string socketName() const;
+    std::string sshSocketName() const;
+
+private:
+    /* reimp */ const char *command() const;
+    /* reimp */ Error data(const char *data, size_t datalen);
+    /* reimp */ Data inquire(const char *name, const char *args, Error &err);
+    /* reimp */ Error status(const char *status, const char *args);
+
+private:
+    void makeCommand() const;
+
+private:
+    InfoItem m_item;
+    mutable std::string m_command;
+    std::string m_data;
+};
 
 } // namespace GpgME
 

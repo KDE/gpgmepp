@@ -27,39 +27,41 @@
 
 #include <cstdio>
 
-namespace GpgME {
+namespace GpgME
+{
 
-    class Error;
-    class Context;
-    class CallbackHelper;
+class Error;
+class Context;
+class CallbackHelper;
 
-    class GPGMEPP_EXPORT EditInteractor {
-        friend class ::GpgME::Context;
-        friend class ::GpgME::CallbackHelper;
-        EditInteractor( const EditInteractor & );
-        EditInteractor & operator=( const EditInteractor & );
-    public:
-        EditInteractor();
-        virtual ~EditInteractor();
+class GPGMEPP_EXPORT EditInteractor
+{
+    friend class ::GpgME::Context;
+    friend class ::GpgME::CallbackHelper;
+    EditInteractor(const EditInteractor &);
+    EditInteractor &operator=(const EditInteractor &);
+public:
+    EditInteractor();
+    virtual ~EditInteractor();
 
-        enum {
-            StartState = 0,
-            ErrorState = 0xFFFFFFFF
-        };
-
-        virtual const char * action( Error & err ) const = 0;
-        virtual unsigned int nextState( unsigned int statusCode, const char * args, Error & err ) const = 0;
-
-        unsigned int state() const;
-        Error lastError() const;
-        bool needsNoResponse( unsigned int statusCode ) const;
-
-        void setDebugChannel( std::FILE * file );
-
-    private:
-        class Private;
-        Private * const d;
+    enum {
+        StartState = 0,
+        ErrorState = 0xFFFFFFFF
     };
+
+    virtual const char *action(Error &err) const = 0;
+    virtual unsigned int nextState(unsigned int statusCode, const char *args, Error &err) const = 0;
+
+    unsigned int state() const;
+    Error lastError() const;
+    bool needsNoResponse(unsigned int statusCode) const;
+
+    void setDebugChannel(std::FILE *file);
+
+private:
+    class Private;
+    Private *const d;
+};
 
 } // namespace GpgME
 

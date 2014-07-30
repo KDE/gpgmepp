@@ -27,67 +27,69 @@
 
 #include <QtCore/QObject>
 
-namespace GpgME {
-  class Context;
-  class Error;
-  class TrustItem;
-  class Key;
+namespace GpgME
+{
+class Context;
+class Error;
+class TrustItem;
+class Key;
 } // namespace GpgME
 
-namespace QGpgME {
+namespace QGpgME
+{
 
-  class QGPGME_EXPORT EventLoopInteractor : public QObject, public GpgME::EventLoopInteractor {
+class QGPGME_EXPORT EventLoopInteractor : public QObject, public GpgME::EventLoopInteractor
+{
     Q_OBJECT
-  protected:
-    explicit EventLoopInteractor( QObject * parent=0 );
-  public:
+protected:
+    explicit EventLoopInteractor(QObject *parent = 0);
+public:
     virtual ~EventLoopInteractor();
 
-    static EventLoopInteractor * instance();
+    static EventLoopInteractor *instance();
 
-  Q_SIGNALS:
-    void nextTrustItemEventSignal( GpgME::Context * context, const GpgME::TrustItem & item );
-    void nextKeyEventSignal( GpgME::Context * context, const GpgME::Key & key );
-    void operationDoneEventSignal( GpgME::Context * context, const GpgME::Error & e );
-    void operationStartEventSignal( GpgME::Context * context );
+Q_SIGNALS:
+    void nextTrustItemEventSignal(GpgME::Context *context, const GpgME::TrustItem &item);
+    void nextKeyEventSignal(GpgME::Context *context, const GpgME::Key &key);
+    void operationDoneEventSignal(GpgME::Context *context, const GpgME::Error &e);
+    void operationStartEventSignal(GpgME::Context *context);
 
     void aboutToDestroy();
 
-  protected Q_SLOTS:
-    void slotWriteActivity( int socket );
-    void slotReadActivity( int socket );
+protected Q_SLOTS:
+    void slotWriteActivity(int socket);
+    void slotReadActivity(int socket);
 
-  protected:
+protected:
     //
     // IO Notification Interface
     //
 
     /*! \reimp */
-    void * registerWatcher( int fd, Direction dir, bool & ok );
+    void *registerWatcher(int fd, Direction dir, bool &ok);
     /*! \reimp */
-    void unregisterWatcher( void * tag );
+    void unregisterWatcher(void *tag);
 
     //
     // Event Handler Interface
     //
 
     /*! \reimp */
-    void nextTrustItemEvent( GpgME::Context * context, const GpgME::TrustItem & item );
+    void nextTrustItemEvent(GpgME::Context *context, const GpgME::TrustItem &item);
     /*! \reimp */
-    void nextKeyEvent( GpgME::Context * context, const GpgME::Key & key );
+    void nextKeyEvent(GpgME::Context *context, const GpgME::Key &key);
     /*! \reimp */
-    void operationStartEvent( GpgME::Context * context );
+    void operationStartEvent(GpgME::Context *context);
     /*! \reimp */
-    void operationDoneEvent( GpgME::Context * context, const GpgME::Error & e );
+    void operationDoneEvent(GpgME::Context *context, const GpgME::Error &e);
 
-  private:
+private:
     class Private;
-    Private * d;
-    static EventLoopInteractor * mSelf;
-  };
+    Private *d;
+    static EventLoopInteractor *mSelf;
+};
 
 } // namespace QGpgME
 
 #endif // __QGPGME_EVENTLOOPINTERACTOR_H__
-
 

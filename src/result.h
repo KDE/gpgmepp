@@ -28,24 +28,30 @@
 
 #include <algorithm> // std::swap
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class GPGMEPP_EXPORT Result {
-  protected:
+class GPGMEPP_EXPORT Result
+{
+protected:
     explicit Result() : mError() {}
-    explicit Result( int error ) : mError( error ) {}
-    explicit Result( const Error & error ) : mError( error ) {}
+    explicit Result(int error) : mError(error) {}
+    explicit Result(const Error &error) : mError(error) {}
 
-    void swap( Result & other ) { std::swap( other.mError, mError ); }
+    void swap(Result &other)
+    {
+        std::swap(other.mError, mError);
+    }
 
-  public:
-    const Error & error() const {
+public:
+    const Error &error() const
+    {
         return mError;
     }
 
-  protected:
+protected:
     Error mError;
-  };
+};
 
 }
 

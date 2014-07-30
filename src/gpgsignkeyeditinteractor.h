@@ -28,34 +28,36 @@
 #include <string>
 #include <vector>
 
-namespace GpgME {
+namespace GpgME
+{
 
-    class Key;
-    class UserID;
+class Key;
+class UserID;
 
-    class GPGMEPP_EXPORT GpgSignKeyEditInteractor : public EditInteractor {
-    public:
-        enum SignOption {
-            Exportable=0x1,
-            NonRevocable=0x2,
-            Trust=0x4
-        };
-
-        GpgSignKeyEditInteractor();
-        ~GpgSignKeyEditInteractor();
-
-        void setCheckLevel( unsigned int checkLevel );
-        void setUserIDsToSign( const std::vector<unsigned int> & userIDsToSign );
-        void setSigningOptions( int options );
-
-    private:
-        /* reimp */ const char * action( Error & err ) const;
-        /* reimp */ unsigned int nextState( unsigned int statusCode, const char * args, Error & err ) const;
-
-    private:
-        class Private;
-        Private * const d;
+class GPGMEPP_EXPORT GpgSignKeyEditInteractor : public EditInteractor
+{
+public:
+    enum SignOption {
+        Exportable = 0x1,
+        NonRevocable = 0x2,
+        Trust = 0x4
     };
+
+    GpgSignKeyEditInteractor();
+    ~GpgSignKeyEditInteractor();
+
+    void setCheckLevel(unsigned int checkLevel);
+    void setUserIDsToSign(const std::vector<unsigned int> &userIDsToSign);
+    void setSigningOptions(int options);
+
+private:
+    /* reimp */ const char *action(Error &err) const;
+    /* reimp */ unsigned int nextState(unsigned int statusCode, const char *args, Error &err) const;
+
+private:
+    class Private;
+    Private *const d;
+};
 
 } // namespace GpgME
 

@@ -29,48 +29,53 @@
 
 #include <boost/shared_ptr.hpp>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class Error;
+class Error;
 
-  class GPGMEPP_EXPORT KeyListResult : public Result {
-  public:
+class GPGMEPP_EXPORT KeyListResult : public Result
+{
+public:
     KeyListResult();
-    KeyListResult( gpgme_ctx_t ctx, int error );
-    KeyListResult( gpgme_ctx_t ctx, const Error & error );
-    explicit KeyListResult( const Error & err );
-    KeyListResult( const Error & err, const _gpgme_op_keylist_result & res );
+    KeyListResult(gpgme_ctx_t ctx, int error);
+    KeyListResult(gpgme_ctx_t ctx, const Error &error);
+    explicit KeyListResult(const Error &err);
+    KeyListResult(const Error &err, const _gpgme_op_keylist_result &res);
 
-    const KeyListResult & operator=( KeyListResult other ) {
-        swap( other );
+    const KeyListResult &operator=(KeyListResult other)
+    {
+        swap(other);
         return *this;
     }
-    void swap( KeyListResult & other ) {
-        Result::swap( other );
+    void swap(KeyListResult &other)
+    {
+        Result::swap(other);
         using std::swap;
-        swap( this->d, other.d );
+        swap(this->d, other.d);
     }
 
-    const KeyListResult & operator+=( const KeyListResult & other ) {
-      mergeWith( other );
-      return *this;
+    const KeyListResult &operator+=(const KeyListResult &other)
+    {
+        mergeWith(other);
+        return *this;
     }
 
-    void mergeWith( const KeyListResult & other );
+    void mergeWith(const KeyListResult &other);
 
     bool isNull() const;
 
     bool isTruncated() const;
 
-  private:
+private:
     void detach();
-    void init( gpgme_ctx_t ctx );
+    void init(gpgme_ctx_t ctx);
     class Private;
     boost::shared_ptr<Private> d;
-  };
+};
 
 }
 
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( KeyListResult )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(KeyListResult)
 
 #endif // __GPGMEPP_KEYLISTRESULT_H__

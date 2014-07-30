@@ -41,34 +41,39 @@ DefaultAssuanTransaction::DefaultAssuanTransaction()
 
 DefaultAssuanTransaction::~DefaultAssuanTransaction() {}
 
-Error DefaultAssuanTransaction::data( const char * data, size_t len ) {
-    m_data.append( data, len );
+Error DefaultAssuanTransaction::data(const char *data, size_t len)
+{
+    m_data.append(data, len);
     return Error();
 }
 
-Data DefaultAssuanTransaction::inquire( const char * name, const char * args, Error & err ) {
+Data DefaultAssuanTransaction::inquire(const char *name, const char *args, Error &err)
+{
     (void)name; (void)args; (void)err;
     return Data::null;
 }
 
-Error DefaultAssuanTransaction::status( const char * status, const char * args ) {
-    m_status.push_back( std::pair<std::string,std::string>( status, args ) );
+Error DefaultAssuanTransaction::status(const char *status, const char *args)
+{
+    m_status.push_back(std::pair<std::string, std::string>(status, args));
     return Error();
 }
 
-std::vector<std::string> DefaultAssuanTransaction::statusLine( const char * tag ) const {
+std::vector<std::string> DefaultAssuanTransaction::statusLine(const char *tag) const
+{
     std::vector<std::string> result;
-    for ( std::vector< std::pair<std::string,std::string> >::const_iterator it = m_status.begin(), end = m_status.end() ; it != end ; ++it ) {
-        if ( it->first == tag ) {
-            result.push_back( it->second );
+    for (std::vector< std::pair<std::string, std::string> >::const_iterator it = m_status.begin(), end = m_status.end() ; it != end ; ++it) {
+        if (it->first == tag) {
+            result.push_back(it->second);
         }
     }
     return result;
 }
 
-std::string DefaultAssuanTransaction::firstStatusLine( const char * tag ) const {
-    for ( std::vector< std::pair<std::string,std::string> >::const_iterator it = m_status.begin(), end = m_status.end() ; it != end ; ++it ) {
-        if ( it->first == tag ) {
+std::string DefaultAssuanTransaction::firstStatusLine(const char *tag) const
+{
+    for (std::vector< std::pair<std::string, std::string> >::const_iterator it = m_status.begin(), end = m_status.end() ; it != end ; ++it) {
+        if (it->first == tag) {
             return it->second;
         }
     }

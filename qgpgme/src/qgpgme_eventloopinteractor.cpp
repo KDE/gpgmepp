@@ -28,90 +28,100 @@
 
 using namespace GpgME;
 
-QGpgME::EventLoopInteractor::EventLoopInteractor( QObject * parent )
- : QObject( parent ), GpgME::EventLoopInteractor()
+QGpgME::EventLoopInteractor::EventLoopInteractor(QObject *parent)
+    : QObject(parent), GpgME::EventLoopInteractor()
 {
-  setObjectName( QLatin1String( "QGpgME::EventLoopInteractor::instance()" ) );
-  if ( !parent ) {
-    if ( QCoreApplication * const app = QCoreApplication::instance() ) {
-      connect( app, SIGNAL(aboutToQuit()), SLOT(deleteLater()) );
-      connect( app, SIGNAL(aboutToQuit()), SIGNAL(aboutToDestroy()) );
-    }
-  }
-  mSelf = this;
-}
-
-QGpgME::EventLoopInteractor::~EventLoopInteractor() {
-  emit aboutToDestroy();
-  mSelf = 0;
-}
-
-QGpgME::EventLoopInteractor * QGpgME::EventLoopInteractor::mSelf = 0;
-
-QGpgME::EventLoopInteractor * QGpgME::EventLoopInteractor::instance() {
-  if ( !mSelf ) {
-#ifndef NDEBUG
-    if ( !QCoreApplication::instance() ) {
-      qWarning( "QGpgME::EventLoopInteractor: Need a Q(Core)Application object before calling instance()!" );
-    } else {
-#endif
-     (void)new EventLoopInteractor;
-#ifndef NDEBUG
-    }
-#endif
-  }
-  return mSelf;
-}
-
-namespace {
-
-    template <typename T_Enableable>
-    class QDisabler {
-        const QPointer<T_Enableable> o;
-        const bool wasEnabled;
-    public:
-        explicit QDisabler( T_Enableable * t ) : o( t ), wasEnabled( o && o->isEnabled() )
-        {
-          if ( t ) {
-            t->setEnabled( false );
-          }
+    setObjectName(QLatin1String("QGpgME::EventLoopInteractor::instance()"));
+    if (!parent) {
+        if (QCoreApplication *const app = QCoreApplication::instance()) {
+            connect(app, SIGNAL(aboutToQuit()), SLOT(deleteLater()));
+            connect(app, SIGNAL(aboutToQuit()), SIGNAL(aboutToDestroy()));
         }
-        ~QDisabler()
-        {
-          if ( o ) {
-            o->setEnabled( wasEnabled );
-          }
+    }
+    mSelf = this;
+}
+
+QGpgME::EventLoopInteractor::~EventLoopInteractor()
+{
+    emit aboutToDestroy();
+    mSelf = 0;
+}
+
+QGpgME::EventLoopInteractor *QGpgME::EventLoopInteractor::mSelf = 0;
+
+QGpgME::EventLoopInteractor *QGpgME::EventLoopInteractor::instance()
+{
+    if (!mSelf) {
+#ifndef NDEBUG
+        if (!QCoreApplication::instance()) {
+            qWarning("QGpgME::EventLoopInteractor: Need a Q(Core)Application object before calling instance()!");
+        } else {
+#endif
+            (void)new EventLoopInteractor;
+#ifndef NDEBUG
         }
-    };
+#endif
+    }
+    return mSelf;
 }
 
-void QGpgME::EventLoopInteractor::slotWriteActivity( int socket ) {
-  // Make sure to disable the notifier while we are processing the event, as
-  // it's easy to run into re-entrancy issues, if actOn causes things to return
-  // to the event loop in some way (such as showing the passphrase dialog).
-  // We use a qpointer as actOn will destroy the notifier, when it's done with the FD
-  const QDisabler<QSocketNotifier> disabled( qobject_cast<QSocketNotifier*>( sender() ) );
-  actOn( socket , Write );
+namespace
+{
+
+template <typename T_Enableable>
+class QDisabler
+{
+    const QPointer<T_Enableable> o;
+    const bool wasEnabled;
+public:
+    explicit QDisabler(T_Enableable *t) : o(t), wasEnabled(o  &&o->isEnabled())
+    {
+        if (t) {
+            t->setEnabled(false);
+        }
+    }
+    ~QDisabler()
+    {
+        if (o) {
+            o->setEnabled(wasEnabled);
+        }
+    }
+};
 }
 
-void QGpgME::EventLoopInteractor::slotReadActivity( int socket ) {
-  const QDisabler<QSocketNotifier> disabled( qobject_cast<QSocketNotifier*>( sender() ) );
-  actOn( socket , Read );
+void QGpgME::EventLoopInteractor::slotWriteActivity(int socket)
+{
+    // Make sure to disable the notifier while we are processing the event, as
+    // it's easy to run into re-entrancy issues, if actOn causes things to return
+    // to the event loop in some way (such as showing the passphrase dialog).
+    // We use a qpointer as actOn will destroy the notifier, when it's done with the FD
+    const QDisabler<QSocketNotifier> disabled(qobject_cast<QSocketNotifier *>(sender()));
+    actOn(socket , Write);
 }
 
-void QGpgME::EventLoopInteractor::nextTrustItemEvent( GpgME::Context * context, const GpgME::TrustItem & item ) {
-  emit nextTrustItemEventSignal( context, item );
+void QGpgME::EventLoopInteractor::slotReadActivity(int socket)
+{
+    const QDisabler<QSocketNotifier> disabled(qobject_cast<QSocketNotifier *>(sender()));
+    actOn(socket , Read);
 }
 
-void QGpgME::EventLoopInteractor::nextKeyEvent( GpgME::Context * context, const GpgME::Key & key ) {
-  emit nextKeyEventSignal( context, key );
+void QGpgME::EventLoopInteractor::nextTrustItemEvent(GpgME::Context *context, const GpgME::TrustItem &item)
+{
+    emit nextTrustItemEventSignal(context, item);
 }
 
-void QGpgME::EventLoopInteractor::operationDoneEvent( GpgME::Context * context, const GpgME::Error & e ) {
-  emit operationDoneEventSignal( context, e );
+void QGpgME::EventLoopInteractor::nextKeyEvent(GpgME::Context *context, const GpgME::Key &key)
+{
+    emit nextKeyEventSignal(context, key);
 }
 
-void QGpgME::EventLoopInteractor::operationStartEvent( GpgME::Context * context ) {
-  emit operationStartEventSignal( context );
+void QGpgME::EventLoopInteractor::operationDoneEvent(GpgME::Context *context, const GpgME::Error &e)
+{
+    emit operationDoneEventSignal(context, e);
+}
+
+void QGpgME::EventLoopInteractor::operationStartEvent(GpgME::Context *context)
+{
+    emit operationStartEventSignal(context);
 }
 

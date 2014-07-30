@@ -28,46 +28,48 @@
 #include <string>
 #include <vector>
 
-namespace GpgME {
+namespace GpgME
+{
 
-    class GPGMEPP_EXPORT ScdGetInfoAssuanTransaction : public AssuanTransaction {
-    public:
-        enum InfoItem {
-            Version,         // string
-            Pid,             // unsigned long
-            SocketName,      // string (path)
-            Status,          // char (status)
-            ReaderList,      // string list
-            DenyAdmin,       // (none, returns GPG_ERR_GENERAL when admin commands are allowed)
-            ApplicationList, // string list
+class GPGMEPP_EXPORT ScdGetInfoAssuanTransaction : public AssuanTransaction
+{
+public:
+    enum InfoItem {
+        Version,         // string
+        Pid,             // unsigned long
+        SocketName,      // string (path)
+        Status,          // char (status)
+        ReaderList,      // string list
+        DenyAdmin,       // (none, returns GPG_ERR_GENERAL when admin commands are allowed)
+        ApplicationList, // string list
 
-            LastInfoItem
-        };
-
-        explicit ScdGetInfoAssuanTransaction( InfoItem item );
-        ~ScdGetInfoAssuanTransaction();
-
-        std::string version() const;
-        unsigned int pid() const;
-        std::string socketName() const;
-        char status() const;
-        std::vector<std::string> readerList() const;
-        std::vector<std::string> applicationList() const;
-
-    private:
-        /* reimp */ const char * command() const;
-        /* reimp */ Error data( const char * data, size_t datalen );
-        /* reimp */ Data inquire( const char * name, const char * args, Error & err );
-        /* reimp */ Error status( const char * status, const char * args );
-
-    private:
-        void makeCommand() const;
-
-    private:
-        InfoItem m_item;
-        mutable std::string m_command;
-        std::string m_data;
+        LastInfoItem
     };
+
+    explicit ScdGetInfoAssuanTransaction(InfoItem item);
+    ~ScdGetInfoAssuanTransaction();
+
+    std::string version() const;
+    unsigned int pid() const;
+    std::string socketName() const;
+    char status() const;
+    std::vector<std::string> readerList() const;
+    std::vector<std::string> applicationList() const;
+
+private:
+    /* reimp */ const char *command() const;
+    /* reimp */ Error data(const char *data, size_t datalen);
+    /* reimp */ Data inquire(const char *name, const char *args, Error &err);
+    /* reimp */ Error status(const char *status, const char *args);
+
+private:
+    void makeCommand() const;
+
+private:
+    InfoItem m_item;
+    mutable std::string m_command;
+    std::string m_data;
+};
 
 } // namespace GpgME
 

@@ -27,35 +27,40 @@
 
 #include <string>
 
-namespace GpgME {
+namespace GpgME
+{
 
-    class GPGMEPP_EXPORT GpgAddUserIDEditInteractor : public EditInteractor {
-    public:
-        explicit GpgAddUserIDEditInteractor();
-        ~GpgAddUserIDEditInteractor();
+class GPGMEPP_EXPORT GpgAddUserIDEditInteractor : public EditInteractor
+{
+public:
+    explicit GpgAddUserIDEditInteractor();
+    ~GpgAddUserIDEditInteractor();
 
-        void setNameUtf8( const std::string & name );
-        const std::string & nameUtf8() const { 
-            return m_name; 
-        }
+    void setNameUtf8(const std::string &name);
+    const std::string &nameUtf8() const
+    {
+        return m_name;
+    }
 
-        void setEmailUtf8( const std::string & email );
-        const std::string & emailUtf8() const { 
-            return m_email; 
-        }
+    void setEmailUtf8(const std::string &email);
+    const std::string &emailUtf8() const
+    {
+        return m_email;
+    }
 
-        void setCommentUtf8( const std::string & comment );
-        const std::string & commentUtf8() const { 
-            return m_comment;   
-        }
+    void setCommentUtf8(const std::string &comment);
+    const std::string &commentUtf8() const
+    {
+        return m_comment;
+    }
 
-    private:
-        /* reimp */ const char * action( Error & err ) const;
-        /* reimp */ unsigned int nextState( unsigned int statusCode, const char * args, Error & err ) const;
+private:
+    /* reimp */ const char *action(Error &err) const;
+    /* reimp */ unsigned int nextState(unsigned int statusCode, const char *args, Error &err) const;
 
-    private:
-        std::string m_name, m_email, m_comment;
-    };
+private:
+    std::string m_name, m_email, m_comment;
+};
 
 } // namespace GpgME
 

@@ -26,15 +26,15 @@
 #include <data.h>
 #include "callbacks.h"
 
-class GpgME::Data::Private {
+class GpgME::Data::Private
+{
 public:
-  explicit Private( gpgme_data_t d=0 )
-    : data( d ), cbs( data_provider_callbacks ) {}
-  ~Private();
+    explicit Private(gpgme_data_t d = 0)
+        : data(d), cbs(data_provider_callbacks) {}
+    ~Private();
 
-  gpgme_data_t data;
-  gpgme_data_cbs cbs;
+    gpgme_data_t data;
+    gpgme_data_cbs cbs;
 };
-
 
 #endif // __GPGMEPP_DATA_P_H__

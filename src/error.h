@@ -35,40 +35,43 @@
 # define GPGMEPP_ERR_SOURCE_DEFAULT GPG_ERR_SOURCE_USER_1
 #endif
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class GPGMEPP_EXPORT Error {
-  public:
-    Error() : mErr( 0 ), mMessage() {}
-    explicit Error( unsigned int e ) : mErr( e ), mMessage() {}
+class GPGMEPP_EXPORT Error
+{
+public:
+    Error() : mErr(0), mMessage() {}
+    explicit Error(unsigned int e) : mErr(e), mMessage() {}
 
-    const char * source() const;
-    const char * asString() const;
+    const char *source() const;
+    const char *asString() const;
 
     int code() const;
     int sourceID() const;
 
     bool isCanceled() const;
 
-    unsigned int encodedError() const {
+    unsigned int encodedError() const
+    {
         return mErr;
     }
     int toErrno() const;
 
     static bool hasSystemError();
-    static Error fromSystemError( unsigned int src=GPGMEPP_ERR_SOURCE_DEFAULT );
-    static void setSystemError( gpg_err_code_t err );
-    static void setErrno( int err );
-    static Error fromErrno( int err, unsigned int src=GPGMEPP_ERR_SOURCE_DEFAULT );
-    static Error fromCode( unsigned int err, unsigned int src=GPGMEPP_ERR_SOURCE_DEFAULT );
+    static Error fromSystemError(unsigned int src = GPGMEPP_ERR_SOURCE_DEFAULT);
+    static void setSystemError(gpg_err_code_t err);
+    static void setErrno(int err);
+    static Error fromErrno(int err, unsigned int src = GPGMEPP_ERR_SOURCE_DEFAULT);
+    static Error fromCode(unsigned int err, unsigned int src = GPGMEPP_ERR_SOURCE_DEFAULT);
 
-    GPGMEPP_MAKE_SAFE_BOOL_OPERATOR( mErr && !isCanceled() )
-  private:
+    GPGMEPP_MAKE_SAFE_BOOL_OPERATOR(mErr  &&!isCanceled())
+private:
     unsigned int mErr;
     mutable std::string mMessage;
-  };
+};
 
-  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const Error & err );
+GPGMEPP_EXPORT std::ostream &operator<<(std::ostream &os, const Error &err);
 
 } // namespace GpgME
 

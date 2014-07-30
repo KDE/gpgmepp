@@ -32,75 +32,82 @@
 #include <vector>
 #include <iosfwd>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class Error;
-  class InvalidRecipient;
+class Error;
+class InvalidRecipient;
 
-  class GPGMEPP_EXPORT EncryptionResult : public Result {
-  public:
+class GPGMEPP_EXPORT EncryptionResult : public Result
+{
+public:
     EncryptionResult();
-    EncryptionResult( gpgme_ctx_t ctx, int error );
-    EncryptionResult( gpgme_ctx_t ctx, const Error & error );
-    EncryptionResult( const Error & err );
+    EncryptionResult(gpgme_ctx_t ctx, int error);
+    EncryptionResult(gpgme_ctx_t ctx, const Error &error);
+    EncryptionResult(const Error &err);
 
-    const EncryptionResult & operator=( EncryptionResult other ) {
-        swap( other );
+    const EncryptionResult &operator=(EncryptionResult other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( EncryptionResult & other ) {
-        Result::swap( other );
+    void swap(EncryptionResult &other)
+    {
+        Result::swap(other);
         using std::swap;
-        swap( this->d, other.d );
+        swap(this->d, other.d);
     }
 
     bool isNull() const;
 
     unsigned int numInvalidRecipients() const;
 
-    InvalidRecipient invalidEncryptionKey( unsigned int index ) const;
+    InvalidRecipient invalidEncryptionKey(unsigned int index) const;
     std::vector<InvalidRecipient> invalidEncryptionKeys() const;
 
     class Private;
-  private:
-    void init( gpgme_ctx_t ctx );
+private:
+    void init(gpgme_ctx_t ctx);
     boost::shared_ptr<Private> d;
-  };
+};
 
-  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const EncryptionResult & result );
+GPGMEPP_EXPORT std::ostream &operator<<(std::ostream &os, const EncryptionResult &result);
 
-  class GPGMEPP_EXPORT InvalidRecipient {
+class GPGMEPP_EXPORT InvalidRecipient
+{
     friend class ::GpgME::EncryptionResult;
-    InvalidRecipient( const boost::shared_ptr<EncryptionResult::Private> & parent, unsigned int index );
-  public:
+    InvalidRecipient(const boost::shared_ptr<EncryptionResult::Private> &parent, unsigned int index);
+public:
     InvalidRecipient();
 
-    const InvalidRecipient & operator=( InvalidRecipient other ) {
-        swap( other );
+    const InvalidRecipient &operator=(InvalidRecipient other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( InvalidRecipient & other ) {
+    void swap(InvalidRecipient &other)
+    {
         using std::swap;
-        swap( this->d, other.d );
+        swap(this->d, other.d);
     }
 
     bool isNull() const;
 
-    const char * fingerprint() const;
+    const char *fingerprint() const;
     Error reason() const;
 
-  private:
+private:
     boost::shared_ptr<EncryptionResult::Private> d;
     unsigned int idx;
-  };
+};
 
-  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const InvalidRecipient & recipient );
+GPGMEPP_EXPORT std::ostream &operator<<(std::ostream &os, const InvalidRecipient &recipient);
 
 }
 
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( EncryptionResult )
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( InvalidRecipient )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(EncryptionResult)
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(InvalidRecipient)
 
 #endif // __GPGMEPP_ENCRYPTIONRESULT_H__

@@ -25,16 +25,18 @@
 #include <global.h>
 
 #ifdef HAVE_GPGME_GET_FDPTR
-extern "C" QIODevice * gpgme_get_fdptr( int );
+extern "C" QIODevice *gpgme_get_fdptr(int);
 #endif
 
-GIOChannel * GpgME::getGIOChannel( int ) {
+GIOChannel *GpgME::getGIOChannel(int)
+{
     return 0;
 }
 
-QIODevice * GpgME::getQIODevice( int fd ) {
+QIODevice *GpgME::getQIODevice(int fd)
+{
 #ifdef HAVE_GPGME_GET_FDPTR
-    return gpgme_get_fdptr( fd );
+    return gpgme_get_fdptr(fd);
 #else
     (void)fd;
     return 0;

@@ -28,20 +28,22 @@
 
 #include <string>
 
-namespace GpgME {
+namespace GpgME
+{
 
-    class GPGMEPP_EXPORT GpgSetOwnerTrustEditInteractor : public EditInteractor {
-    public:
-        explicit GpgSetOwnerTrustEditInteractor( Key::OwnerTrust ownertrust );
-        ~GpgSetOwnerTrustEditInteractor();
+class GPGMEPP_EXPORT GpgSetOwnerTrustEditInteractor : public EditInteractor
+{
+public:
+    explicit GpgSetOwnerTrustEditInteractor(Key::OwnerTrust ownertrust);
+    ~GpgSetOwnerTrustEditInteractor();
 
-    private:
-        /* reimp */ const char * action( Error & err ) const;
-        /* reimp */ unsigned int nextState( unsigned int statusCode, const char * args, Error & err ) const;
+private:
+    /* reimp */ const char *action(Error &err) const;
+    /* reimp */ unsigned int nextState(unsigned int statusCode, const char *args, Error &err) const;
 
-    private:
-        const Key::OwnerTrust m_ownertrust;
-    };
+private:
+    const Key::OwnerTrust m_ownertrust;
+};
 
 } // namespace GpgME
 

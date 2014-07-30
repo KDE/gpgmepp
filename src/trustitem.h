@@ -30,48 +30,52 @@
 
 #include <algorithm>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class Context;
+class Context;
 
-  class GPGMEPP_EXPORT TrustItem {
+class GPGMEPP_EXPORT TrustItem
+{
     friend class ::GpgME::Context;
-  public:
-    explicit TrustItem( gpgme_trust_item_t item=0 );
-    TrustItem( const TrustItem & other );
+public:
+    explicit TrustItem(gpgme_trust_item_t item = 0);
+    TrustItem(const TrustItem &other);
     virtual ~TrustItem();
 
-    const TrustItem & operator=( TrustItem other ) {
-        swap( other );
+    const TrustItem &operator=(TrustItem other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( TrustItem & other ) {
+    void swap(TrustItem &other)
+    {
         using std::swap;
-        swap( this->d, other.d );
+        swap(this->d, other.d);
     }
 
     bool isNull() const;
 
-    const char * keyID() const;
-    const char * userID() const;
+    const char *keyID() const;
+    const char *userID() const;
 
-    const char * ownerTrustAsString() const;
-    const char * validityAsString() const;
+    const char *ownerTrustAsString() const;
+    const char *validityAsString() const;
 
     int trustLevel() const;
 
-    enum Type { Unknown=0, Key=1, UserID=2 };
+    enum Type { Unknown = 0, Key = 1, UserID = 2 };
     Type type() const;
 
-  private:
+private:
     gpgme_trust_item_t impl() const;
     class Private;
-    Private * d;
-  };
+    Private *d;
+};
 
 } // namepace GpgME
 
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( TrustItem )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(TrustItem)
 
 #endif // __GPGMEPP_TRUSTITEM_H__

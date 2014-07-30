@@ -30,75 +30,80 @@
 #include <cstring>
 #include <cassert>
 
-class GpgME::KeyListResult::Private {
+class GpgME::KeyListResult::Private
+{
 public:
-  Private( const _gpgme_op_keylist_result & r ) : res( r ) {}
-  Private( const Private & other ) : res( other.res ) {}
+    Private(const _gpgme_op_keylist_result &r) : res(r) {}
+    Private(const Private &other) : res(other.res) {}
 
-  _gpgme_op_keylist_result res;
+    _gpgme_op_keylist_result res;
 };
 
-GpgME::KeyListResult::KeyListResult( gpgme_ctx_t ctx, int error )
-  : GpgME::Result( error ), d()
+GpgME::KeyListResult::KeyListResult(gpgme_ctx_t ctx, int error)
+    : GpgME::Result(error), d()
 {
-  init( ctx );
+    init(ctx);
 }
 
-GpgME::KeyListResult::KeyListResult( gpgme_ctx_t ctx, const Error & error )
-  : GpgME::Result( error ), d()
+GpgME::KeyListResult::KeyListResult(gpgme_ctx_t ctx, const Error &error)
+    : GpgME::Result(error), d()
 {
-  init( ctx );
+    init(ctx);
 }
 
-void GpgME::KeyListResult::init( gpgme_ctx_t ctx ) {
-  if ( !ctx ) {
-    return;
-  }
-  gpgme_keylist_result_t res = gpgme_op_keylist_result( ctx );
-  if ( !res ) {
-    return;
-  }
-  d.reset( new Private( *res ) );
+void GpgME::KeyListResult::init(gpgme_ctx_t ctx)
+{
+    if (!ctx) {
+        return;
+    }
+    gpgme_keylist_result_t res = gpgme_op_keylist_result(ctx);
+    if (!res) {
+        return;
+    }
+    d.reset(new Private(*res));
 }
 
-GpgME::KeyListResult::KeyListResult( const Error & error, const _gpgme_op_keylist_result & res )
-  : GpgME::Result( error ), d( new Private( res ) )
+GpgME::KeyListResult::KeyListResult(const Error &error, const _gpgme_op_keylist_result &res)
+    : GpgME::Result(error), d(new Private(res))
 {
 
 }
 
 make_standard_stuff(KeyListResult)
 
-void GpgME::KeyListResult::detach() {
-  if ( !d || d.unique() ) {
-    return;
-  }
-  d.reset( new Private( *d ) );
-}
-
-void GpgME::KeyListResult::mergeWith( const KeyListResult & other ) {
-  if ( other.isNull() ) {
-    return;
-  }
-  if ( isNull() ) { // just assign
-    operator=( other );
-    return;
-  }
-  // merge the truncated flag (try to keep detaching to a minimum):
-  if ( other.isTruncated() && !this->isTruncated() ) {
-    assert( other.d );
-    detach();
-    if ( !d ) {
-        d.reset( new Private( *other.d ) );
-    } else {
-        d->res.truncated = true;
+void GpgME::KeyListResult::detach()
+{
+    if (!d || d.unique()) {
+        return;
     }
-  }
-  if ( ! bool(error() ) ) { // only merge the error when there was none yet.
-    Result::operator=( other );
-  }
+    d.reset(new Private(*d));
 }
 
-bool GpgME::KeyListResult::isTruncated() const {
-  return d && d->res.truncated;
+void GpgME::KeyListResult::mergeWith(const KeyListResult &other)
+{
+    if (other.isNull()) {
+        return;
+    }
+    if (isNull()) {   // just assign
+        operator=(other);
+        return;
+    }
+    // merge the truncated flag (try to keep detaching to a minimum):
+    if (other.isTruncated() && !this->isTruncated()) {
+        assert(other.d);
+        detach();
+        if (!d) {
+            d.reset(new Private(*other.d));
+        } else {
+            d->res.truncated = true;
+        }
+    }
+    if (! bool(error())) {    // only merge the error when there was none yet.
+        Result::operator=(other);
+    }
+}
+
+bool GpgME::KeyListResult::isTruncated() const
+{
+    return d && d->res.truncated;
 }

@@ -31,68 +31,75 @@
 
 class QIODevice;
 
-namespace QGpgME {
+namespace QGpgME
+{
 
-  class QGPGME_EXPORT QByteArrayDataProvider : public GpgME::DataProvider {
-  public:
+class QGPGME_EXPORT QByteArrayDataProvider : public GpgME::DataProvider
+{
+public:
     QByteArrayDataProvider();
-    explicit QByteArrayDataProvider( const QByteArray & initialData );
+    explicit QByteArrayDataProvider(const QByteArray &initialData);
     ~QByteArrayDataProvider();
 
-    const QByteArray & data() const {
+    const QByteArray &data() const
+    {
         return mArray;
     }
 
-  private:
+private:
     // these shall only be accessed through the dataprovider
     // interface, where they're public:
     /*! \reimp */
-    bool isSupported( Operation ) const { return true; }
+    bool isSupported(Operation) const
+    {
+        return true;
+    }
     /*! \reimp */
-    ssize_t read( void * buffer, size_t bufSize );
+    ssize_t read(void *buffer, size_t bufSize);
     /*! \reimp */
-    ssize_t write( const void * buffer, size_t bufSize );
+    ssize_t write(const void *buffer, size_t bufSize);
     /*! \reimp */
-    off_t seek( off_t offset, int whence );
+    off_t seek(off_t offset, int whence);
     /*! \reimp */
     void release();
 
-  private:
+private:
     QByteArray mArray;
     off_t mOff;
-  };
+};
 
-  class QGPGME_EXPORT QIODeviceDataProvider : public GpgME::DataProvider {
-  public:
-    explicit QIODeviceDataProvider( const boost::shared_ptr<QIODevice> & initialData );
+class QGPGME_EXPORT QIODeviceDataProvider : public GpgME::DataProvider
+{
+public:
+    explicit QIODeviceDataProvider(const boost::shared_ptr<QIODevice> &initialData);
     ~QIODeviceDataProvider();
 
-    const boost::shared_ptr<QIODevice> & ioDevice() const {
+    const boost::shared_ptr<QIODevice> &ioDevice() const
+    {
         return mIO;
     }
 
-  private:
+private:
     // these shall only be accessed through the dataprovider
     // interface, where they're public:
     /*! \reimp */
-    bool isSupported( Operation ) const;
+    bool isSupported(Operation) const;
     /*! \reimp */
-    ssize_t read( void * buffer, size_t bufSize );
+    ssize_t read(void *buffer, size_t bufSize);
     /*! \reimp */
-    ssize_t write( const void * buffer, size_t bufSize );
+    ssize_t write(const void *buffer, size_t bufSize);
     /*! \reimp */
-    off_t seek( off_t offset, int whence );
+    off_t seek(off_t offset, int whence);
     /*! \reimp */
     void release();
 
-  private:
+private:
     const boost::shared_ptr<QIODevice> mIO;
     bool mErrorOccurred : 1;
     bool mHaveQProcess  : 1;
-  };
+};
 
 } // namespace QGpgME
 
 #endif // __QGPGME_EVENTLOOPINTERACTOR_H__
-
 

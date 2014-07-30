@@ -38,160 +38,164 @@ using std::vector;
 #endif
 #include <cassert>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  //
-  // EventLoopInteractor::Private Declaration
-  //
+//
+// EventLoopInteractor::Private Declaration
+//
 
-  class EventLoopInteractor::Private {
-  public:
+class EventLoopInteractor::Private
+{
+public:
     struct OneFD {
-      OneFD( int aFd, int aDir, gpgme_io_cb_t aFnc,
-             void * aFncData, void * aExternalTag )
-        : fd( aFd ), dir( aDir ), fnc( aFnc ),
-          fncData( aFncData ), externalTag( aExternalTag ) {}
-      int fd;
-      int dir;
-      gpgme_io_cb_t fnc;
-      void * fncData;
-      void * externalTag;
+        OneFD(int aFd, int aDir, gpgme_io_cb_t aFnc,
+              void *aFncData, void *aExternalTag)
+            : fd(aFd), dir(aDir), fnc(aFnc),
+              fncData(aFncData), externalTag(aExternalTag) {}
+        int fd;
+        int dir;
+        gpgme_io_cb_t fnc;
+        void *fncData;
+        void *externalTag;
     };
 
-    vector<OneFD*> mCallbacks;
+    vector<OneFD *> mCallbacks;
 
-    static void removeIOCb( void * tag );
-    static gpgme_error_t registerIOCb( void * data, int fd, int dir,
-                                    gpgme_io_cb_t fnc, void * fnc_data,
-                                    void ** r_tag );
-    static void eventIOCb( void *, gpgme_event_io_t type, void * type_data );
+    static void removeIOCb(void *tag);
+    static gpgme_error_t registerIOCb(void *data, int fd, int dir,
+                                      gpgme_io_cb_t fnc, void *fnc_data,
+                                      void **r_tag);
+    static void eventIOCb(void *, gpgme_event_io_t type, void *type_data);
 
     static gpgme_io_cbs iocbs;
-  };
+};
 
-  gpgme_io_cbs EventLoopInteractor::Private::iocbs = {
+gpgme_io_cbs EventLoopInteractor::Private::iocbs = {
     &EventLoopInteractor::Private::registerIOCb,
     0,
     &EventLoopInteractor::Private::removeIOCb,
     &EventLoopInteractor::Private::eventIOCb,
     0
-  };
+};
 
+//
+// EventLoopInteractor::Private IO Callback Implementations
+//
 
-  //
-  // EventLoopInteractor::Private IO Callback Implementations
-  //
-
-  gpgme_error_t EventLoopInteractor::Private::registerIOCb( void *, int fd, int dir,
-                                                         gpgme_io_cb_t fnc, void * fnc_data,
-                                                         void ** r_tag )
-  {
-    assert( instance() ); assert( instance()->d );
+gpgme_error_t EventLoopInteractor::Private::registerIOCb(void *, int fd, int dir,
+        gpgme_io_cb_t fnc, void *fnc_data,
+        void **r_tag)
+{
+    assert(instance()); assert(instance()->d);
     bool ok = false;
-    void * etag = instance()->registerWatcher( fd, dir ? Read : Write, ok );
-    if ( !ok ) {
-      return gpgme_error( GPG_ERR_GENERAL );
+    void *etag = instance()->registerWatcher(fd, dir ? Read : Write, ok);
+    if (!ok) {
+        return gpgme_error(GPG_ERR_GENERAL);
     }
-    instance()->d->mCallbacks.push_back( new OneFD( fd, dir, fnc, fnc_data, etag ) );
-    if ( r_tag ) {
-      *r_tag = instance()->d->mCallbacks.back();
+    instance()->d->mCallbacks.push_back(new OneFD(fd, dir, fnc, fnc_data, etag));
+    if (r_tag) {
+        *r_tag = instance()->d->mCallbacks.back();
     }
     return GPG_ERR_NO_ERROR;
-  }
+}
 
-  void EventLoopInteractor::Private::removeIOCb( void * tag ) {
+void EventLoopInteractor::Private::removeIOCb(void *tag)
+{
 
-    if ( !instance() || !instance()->d ) {
-      return;
-    }
-    for ( vector<OneFD*>::iterator it = instance()->d->mCallbacks.begin();
-         it != instance()->d->mCallbacks.end() ; ++it ) {
-      if ( *it == tag ) {
-        instance()->unregisterWatcher( ( *it )->externalTag );
-        delete *it; *it = 0;
-        instance()->d->mCallbacks.erase( it );
+    if (!instance() || !instance()->d) {
         return;
-      }
     }
-  }
-
-  void EventLoopInteractor::Private::eventIOCb( void * data, gpgme_event_io_t type, void * type_data ) {
-    assert( instance() );
-    Context * ctx = static_cast<Context*>( data );
-    switch( type ) {
-    case GPGME_EVENT_START:
-      {
-        instance()->operationStartEvent( ctx );
-        // TODO: what's in type_data?
-      }
-      break;
-    case GPGME_EVENT_DONE:
-      {
-        gpgme_error_t e = *static_cast<gpgme_error_t*>( type_data );
-        if ( ctx && ctx->impl() ) {
-          ctx->impl()->lasterr = e;
+    for (vector<OneFD *>::iterator it = instance()->d->mCallbacks.begin();
+            it != instance()->d->mCallbacks.end() ; ++it) {
+        if (*it == tag) {
+            instance()->unregisterWatcher((*it)->externalTag);
+            delete *it; *it = 0;
+            instance()->d->mCallbacks.erase(it);
+            return;
         }
-        instance()->operationDoneEvent( ctx, Error( e ) );
-      }
-      break;
-    case GPGME_EVENT_NEXT_KEY:
-      {
-        gpgme_key_t key = static_cast<gpgme_key_t>( type_data );
-        instance()->nextKeyEvent( ctx, Key( key, false ) );
-      }
-      break;
-    case GPGME_EVENT_NEXT_TRUSTITEM:
-      {
-        gpgme_trust_item_t item = static_cast<gpgme_trust_item_t>( type_data );
-        instance()->nextTrustItemEvent( ctx, TrustItem( item ) );
-        gpgme_trust_item_unref( item );
-      }
-      break;
-    default: // warn
-      ;
     }
-  }
+}
 
-  //
-  // EventLoopInteractor Implementation
-  //
+void EventLoopInteractor::Private::eventIOCb(void *data, gpgme_event_io_t type, void *type_data)
+{
+    assert(instance());
+    Context *ctx = static_cast<Context *>(data);
+    switch (type) {
+    case GPGME_EVENT_START: {
+        instance()->operationStartEvent(ctx);
+        // TODO: what's in type_data?
+    }
+    break;
+    case GPGME_EVENT_DONE: {
+        gpgme_error_t e = *static_cast<gpgme_error_t *>(type_data);
+        if (ctx && ctx->impl()) {
+            ctx->impl()->lasterr = e;
+        }
+        instance()->operationDoneEvent(ctx, Error(e));
+    }
+    break;
+    case GPGME_EVENT_NEXT_KEY: {
+        gpgme_key_t key = static_cast<gpgme_key_t>(type_data);
+        instance()->nextKeyEvent(ctx, Key(key, false));
+    }
+    break;
+    case GPGME_EVENT_NEXT_TRUSTITEM: {
+        gpgme_trust_item_t item = static_cast<gpgme_trust_item_t>(type_data);
+        instance()->nextTrustItemEvent(ctx, TrustItem(item));
+        gpgme_trust_item_unref(item);
+    }
+    break;
+    default: // warn
+        ;
+    }
+}
 
-  EventLoopInteractor * EventLoopInteractor::mSelf = 0;
+//
+// EventLoopInteractor Implementation
+//
 
-  EventLoopInteractor::EventLoopInteractor() : d( new Private ) {
-    assert( !mSelf );
+EventLoopInteractor *EventLoopInteractor::mSelf = 0;
+
+EventLoopInteractor::EventLoopInteractor() : d(new Private)
+{
+    assert(!mSelf);
     mSelf = this;
-  }
+}
 
-  EventLoopInteractor::~EventLoopInteractor() {
+EventLoopInteractor::~EventLoopInteractor()
+{
     // warn if there are still callbacks registered
     mSelf = 0;
     delete d;
-  }
+}
 
-  void EventLoopInteractor::manage( Context * context ) {
-    if ( !context || context->managedByEventLoopInteractor() ) {
-      return;
+void EventLoopInteractor::manage(Context *context)
+{
+    if (!context || context->managedByEventLoopInteractor()) {
+        return;
     }
-    gpgme_io_cbs * iocbs = new gpgme_io_cbs( Private::iocbs );
+    gpgme_io_cbs *iocbs = new gpgme_io_cbs(Private::iocbs);
     iocbs->event_priv = context;
-    context->installIOCallbacks( iocbs );
-  }
+    context->installIOCallbacks(iocbs);
+}
 
-  void EventLoopInteractor::unmanage( Context * context ) {
-    if ( context ) {
-      context->uninstallIOCallbacks();
+void EventLoopInteractor::unmanage(Context *context)
+{
+    if (context) {
+        context->uninstallIOCallbacks();
     }
-  }
+}
 
-  void EventLoopInteractor::actOn( int fd, Direction dir ) {
-    for ( vector<Private::OneFD*>::const_iterator it = d->mCallbacks.begin();
-          it != d->mCallbacks.end() ; ++it ) {
-      if ( ( *it )->fd == fd && ( ( *it )->dir ? Read : Write ) == dir ) {
-        ( *( ( *it )->fnc ) )( ( *it )->fncData, fd );
-        break;
-      }
+void EventLoopInteractor::actOn(int fd, Direction dir)
+{
+    for (vector<Private::OneFD *>::const_iterator it = d->mCallbacks.begin();
+            it != d->mCallbacks.end() ; ++it) {
+        if ((*it)->fd == fd && ((*it)->dir ? Read : Write) == dir) {
+            (*((*it)->fnc))((*it)->fncData, fd);
+            break;
+        }
     }
-  }
+}
 
 } // namespace GpgME

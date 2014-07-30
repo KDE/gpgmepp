@@ -36,9 +36,9 @@
 using namespace GpgME;
 using namespace boost;
 
-ScdGetInfoAssuanTransaction::ScdGetInfoAssuanTransaction( InfoItem item )
+ScdGetInfoAssuanTransaction::ScdGetInfoAssuanTransaction(InfoItem item)
     : AssuanTransaction(),
-      m_item( item ),
+      m_item(item),
       m_command(),
       m_data()
 {
@@ -47,64 +47,72 @@ ScdGetInfoAssuanTransaction::ScdGetInfoAssuanTransaction( InfoItem item )
 
 ScdGetInfoAssuanTransaction::~ScdGetInfoAssuanTransaction() {}
 
-static std::vector<std::string> to_reader_list( const std::string & s ) {
+static std::vector<std::string> to_reader_list(const std::string &s)
+{
     std::vector<std::string> result;
-    return split( result, s, is_any_of( "\n" ), token_compress_on );
+    return split(result, s, is_any_of("\n"), token_compress_on);
 }
 
-static std::vector<std::string> to_app_list( const std::string & s ) {
-    return to_reader_list( s );
+static std::vector<std::string> to_app_list(const std::string &s)
+{
+    return to_reader_list(s);
 }
 
-std::string ScdGetInfoAssuanTransaction::version() const {
-    if ( m_item == Version ) {
+std::string ScdGetInfoAssuanTransaction::version() const
+{
+    if (m_item == Version) {
         return m_data;
     } else {
         return std::string();
     }
 }
 
-unsigned int ScdGetInfoAssuanTransaction::pid() const {
-    if ( m_item == Pid ) {
-        return to_pid( m_data );
+unsigned int ScdGetInfoAssuanTransaction::pid() const
+{
+    if (m_item == Pid) {
+        return to_pid(m_data);
     } else {
         return 0U;
     }
 }
 
-std::string ScdGetInfoAssuanTransaction::socketName() const {
-    if ( m_item == SocketName ) {
+std::string ScdGetInfoAssuanTransaction::socketName() const
+{
+    if (m_item == SocketName) {
         return m_data;
     } else {
         return std::string();
     }
 }
 
-char ScdGetInfoAssuanTransaction::status() const {
-    if ( m_item == Status && !m_data.empty() ) {
+char ScdGetInfoAssuanTransaction::status() const
+{
+    if (m_item == Status && !m_data.empty()) {
         return m_data[0];
     } else {
         return '\0';
     }
 }
 
-std::vector<std::string> ScdGetInfoAssuanTransaction::readerList() const {
-    if ( m_item == ReaderList ) {
-        return to_reader_list( m_data );
+std::vector<std::string> ScdGetInfoAssuanTransaction::readerList() const
+{
+    if (m_item == ReaderList) {
+        return to_reader_list(m_data);
     } else {
         return std::vector<std::string>();
     }
 }
 
-std::vector<std::string> ScdGetInfoAssuanTransaction::applicationList() const {
-    if ( m_item == ApplicationList ) {
-        return to_app_list( m_data );
+std::vector<std::string> ScdGetInfoAssuanTransaction::applicationList() const
+{
+    if (m_item == ApplicationList) {
+        return to_app_list(m_data);
     } else {
         return std::vector<std::string>();
     }
 }
 
-static const char * scd_getinfo_tokens[] = {
+static const char *scd_getinfo_tokens[] = {
     "version",
     "pid",
     "socket_name",
@@ -113,31 +121,36 @@ static const char * scd_getinfo_tokens[] = {
     "deny_admin",
     "app_list",
 };
-BOOST_STATIC_ASSERT( ( sizeof scd_getinfo_tokens / sizeof *scd_getinfo_tokens == ScdGetInfoAssuanTransaction::LastInfoItem ) );
+BOOST_STATIC_ASSERT((sizeof scd_getinfo_tokens / sizeof * scd_getinfo_tokens == ScdGetInfoAssuanTransaction::LastInfoItem));
 
-void ScdGetInfoAssuanTransaction::makeCommand() const {
-    assert( m_item >= 0 );
-    assert( m_item < LastInfoItem );
+void ScdGetInfoAssuanTransaction::makeCommand() const
+{
+    assert(m_item >= 0);
+    assert(m_item < LastInfoItem);
     m_command = "SCD GETINFO ";
     m_command += scd_getinfo_tokens[m_item];
 }
 
-const char * ScdGetInfoAssuanTransaction::command() const {
+const char *ScdGetInfoAssuanTransaction::command() const
+{
     makeCommand();
     return m_command.c_str();
 }
 
-Error ScdGetInfoAssuanTransaction::data( const char * data, size_t len ) {
-    m_data.append( data, len );
+Error ScdGetInfoAssuanTransaction::data(const char *data, size_t len)
+{
+    m_data.append(data, len);
     return Error();
 }
 
-Data ScdGetInfoAssuanTransaction::inquire( const char * name, const char * args, Error & err ) {
+Data ScdGetInfoAssuanTransaction::inquire(const char *name, const char *args, Error &err)
+{
     (void)name; (void)args; (void)err;
     return Data::null;
 }
 
-Error ScdGetInfoAssuanTransaction::status( const char * status, const char * args ) {
+Error ScdGetInfoAssuanTransaction::status(const char *status, const char *args)
+{
     (void)status; (void)args;
     return Error();
 }

@@ -29,48 +29,54 @@
 
 #include <boost/shared_ptr.hpp>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class Error;
+class Error;
 
-  class GPGMEPP_EXPORT KeyGenerationResult : public Result {
-  public:
+class GPGMEPP_EXPORT KeyGenerationResult : public Result
+{
+public:
     KeyGenerationResult();
-    KeyGenerationResult( gpgme_ctx_t ctx, int error );
-    KeyGenerationResult( gpgme_ctx_t ctx, const Error & error );
-    explicit KeyGenerationResult( const Error & err );
+    KeyGenerationResult(gpgme_ctx_t ctx, int error);
+    KeyGenerationResult(gpgme_ctx_t ctx, const Error &error);
+    explicit KeyGenerationResult(const Error &err);
 
-    const KeyGenerationResult & operator=( KeyGenerationResult other ) {
-        swap( other );
+    const KeyGenerationResult &operator=(KeyGenerationResult other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( KeyGenerationResult & other ) {
-        Result::swap( other );
+    void swap(KeyGenerationResult &other)
+    {
+        Result::swap(other);
         using std::swap;
-        swap( this->d, other.d );
+        swap(this->d, other.d);
     }
 
     bool isNull() const;
 
-    GPGMEPP_DEPRECATED bool primaryKeyGenerated() const {
+    GPGMEPP_DEPRECATED bool primaryKeyGenerated() const
+    {
         return isPrimaryKeyGenerated();
     }
-    GPGMEPP_DEPRECATED bool subkeyGenerated() const {
+    GPGMEPP_DEPRECATED bool subkeyGenerated() const
+    {
         return isSubkeyGenerated();
     }
     bool isPrimaryKeyGenerated() const;
     bool isSubkeyGenerated() const;
-    const char * fingerprint() const;
+    const char *fingerprint() const;
 
-  private:
+private:
     class Private;
-    void init( gpgme_ctx_t ctx );
+    void init(gpgme_ctx_t ctx);
     boost::shared_ptr<Private> d;
-  };
+};
 
 }
 
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( KeyGenerationResult )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(KeyGenerationResult)
 
 #endif // __GPGMEPP_KEYGENERATIONRESULT_H__

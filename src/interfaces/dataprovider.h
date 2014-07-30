@@ -29,23 +29,24 @@
 
 #include <gpg-error.h>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class GPGMEPP_EXPORT DataProvider {
-  public:
+class GPGMEPP_EXPORT DataProvider
+{
+public:
     virtual ~DataProvider() {}
 
     enum Operation {
-      Read, Write, Seek, Release
+        Read, Write, Seek, Release
     };
-    virtual bool isSupported( Operation op ) const = 0;
+    virtual bool isSupported(Operation op) const = 0;
 
-
-    virtual ssize_t read( void  * buffer, size_t bufSize ) = 0;
-    virtual ssize_t write( const void * buffer, size_t bufSize ) = 0;
-    virtual off_t seek( off_t offset, int whence ) = 0;
+    virtual ssize_t read(void   *buffer, size_t bufSize) = 0;
+    virtual ssize_t write(const void *buffer, size_t bufSize) = 0;
+    virtual off_t seek(off_t offset, int whence) = 0;
     virtual void release() = 0;
-  };
+};
 
 } // namespace GpgME
 

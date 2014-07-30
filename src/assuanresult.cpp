@@ -32,10 +32,12 @@
 using namespace GpgME;
 
 #ifdef HAVE_GPGME_ASSUAN_ENGINE
-class AssuanResult::Private {
+class AssuanResult::Private
+{
 public:
-    explicit Private( const gpgme_assuan_result_t r ) {
-        if ( !r ) {
+    explicit Private(const gpgme_assuan_result_t r)
+    {
+        if (!r) {
             return;
         }
         error = r->err;
@@ -45,46 +47,49 @@ public:
 };
 #endif
 
-AssuanResult::AssuanResult( gpgme_ctx_t ctx, int error )
-    : Result( error ), d()
+AssuanResult::AssuanResult(gpgme_ctx_t ctx, int error)
+    : Result(error), d()
 {
-    init( ctx );
+    init(ctx);
 }
 
-AssuanResult::AssuanResult( gpgme_ctx_t ctx, const Error & error )
-    : Result( error ), d()
+AssuanResult::AssuanResult(gpgme_ctx_t ctx, const Error &error)
+    : Result(error), d()
 {
-    init( ctx );
+    init(ctx);
 }
 
-void AssuanResult::init( gpgme_ctx_t ctx ) {
+void AssuanResult::init(gpgme_ctx_t ctx)
+{
     (void)ctx;
 #ifdef HAVE_GPGME_ASSUAN_ENGINE
-    if ( !ctx ) {
+    if (!ctx) {
         return;
     }
-    gpgme_assuan_result_t res = gpgme_op_assuan_result( ctx );
-    if ( !res ) {
+    gpgme_assuan_result_t res = gpgme_op_assuan_result(ctx);
+    if (!res) {
         return;
     }
-    d.reset( new Private( res ) );
+    d.reset(new Private(res));
 #endif
 }
 
 make_standard_stuff(AssuanResult)
 
-Error AssuanResult::assuanError() const {
+Error AssuanResult::assuanError() const
+{
 #ifdef HAVE_GPGME_ASSUAN_ENGINE
-    if ( d ) {
-        return Error( d->error );
+    if (d) {
+        return Error(d->error);
     }
 #endif
     return Error();
 }
 
-std::ostream & GpgME::operator<<( std::ostream & os, const AssuanResult & result ) {
+std::ostream &GpgME::operator<<(std::ostream &os, const AssuanResult &result)
+{
     os << "GpgME::AssuanResult(";
-    if ( !result.isNull() ) {
+    if (!result.isNull()) {
         os << "\n error:       " << result.error()
            << "\n assuanError: " << result.assuanError()
            << "\n";

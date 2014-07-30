@@ -35,26 +35,30 @@
 #include <vector>
 #include <iosfwd>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class Error;
+class Error;
 
-  class GPGMEPP_EXPORT AssuanResult : public Result {
-  public:
+class GPGMEPP_EXPORT AssuanResult : public Result
+{
+public:
     AssuanResult();
-    AssuanResult( gpgme_ctx_t ctx, int error );
-    AssuanResult( gpgme_ctx_t ctx, const Error & error );
-    explicit AssuanResult( const Error & err );
+    AssuanResult(gpgme_ctx_t ctx, int error);
+    AssuanResult(gpgme_ctx_t ctx, const Error &error);
+    explicit AssuanResult(const Error &err);
 
-    const AssuanResult & operator=( AssuanResult other ) {
-        swap( other );
+    const AssuanResult &operator=(AssuanResult other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( AssuanResult & other ) {
-        Result::swap( other );
+    void swap(AssuanResult &other)
+    {
+        Result::swap(other);
         using std::swap;
-        swap( this->d, other.d );
+        swap(this->d, other.d);
     }
 
     bool isNull() const;
@@ -62,15 +66,15 @@ namespace GpgME {
     Error assuanError() const;
 
     class Private;
-  private:
-    void init( gpgme_ctx_t ctx );
+private:
+    void init(gpgme_ctx_t ctx);
     boost::shared_ptr<Private> d;
-  };
+};
 
-  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const AssuanResult & result );
+GPGMEPP_EXPORT std::ostream &operator<<(std::ostream &os, const AssuanResult &result);
 
 }
 
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( AssuanResult )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(AssuanResult)
 
 #endif // __GPGMEPP_ASSUANRESULT_H__

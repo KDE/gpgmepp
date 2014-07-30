@@ -23,15 +23,17 @@
 #ifndef __GPGMEPP_INTERFACES_PROGRESSPROVIDER_H__
 #define __GPGMEPP_INTERFACES_PROGRESSPROVIDER_H__
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class ProgressProvider {
-  public:
+class ProgressProvider
+{
+public:
     virtual ~ProgressProvider() {}
 
-    virtual void showProgress( const char * what, int type,
-                               int current, int total ) = 0;
-  };
+    virtual void showProgress(const char *what, int type,
+                              int current, int total) = 0;
+};
 
 } // namespace GpgME
 

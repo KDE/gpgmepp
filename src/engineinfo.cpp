@@ -26,55 +26,64 @@
 
 #include <gpgme.h>
 
-class GpgME::EngineInfo::Private {
+class GpgME::EngineInfo::Private
+{
 public:
-  Private( gpgme_engine_info_t engine=0 ) : info( engine ) {}
-  ~Private() { info = 0; }
+    Private(gpgme_engine_info_t engine = 0) : info(engine) {}
+    ~Private()
+    {
+        info = 0;
+    }
 
-  gpgme_engine_info_t info;
+    gpgme_engine_info_t info;
 };
-
 
 GpgME::EngineInfo::EngineInfo() : d() {}
 
-GpgME::EngineInfo::EngineInfo( gpgme_engine_info_t engine )
-  : d( new Private( engine ) )
+GpgME::EngineInfo::EngineInfo(gpgme_engine_info_t engine)
+    : d(new Private(engine))
 {
 
 }
 
-bool GpgME::EngineInfo::isNull() const {
-  return !d || !d->info;
+bool GpgME::EngineInfo::isNull() const
+{
+    return !d || !d->info;
 }
 
-GpgME::Protocol GpgME::EngineInfo::protocol() const {
-  if ( isNull() ) {
-    return UnknownProtocol;
-  }
-  switch( d->info->protocol ) {
-  case GPGME_PROTOCOL_OpenPGP: return OpenPGP;
-  case GPGME_PROTOCOL_CMS:     return CMS;
-  default:
-    return UnknownProtocol;
-  }
+GpgME::Protocol GpgME::EngineInfo::protocol() const
+{
+    if (isNull()) {
+        return UnknownProtocol;
+    }
+    switch (d->info->protocol) {
+    case GPGME_PROTOCOL_OpenPGP: return OpenPGP;
+    case GPGME_PROTOCOL_CMS:     return CMS;
+    default:
+        return UnknownProtocol;
+    }
 }
 
-const char * GpgME::EngineInfo::fileName() const {
-  return isNull() ? 0 : d->info->file_name;
+const char *GpgME::EngineInfo::fileName() const
+{
+    return isNull() ? 0 : d->info->file_name;
 }
 
-const char * GpgME::EngineInfo::version() const {
-  return isNull() ? 0 : d->info->version;
+const char *GpgME::EngineInfo::version() const
+{
+    return isNull() ? 0 : d->info->version;
 }
 
-const char * GpgME::EngineInfo::requiredVersion() const {
-  return isNull() ? 0 : d->info->req_version;
+const char *GpgME::EngineInfo::requiredVersion() const
+{
+    return isNull() ? 0 : d->info->req_version;
 }
 
-const char * GpgME::EngineInfo::homeDirectory() const {
+const char *GpgME::EngineInfo::homeDirectory() const
+{
 #ifdef HAVE_GPGME_ENGINE_INFO_T_HOME_DIR
-  return isNull() ? 0 : d->info->home_dir;
+    return isNull() ? 0 : d->info->home_dir;
 #else
-  return 0;
+    return 0;
 #endif
 }

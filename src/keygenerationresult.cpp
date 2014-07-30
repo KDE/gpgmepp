@@ -32,56 +32,63 @@
 
 #include <string.h>
 
-class GpgME::KeyGenerationResult::Private {
+class GpgME::KeyGenerationResult::Private
+{
 public:
-  Private( const _gpgme_op_genkey_result & r ) : res( r ) {
-    if ( res.fpr ) {
-      res.fpr = strdup( res.fpr );
+    Private(const _gpgme_op_genkey_result &r) : res(r)
+    {
+        if (res.fpr) {
+            res.fpr = strdup(res.fpr);
+        }
     }
-  }
-  ~Private() {
-    if ( res.fpr ) {
-      std::free( res.fpr );
+    ~Private()
+    {
+        if (res.fpr) {
+            std::free(res.fpr);
+        }
+        res.fpr = 0;
     }
-    res.fpr = 0;
-  }
 
-  _gpgme_op_genkey_result res;
+    _gpgme_op_genkey_result res;
 };
 
-GpgME::KeyGenerationResult::KeyGenerationResult( gpgme_ctx_t ctx, int error )
-  : GpgME::Result( error ), d()
+GpgME::KeyGenerationResult::KeyGenerationResult(gpgme_ctx_t ctx, int error)
+    : GpgME::Result(error), d()
 {
-  init( ctx );
+    init(ctx);
 }
 
-GpgME::KeyGenerationResult::KeyGenerationResult( gpgme_ctx_t ctx, const Error & error )
-  : GpgME::Result( error ), d()
+GpgME::KeyGenerationResult::KeyGenerationResult(gpgme_ctx_t ctx, const Error &error)
+    : GpgME::Result(error), d()
 {
-  init( ctx );
+    init(ctx);
 }
 
-void GpgME::KeyGenerationResult::init( gpgme_ctx_t ctx ) {
-  if ( !ctx ) {
-    return;
-  }
-  gpgme_genkey_result_t res = gpgme_op_genkey_result( ctx );
-  if ( !res ) {
-    return;
-  }
-  d.reset( new Private( *res ) );
+void GpgME::KeyGenerationResult::init(gpgme_ctx_t ctx)
+{
+    if (!ctx) {
+        return;
+    }
+    gpgme_genkey_result_t res = gpgme_op_genkey_result(ctx);
+    if (!res) {
+        return;
+    }
+    d.reset(new Private(*res));
 }
 
 make_standard_stuff(KeyGenerationResult)
 
-bool GpgME::KeyGenerationResult::isPrimaryKeyGenerated() const {
-  return d && d->res.primary;
+bool GpgME::KeyGenerationResult::isPrimaryKeyGenerated() const
+{
+    return d && d->res.primary;
 }
 
-bool GpgME::KeyGenerationResult::isSubkeyGenerated() const {
-  return d && d->res.sub;
+bool GpgME::KeyGenerationResult::isSubkeyGenerated() const
+{
+    return d && d->res.sub;
 }
 
-const char * GpgME::KeyGenerationResult::fingerprint() const {
-  return d ? d->res.fpr : 0 ;
+const char *GpgME::KeyGenerationResult::fingerprint() const
+{
+    return d ? d->res.fpr : 0 ;
 }

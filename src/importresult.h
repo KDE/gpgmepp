@@ -31,27 +31,31 @@
 
 #include <vector>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class Error;
-  class Import;
+class Error;
+class Import;
 
-  class GPGMEPP_EXPORT ImportResult : public Result {
-  public:
+class GPGMEPP_EXPORT ImportResult : public Result
+{
+public:
     ImportResult();
-    ImportResult( gpgme_ctx_t ctx, int error );
-    ImportResult( gpgme_ctx_t ctx, const Error & error );
-    explicit ImportResult( const Error & error );
+    ImportResult(gpgme_ctx_t ctx, int error);
+    ImportResult(gpgme_ctx_t ctx, const Error &error);
+    explicit ImportResult(const Error &error);
 
-    const ImportResult & operator=( ImportResult other ) {
-        swap( other );
+    const ImportResult &operator=(ImportResult other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( ImportResult & other ) {
-        Result::swap( other );
+    void swap(ImportResult &other)
+    {
+        Result::swap(other);
         using std::swap;
-        swap( this->d, other.d );
+        swap(this->d, other.d);
     }
 
     bool isNull() const;
@@ -73,55 +77,58 @@ namespace GpgME {
 
     int notImported() const;
 
-    Import import( unsigned int idx ) const;
+    Import import(unsigned int idx) const;
     std::vector<Import> imports() const;
 
     class Private;
-  private:
-    void init( gpgme_ctx_t ctx );
+private:
+    void init(gpgme_ctx_t ctx);
     boost::shared_ptr<Private> d;
-  };
+};
 
-  class GPGMEPP_EXPORT Import {
+class GPGMEPP_EXPORT Import
+{
     friend class ::GpgME::ImportResult;
-    Import( const boost::shared_ptr<ImportResult::Private> & parent, unsigned int idx );
-  public:
+    Import(const boost::shared_ptr<ImportResult::Private> &parent, unsigned int idx);
+public:
     Import();
 
-    const Import & operator=( Import other ) {
-        swap( other );
+    const Import &operator=(Import other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( Import & other ) {
+    void swap(Import &other)
+    {
         using std::swap;
-        swap( this->d, other.d );
-        swap( this->idx, other.idx );
+        swap(this->d, other.d);
+        swap(this->idx, other.idx);
     }
 
     bool isNull() const;
 
-    const char * fingerprint() const;
+    const char *fingerprint() const;
     Error error() const;
 
     enum Status {
-      Unknown = 0x0,
-      NewKey = 0x1,
-      NewUserIDs = 0x2,
-      NewSignatures = 0x4,
-      NewSubkeys = 0x8,
-      ContainedSecretKey = 0x10
+        Unknown = 0x0,
+        NewKey = 0x1,
+        NewUserIDs = 0x2,
+        NewSignatures = 0x4,
+        NewSubkeys = 0x8,
+        ContainedSecretKey = 0x10
     };
     Status status() const;
 
-  private:
+private:
     boost::shared_ptr<ImportResult::Private> d;
     unsigned int idx;
-  };
+};
 
 }
 
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( ImportResult )
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Import )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(ImportResult)
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(Import)
 
 #endif // __GPGMEPP_IMPORTRESULT_H__

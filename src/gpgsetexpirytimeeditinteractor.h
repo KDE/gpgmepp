@@ -27,20 +27,22 @@
 
 #include <string>
 
-namespace GpgME {
+namespace GpgME
+{
 
-    class GPGMEPP_EXPORT GpgSetExpiryTimeEditInteractor : public EditInteractor {
-    public:
-        explicit GpgSetExpiryTimeEditInteractor( const std::string & timeString="0" );
-        ~GpgSetExpiryTimeEditInteractor();
+class GPGMEPP_EXPORT GpgSetExpiryTimeEditInteractor : public EditInteractor
+{
+public:
+    explicit GpgSetExpiryTimeEditInteractor(const std::string &timeString = "0");
+    ~GpgSetExpiryTimeEditInteractor();
 
-    private:
-        /* reimp */ const char * action( Error & err ) const;
-        /* reimp */ unsigned int nextState( unsigned int statusCode, const char * args, Error & err ) const;
+private:
+    /* reimp */ const char *action(Error &err) const;
+    /* reimp */ unsigned int nextState(unsigned int statusCode, const char *args, Error &err) const;
 
-    private:
-        const std::string m_strtime;
-    };
+private:
+    const std::string m_strtime;
+};
 
 } // namespace GpgME
 

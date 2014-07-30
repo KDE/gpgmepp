@@ -44,41 +44,44 @@
 
 using namespace GpgME;
 
-static const char * status_to_string( unsigned int status );
-static Error status_to_error( unsigned int status );
+static const char *status_to_string(unsigned int status);
+static Error status_to_error(unsigned int status);
 
-class EditInteractor::Private {
+class EditInteractor::Private
+{
     friend class ::GpgME::EditInteractor;
     friend class ::GpgME::CallbackHelper;
-    EditInteractor * const q;
+    EditInteractor *const q;
 public:
-    explicit Private( EditInteractor * qq );
+    explicit Private(EditInteractor *qq);
     ~Private();
 
 private:
     unsigned int state;
     Error error;
-    std::FILE * debug;
+    std::FILE *debug;
 };
 
-class GpgME::CallbackHelper {
+class GpgME::CallbackHelper
+{
 private:
-    static int writeAll( int fd, const void * buf, size_t count ) {
+    static int writeAll(int fd, const void *buf, size_t count)
+    {
         size_t toWrite = count;
-        while ( toWrite > 0 ) {
+        while (toWrite > 0) {
 #ifdef HAVE_GPGME_IO_READWRITE
-            const int n = gpgme_io_write( fd, buf, toWrite );
+            const int n = gpgme_io_write(fd, buf, toWrite);
 #else
 # ifdef Q_OS_WIN
             DWORD n;
-            if ( !WriteFile( (HANDLE)fd, buf, toWrite, &n, NULL ) ) {
+            if (!WriteFile((HANDLE)fd, buf, toWrite, &n, NULL)) {
                 return -1;
             }
 # else
-            const int n = write( fd, buf, toWrite );
+            const int n = write(fd, buf, toWrite);
 # endif
 #endif
-            if ( n < 0 ) {
+            if (n < 0) {
                 return n;
             }
             toWrite -= n;
@@ -87,106 +90,106 @@ private:
     }
 
 public:
-    static int edit_interactor_callback_impl( void * opaque, gpgme_status_code_t status, const char * args, int fd ) {
-        EditInteractor::Private * ei = (EditInteractor::Private*)opaque;
+    static int edit_interactor_callback_impl(void *opaque, gpgme_status_code_t status, const char *args, int fd)
+    {
+        EditInteractor::Private *ei = (EditInteractor::Private *)opaque;
 
-        Error err = status_to_error( status );
+        Error err = status_to_error(status);
 
-        if ( !err ) {
+        if (!err) {
 
             // advance to next state based on input:
             const unsigned int oldState = ei->state;
-            ei->state = ei->q->nextState( status, args, err );
-            if ( ei->debug ) {
-                std::fprintf( ei->debug, "EditInteractor: %u -> nextState( %s, %s ) -> %u\n",
-                              oldState, status_to_string( status ), args ? args : "<null>", ei->state );
+            ei->state = ei->q->nextState(status, args, err);
+            if (ei->debug) {
+                std::fprintf(ei->debug, "EditInteractor: %u -> nextState( %s, %s ) -> %u\n",
+                             oldState, status_to_string(status), args ? args : "<null>", ei->state);
             }
-            if ( err ) {
+            if (err) {
                 ei->state = oldState;
                 goto error;
             }
 
-            if ( ei->state != oldState &&
-                 // if there was an error from before, we stop here (### this looks weird, can this happen at all?)
-                 ei->error.code() == GPG_ERR_NO_ERROR ) {
+            if (ei->state != oldState &&
+                    // if there was an error from before, we stop here (### this looks weird, can this happen at all?)
+                    ei->error.code() == GPG_ERR_NO_ERROR) {
 
                 // successful state change -> call action
-                if ( const char * const result = ei->q->action( err ) ) {
-                    if ( err ) {
+                if (const char *const result = ei->q->action(err)) {
+                    if (err) {
                         goto error;
                     }
-                    if ( ei->debug ) {
-                        std::fprintf( ei->debug, "EditInteractor: action result \"%s\"\n", result );
+                    if (ei->debug) {
+                        std::fprintf(ei->debug, "EditInteractor: action result \"%s\"\n", result);
                     }
                     // if there's a result, write it:
-                    if ( *result ) {
+                    if (*result) {
 #ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
-                        gpgme_err_set_errno( 0 );
+                        gpgme_err_set_errno(0);
 #else
-                        gpg_err_set_errno( 0 );
+                        gpg_err_set_errno(0);
 #endif
-                        const ssize_t len = std::strlen( result );
-                        if ( writeAll( fd, result, len ) != len ) {
+                        const ssize_t len = std::strlen(result);
+                        if (writeAll(fd, result, len) != len) {
                             err = Error::fromSystemError();
-                            if ( ei->debug ) {
-                                std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, err.asString() );
+                            if (ei->debug) {
+                                std::fprintf(ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, err.asString());
                             }
                             goto error;
                         }
                     }
 #ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
-                    gpgme_err_set_errno( 0 );
+                    gpgme_err_set_errno(0);
 #else
-                    gpg_err_set_errno( 0 );
+                    gpg_err_set_errno(0);
 #endif
-                    if ( writeAll( fd, "\n", 1 ) != 1 ) {
+                    if (writeAll(fd, "\n", 1) != 1) {
                         err = Error::fromSystemError();
-                        if ( ei->debug ) {
-                            std::fprintf( ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, err.asString() );
+                        if (ei->debug) {
+                            std::fprintf(ei->debug, "EditInteractor: Could not write to fd %d (%s)\n", fd, err.asString());
                         }
                         goto error;
                     }
                 } else {
-                    if ( err ) {
+                    if (err) {
                         goto error;
                     }
-                    if ( ei->debug ) {
-                        std::fprintf( ei->debug, "EditInteractor: no action result\n" );
+                    if (ei->debug) {
+                        std::fprintf(ei->debug, "EditInteractor: no action result\n");
                     }
                 }
             } else {
-                if ( ei->debug ) {
-                    std::fprintf( ei->debug, "EditInteractor: no action executed\n" );
+                if (ei->debug) {
+                    std::fprintf(ei->debug, "EditInteractor: no action executed\n");
                 }
             }
         }
 
-
     error:
-        if ( err ) {
+        if (err) {
             ei->error = err;
             ei->state = EditInteractor::ErrorState;
         }
 
-        if ( ei->debug ) {
-            std::fprintf( ei->debug, "EditInteractor: error now %u (%s)\n",
-                          ei->error.encodedError(), gpgme_strerror( ei->error.encodedError() ) );
+        if (ei->debug) {
+            std::fprintf(ei->debug, "EditInteractor: error now %u (%s)\n",
+                         ei->error.encodedError(), gpgme_strerror(ei->error.encodedError()));
         }
 
         return ei->error.encodedError();
     }
 };
 
-static gpgme_error_t edit_interactor_callback( void * opaque, gpgme_status_code_t status, const char * args, int fd )
+static gpgme_error_t edit_interactor_callback(void *opaque, gpgme_status_code_t status, const char *args, int fd)
 {
-    return CallbackHelper::edit_interactor_callback_impl( opaque, status, args, fd );
+    return CallbackHelper::edit_interactor_callback_impl(opaque, status, args, fd);
 }
 
 gpgme_edit_cb_t GpgME::edit_interactor_callback = ::edit_interactor_callback;
 
-EditInteractor::Private::Private( EditInteractor * qq )
-    : q( qq ),
-      state( StartState ),
+EditInteractor::Private::Private(EditInteractor *qq)
+    : q(qq),
+      state(StartState),
       error(),
       debug(0)
 {
@@ -196,25 +199,29 @@ EditInteractor::Private::Private( EditInteractor * qq )
 EditInteractor::Private::~Private() {}
 
 EditInteractor::EditInteractor()
-    : d( new Private( this ) )
+    : d(new Private(this))
 {
 
 }
 
-EditInteractor::~EditInteractor() {
+EditInteractor::~EditInteractor()
+{
     delete d;
 }
 
-unsigned int EditInteractor::state() const {
+unsigned int EditInteractor::state() const
+{
     return d->state;
 }
 
-Error EditInteractor::lastError() const {
+Error EditInteractor::lastError() const
+{
     return d->error;
 }
 
-bool EditInteractor::needsNoResponse( unsigned int status ) const {
-    switch ( status ) {
+bool EditInteractor::needsNoResponse(unsigned int status) const
+{
+    switch (status) {
     case GPGME_STATUS_EOF:
     case GPGME_STATUS_GOT_IT:
     case GPGME_STATUS_NEED_PASSPHRASE:
@@ -231,25 +238,27 @@ bool EditInteractor::needsNoResponse( unsigned int status ) const {
 }
 
 // static
-Error status_to_error( unsigned int status ) {
-    switch ( status ) {
+Error status_to_error(unsigned int status)
+{
+    switch (status) {
     case GPGME_STATUS_MISSING_PASSPHRASE:
-        return Error::fromCode( GPG_ERR_NO_PASSPHRASE );
+        return Error::fromCode(GPG_ERR_NO_PASSPHRASE);
     case GPGME_STATUS_ALREADY_SIGNED:
-        return Error::fromCode( GPG_ERR_ALREADY_SIGNED );
+        return Error::fromCode(GPG_ERR_ALREADY_SIGNED);
     case GPGME_STATUS_KEYEXPIRED:
-        return Error::fromCode( GPG_ERR_CERT_EXPIRED );
+        return Error::fromCode(GPG_ERR_CERT_EXPIRED);
     case GPGME_STATUS_SIGEXPIRED:
-        return Error::fromCode( GPG_ERR_SIG_EXPIRED );
+        return Error::fromCode(GPG_ERR_SIG_EXPIRED);
     }
     return Error();
 }
 
-void EditInteractor::setDebugChannel( std::FILE * debug ) {
+void EditInteractor::setDebugChannel(std::FILE *debug)
+{
     d->debug = debug;
 }
 
-static const char * status_strings[] = {
+static const char *status_strings[] = {
     "EOF",
     /* mkstatus processing starts here */
     "ENTER",
@@ -343,10 +352,11 @@ static const char * status_strings[] = {
 
     "PLAINTEXT",
 };
-static const unsigned int num_status_strings = sizeof status_strings / sizeof *status_strings ;
+static const unsigned int num_status_strings = sizeof status_strings / sizeof * status_strings ;
 
-const char * status_to_string( unsigned int idx ) {
-    if ( idx < num_status_strings ) {
+const char *status_to_string(unsigned int idx)
+{
+    if (idx < num_status_strings) {
         return status_strings[idx];
     } else {
         return "(unknown)";

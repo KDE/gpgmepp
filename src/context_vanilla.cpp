@@ -24,11 +24,13 @@
 
 #include <global.h>
 
-GIOChannel * GpgME::getGIOChannel( int ) {
+GIOChannel *GpgME::getGIOChannel(int)
+{
     return 0;
 }
 
-QIODevice * GpgME::getQIODevice( int ) {
+QIODevice *GpgME::getQIODevice(int)
+{
     return 0;
 }
 

@@ -34,57 +34,62 @@
 using namespace GpgME;
 
 #ifdef HAVE_GPGME_G13_VFS
-class VfsMountResult::Private {
+class VfsMountResult::Private
+{
 public:
-    explicit Private( const gpgme_vfs_mount_result_t r ) : mountDir( 0 ) {
-        if ( r && r->mount_dir ) {
-          mountDir = strdup( r->mount_dir );
+    explicit Private(const gpgme_vfs_mount_result_t r) : mountDir(0)
+    {
+        if (r && r->mount_dir) {
+            mountDir = strdup(r->mount_dir);
         }
     }
 
-    ~Private() {
-      std::free( mountDir );
+    ~Private()
+    {
+        std::free(mountDir);
     }
 
-    char* mountDir;
+    char *mountDir;
 };
 #endif
 
-VfsMountResult::VfsMountResult( gpgme_ctx_t ctx, const Error & error, const Error &opError )
-    : Result( error ? error : opError ), d()
+VfsMountResult::VfsMountResult(gpgme_ctx_t ctx, const Error &error, const Error &opError)
+    : Result(error ? error : opError), d()
 {
-    init( ctx );
+    init(ctx);
 }
 
-void VfsMountResult::init( gpgme_ctx_t ctx ) {
+void VfsMountResult::init(gpgme_ctx_t ctx)
+{
     (void)ctx;
 #ifdef HAVE_GPGME_G13_VFS
-    if ( !ctx ) {
+    if (!ctx) {
         return;
     }
-    gpgme_vfs_mount_result_t res = gpgme_op_vfs_mount_result( ctx );
-    if ( !res ) {
+    gpgme_vfs_mount_result_t res = gpgme_op_vfs_mount_result(ctx);
+    if (!res) {
         return;
     }
-    d.reset( new Private( res ) );
+    d.reset(new Private(res));
 #endif
 }
 
 make_standard_stuff(VfsMountResult)
 
-const char* VfsMountResult::mountDir() const {
+const char *VfsMountResult::mountDir() const
+{
 #ifdef HAVE_GPGME_G13_VFS
-  if ( d ) {
-    return d->mountDir;
-  }
+    if (d) {
+        return d->mountDir;
+    }
 #endif
-  return 0;
+    return 0;
 }
 
-
-std::ostream & GpgME::operator<<( std::ostream & os, const VfsMountResult & result ) {
+std::ostream &GpgME::operator<<(std::ostream &os, const VfsMountResult &result)
+{
     os << "GpgME::VfsMountResult(";
-    if ( !result.isNull() ) {
+    if (!result.isNull()) {
         os << "\n error:       " << result.error()
            << "\n mount dir: " << result.mountDir()
            << "\n";

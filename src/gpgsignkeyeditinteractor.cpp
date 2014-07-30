@@ -36,7 +36,6 @@
 #include <cassert>
 #include <cstring>
 
-
 using std::strcmp;
 
 // avoid conflict (msvc)
@@ -52,7 +51,8 @@ using std::strcmp;
 using namespace boost;
 using namespace GpgME;
 
-class GpgSignKeyEditInteractor::Private {
+class GpgSignKeyEditInteractor::Private
+{
 public:
     Private();
 
@@ -63,48 +63,55 @@ public:
     std::vector<unsigned int>::const_iterator currentId, nextId;
     unsigned int checkLevel;
 
-    const char * command() const {
-        const bool local = ( options & Exportable ) == 0;
+    const char *command() const
+    {
+        const bool local = (options & Exportable) == 0;
         const bool nonRevoc = options & NonRevocable;
         const bool trust = options & Trust;
         //TODO: check if all combinations are valid
-        if ( local && nonRevoc && trust ) {
+        if (local && nonRevoc && trust) {
             return "ltnrsign";
         }
-        if ( local && nonRevoc ) {
+        if (local && nonRevoc) {
             return "lnrsign";
         }
-        if ( local && trust ) {
+        if (local && trust) {
             return "ltsign";
         }
-        if ( local ) {
+        if (local) {
             return "lsign";
         }
-        if ( nonRevoc && trust ) {
+        if (nonRevoc && trust) {
             return "tnrsign";
         }
-        if ( nonRevoc ) {
+        if (nonRevoc) {
             return "nrsign";
         }
-        if ( trust ) {
+        if (trust) {
             return "tsign";
         }
         return "sign";
     }
 
-    bool signAll() const { return userIDs.empty(); }
-    unsigned int nextUserID() {
-        assert( nextId != userIDs.end() );
+    bool signAll() const
+    {
+        return userIDs.empty();
+    }
+    unsigned int nextUserID()
+    {
+        assert(nextId != userIDs.end());
         currentId = nextId++;
         return currentUserID();
     }
 
-    bool allUserIDsListed() const {
+    bool allUserIDsListed() const
+    {
         return nextId == userIDs.end();
     }
 
-    unsigned int currentUserID() const {
-        assert( currentId != userIDs.end() );
+    unsigned int currentUserID() const
+    {
+        assert(currentId != userIDs.end());
         return *currentId + 1;
     }
 
@@ -112,26 +119,29 @@ public:
 
 GpgSignKeyEditInteractor::Private::Private()
     :
-        started( false ),
-        options( 0 ),
-        userIDs(),
-        currentId(),
-        nextId(),
-        checkLevel( 0 ) {
+    started(false),
+    options(0),
+    userIDs(),
+    currentId(),
+    nextId(),
+    checkLevel(0)
+{
 }
 
 GpgSignKeyEditInteractor::GpgSignKeyEditInteractor()
-    : EditInteractor(), d( new Private )
+    : EditInteractor(), d(new Private)
 {
 
 }
 
-GpgSignKeyEditInteractor::~GpgSignKeyEditInteractor() {
+GpgSignKeyEditInteractor::~GpgSignKeyEditInteractor()
+{
     delete d;
 }
 
 // work around --enable-final
-namespace GpgSignKeyEditInteractor_Private {
+namespace GpgSignKeyEditInteractor_Private
+{
 enum SignKeyState {
     START = EditInteractor::StartState,
     COMMAND,
@@ -155,124 +165,128 @@ typedef std::map<tuple<SignKeyState, unsigned int, std::string>, SignKeyState> T
 
 }
 
-static const char * answer( bool b ) {
+static const char *answer(bool b)
+{
     return b ? "Y" : "N";
 }
 
-static GpgSignKeyEditInteractor_Private::TransitionMap makeTable() {
+static GpgSignKeyEditInteractor_Private::TransitionMap makeTable()
+{
     using namespace GpgSignKeyEditInteractor_Private;
     TransitionMap tab;
     const unsigned int GET_BOOL = GPGME_STATUS_GET_BOOL;
     const unsigned int GET_LINE = GPGME_STATUS_GET_LINE;
 #define addEntry( s1, status, str, s2 ) tab[make_tuple( s1, status, str)] = s2
-    addEntry( START, GET_LINE, "keyedit.prompt", COMMAND );
-    addEntry( COMMAND, GET_BOOL, "keyedit.sign_all.okay", UIDS_ANSWER_SIGN_ALL );
-    addEntry( COMMAND, GET_BOOL, "sign_uid.okay", CONFIRM );
-    addEntry( UIDS_ANSWER_SIGN_ALL, GET_BOOL, "sign_uid.okay", CONFIRM );
-    addEntry( UIDS_ANSWER_SIGN_ALL, GET_LINE, "sign_uid.expire", SET_EXPIRE );
-    addEntry( UIDS_ANSWER_SIGN_ALL, GET_LINE, "sign_uid.class", SET_CHECK_LEVEL );
-    addEntry( SET_TRUST_VALUE, GET_LINE, "trustsign_prompt.trust_depth", SET_TRUST_DEPTH );
-    addEntry( SET_TRUST_DEPTH, GET_LINE, "trustsign_prompt.trust_regexp", SET_TRUST_REGEXP );
-    addEntry( SET_TRUST_REGEXP, GET_LINE, "sign_uid.okay", CONFIRM );
-    addEntry( SET_CHECK_LEVEL, GET_BOOL, "sign_uid.okay", CONFIRM );
-    addEntry( SET_EXPIRE, GET_BOOL, "sign_uid.class", SET_CHECK_LEVEL );
-    addEntry( CONFIRM, GET_BOOL, "sign_uid.local_promote_okay", CONFIRM );
-    addEntry( CONFIRM, GET_BOOL, "sign_uid.okay", CONFIRM );
-    addEntry( CONFIRM, GET_LINE, "keyedit.prompt", COMMAND );
-    addEntry( CONFIRM, GET_LINE, "trustsign_prompt.trust_value", SET_TRUST_VALUE );
-    addEntry( CONFIRM, GET_LINE, "sign_uid.expire", SET_EXPIRE );
-    addEntry( CONFIRM, GET_LINE, "sign_uid.class", SET_CHECK_LEVEL );
-    addEntry( UIDS_LIST_SEPARATELY_DONE, GET_BOOL, "sign_uid.local_promote_okay", CONFIRM );
-    addEntry( UIDS_LIST_SEPARATELY_DONE, GET_LINE, "keyedit.prompt", COMMAND );
-    addEntry( UIDS_LIST_SEPARATELY_DONE, GET_LINE, "trustsign_prompt.trust_value", SET_TRUST_VALUE );
-    addEntry( UIDS_LIST_SEPARATELY_DONE, GET_LINE, "sign_uid.expire", SET_EXPIRE );
-    addEntry( UIDS_LIST_SEPARATELY_DONE, GET_LINE, "sign_uid.class", SET_CHECK_LEVEL );
-    addEntry( UIDS_LIST_SEPARATELY_DONE, GET_BOOL, "sign_uid.okay", CONFIRM );
-    addEntry( CONFIRM, GET_LINE, "keyedit.prompt", QUIT );
-    addEntry( ERROR, GET_LINE, "keyedit.prompt", QUIT );
-    addEntry( QUIT, GET_BOOL, "keyedit.save.okay", SAVE );
+    addEntry(START, GET_LINE, "keyedit.prompt", COMMAND);
+    addEntry(COMMAND, GET_BOOL, "keyedit.sign_all.okay", UIDS_ANSWER_SIGN_ALL);
+    addEntry(COMMAND, GET_BOOL, "sign_uid.okay", CONFIRM);
+    addEntry(UIDS_ANSWER_SIGN_ALL, GET_BOOL, "sign_uid.okay", CONFIRM);
+    addEntry(UIDS_ANSWER_SIGN_ALL, GET_LINE, "sign_uid.expire", SET_EXPIRE);
+    addEntry(UIDS_ANSWER_SIGN_ALL, GET_LINE, "sign_uid.class", SET_CHECK_LEVEL);
+    addEntry(SET_TRUST_VALUE, GET_LINE, "trustsign_prompt.trust_depth", SET_TRUST_DEPTH);
+    addEntry(SET_TRUST_DEPTH, GET_LINE, "trustsign_prompt.trust_regexp", SET_TRUST_REGEXP);
+    addEntry(SET_TRUST_REGEXP, GET_LINE, "sign_uid.okay", CONFIRM);
+    addEntry(SET_CHECK_LEVEL, GET_BOOL, "sign_uid.okay", CONFIRM);
+    addEntry(SET_EXPIRE, GET_BOOL, "sign_uid.class", SET_CHECK_LEVEL);
+    addEntry(CONFIRM, GET_BOOL, "sign_uid.local_promote_okay", CONFIRM);
+    addEntry(CONFIRM, GET_BOOL, "sign_uid.okay", CONFIRM);
+    addEntry(CONFIRM, GET_LINE, "keyedit.prompt", COMMAND);
+    addEntry(CONFIRM, GET_LINE, "trustsign_prompt.trust_value", SET_TRUST_VALUE);
+    addEntry(CONFIRM, GET_LINE, "sign_uid.expire", SET_EXPIRE);
+    addEntry(CONFIRM, GET_LINE, "sign_uid.class", SET_CHECK_LEVEL);
+    addEntry(UIDS_LIST_SEPARATELY_DONE, GET_BOOL, "sign_uid.local_promote_okay", CONFIRM);
+    addEntry(UIDS_LIST_SEPARATELY_DONE, GET_LINE, "keyedit.prompt", COMMAND);
+    addEntry(UIDS_LIST_SEPARATELY_DONE, GET_LINE, "trustsign_prompt.trust_value", SET_TRUST_VALUE);
+    addEntry(UIDS_LIST_SEPARATELY_DONE, GET_LINE, "sign_uid.expire", SET_EXPIRE);
+    addEntry(UIDS_LIST_SEPARATELY_DONE, GET_LINE, "sign_uid.class", SET_CHECK_LEVEL);
+    addEntry(UIDS_LIST_SEPARATELY_DONE, GET_BOOL, "sign_uid.okay", CONFIRM);
+    addEntry(CONFIRM, GET_LINE, "keyedit.prompt", QUIT);
+    addEntry(ERROR, GET_LINE, "keyedit.prompt", QUIT);
+    addEntry(QUIT, GET_BOOL, "keyedit.save.okay", SAVE);
 #undef addEntry
     return tab;
 }
 
-const char * GpgSignKeyEditInteractor::action( Error & err ) const {
+const char *GpgSignKeyEditInteractor::action(Error &err) const
+{
     static const char check_level_strings[][2] = { "0", "1", "2", "3" };
     using namespace GpgSignKeyEditInteractor_Private;
     using namespace std;
 
-    switch ( const unsigned int st = state() ) {
+    switch (const unsigned int st = state()) {
     case COMMAND:
         return d->command();
     case UIDS_ANSWER_SIGN_ALL:
-        return answer( d->signAll() );
+        return answer(d->signAll());
     case UIDS_LIST_SEPARATELY_DONE:
         return d->command();
     case SET_EXPIRE:
-        return answer( true );
+        return answer(true);
     case SET_TRUST_VALUE:
-        // TODO
+    // TODO
     case SET_TRUST_DEPTH:
-        //TODO
+    //TODO
     case SET_TRUST_REGEXP:
         //TODO
         return 0;
     case SET_CHECK_LEVEL:
         return check_level_strings[d->checkLevel];
     case CONFIRM:
-        return answer( true );
+        return answer(true);
     case QUIT:
         return "quit";
     case SAVE:
-        return answer( true );
+        return answer(true);
     default:
-        if ( st >= UIDS_LIST_SEPARATELY && st < UIDS_LIST_SEPARATELY_DONE ) {
+        if (st >= UIDS_LIST_SEPARATELY && st < UIDS_LIST_SEPARATELY_DONE) {
             std::stringstream ss;
             ss << d->nextUserID();
             d->scratch = ss.str();
             return d->scratch.c_str();
         }
-        // fall through
+    // fall through
     case ERROR:
-        err = Error::fromCode( GPG_ERR_GENERAL );
+        err = Error::fromCode(GPG_ERR_GENERAL);
         return 0;
     }
 }
 
-unsigned int GpgSignKeyEditInteractor::nextState( unsigned int status, const char * args, Error & err ) const {
+unsigned int GpgSignKeyEditInteractor::nextState(unsigned int status, const char *args, Error &err) const
+{
     d->started = true;
     using namespace GpgSignKeyEditInteractor_Private;
-    static const Error GENERAL_ERROR = Error::fromCode( GPG_ERR_GENERAL );
+    static const Error GENERAL_ERROR = Error::fromCode(GPG_ERR_GENERAL);
     //static const Error INV_TIME_ERROR = Error::fromCode( GPG_ERR_INV_TIME );
-    static const TransitionMap table( makeTable() );
-    if ( needsNoResponse( status ) ) {
+    static const TransitionMap table(makeTable());
+    if (needsNoResponse(status)) {
         return state();
     }
 
     using namespace GpgSignKeyEditInteractor_Private;
 
     //lookup transition in map
-    const TransitionMap::const_iterator it = table.find( boost::make_tuple( static_cast<SignKeyState>( state() ), status, std::string( args ) ) );
-    if ( it != table.end() ) {
+    const TransitionMap::const_iterator it = table.find(boost::make_tuple(static_cast<SignKeyState>(state()), status, std::string(args)));
+    if (it != table.end()) {
         return it->second;
     }
 
     //handle cases that cannot be handled via the map
-    switch ( const unsigned int st = state() ) {
+    switch (const unsigned int st = state()) {
     case UIDS_ANSWER_SIGN_ALL:
-        if ( status == GPGME_STATUS_GET_LINE &&
-             strcmp( args, "keyedit.prompt" ) == 0 ) {
-            if ( !d->signAll() ) {
+        if (status == GPGME_STATUS_GET_LINE &&
+                strcmp(args, "keyedit.prompt") == 0) {
+            if (!d->signAll()) {
                 return UIDS_LIST_SEPARATELY;
             }
-            err = Error::fromCode( GPG_ERR_UNUSABLE_PUBKEY );
+            err = Error::fromCode(GPG_ERR_UNUSABLE_PUBKEY);
             return ERROR;
         }
         break;
     default:
-        if ( st >= UIDS_LIST_SEPARATELY && st < UIDS_LIST_SEPARATELY_DONE ) {
-            if ( status == GPGME_STATUS_GET_LINE &&
-                 strcmp( args, "keyedit.prompt" ) == 0 ) {
-                return d->allUserIDsListed() ? UIDS_LIST_SEPARATELY_DONE : st+1 ;
+        if (st >= UIDS_LIST_SEPARATELY && st < UIDS_LIST_SEPARATELY_DONE) {
+            if (status == GPGME_STATUS_GET_LINE &&
+                    strcmp(args, "keyedit.prompt") == 0) {
+                return d->allUserIDsListed() ? UIDS_LIST_SEPARATELY_DONE : st + 1 ;
             }
         }
         break;
@@ -286,21 +300,24 @@ unsigned int GpgSignKeyEditInteractor::nextState( unsigned int status, const cha
     return ERROR;
 }
 
-void GpgSignKeyEditInteractor::setCheckLevel( unsigned int checkLevel ) {
-    assert( !d->started );
-    assert( checkLevel <= 3 );
+void GpgSignKeyEditInteractor::setCheckLevel(unsigned int checkLevel)
+{
+    assert(!d->started);
+    assert(checkLevel <= 3);
     d->checkLevel = checkLevel;
 }
 
-void GpgSignKeyEditInteractor::setUserIDsToSign( const std::vector<unsigned int> & userIDsToSign ) {
-    assert( !d->started );
+void GpgSignKeyEditInteractor::setUserIDsToSign(const std::vector<unsigned int> &userIDsToSign)
+{
+    assert(!d->started);
     d->userIDs = userIDsToSign;
     d->nextId = d->userIDs.begin();
     d->currentId = d->userIDs.end();
 
 }
-void GpgSignKeyEditInteractor::setSigningOptions( int options ) {
-    assert( !d->started );
+void GpgSignKeyEditInteractor::setSigningOptions(int options)
+{
+    assert(!d->started);
     d->options = options;
 }
 

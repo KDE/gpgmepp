@@ -33,40 +33,44 @@
 #include <vector>
 #include <iosfwd>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class Error;
+class Error;
 
-  class GPGMEPP_EXPORT VfsMountResult : public Result {
-  public:
+class GPGMEPP_EXPORT VfsMountResult : public Result
+{
+public:
     VfsMountResult();
-    VfsMountResult( gpgme_ctx_t ctx, const Error & error, const Error &opError );
-    explicit VfsMountResult( const Error & err );
+    VfsMountResult(gpgme_ctx_t ctx, const Error &error, const Error &opError);
+    explicit VfsMountResult(const Error &err);
 
-    const VfsMountResult & operator=( VfsMountResult other ) {
-        swap( other );
+    const VfsMountResult &operator=(VfsMountResult other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( VfsMountResult & other ) {
-        Result::swap( other );
+    void swap(VfsMountResult &other)
+    {
+        Result::swap(other);
         using std::swap;
-        swap( this->d, other.d );
+        swap(this->d, other.d);
     }
 
     bool isNull() const;
-    const char* mountDir() const;
+    const char *mountDir() const;
 
     class Private;
-  private:
-    void init( gpgme_ctx_t ctx );
+private:
+    void init(gpgme_ctx_t ctx);
     boost::shared_ptr<Private> d;
-  };
+};
 
-  GPGMEPP_EXPORT std::ostream & operator<<( std::ostream & os, const VfsMountResult & result );
+GPGMEPP_EXPORT std::ostream &operator<<(std::ostream &os, const VfsMountResult &result);
 
 }
 
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( VfsMountResult )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(VfsMountResult)
 
 #endif // __GPGMEPP_ASSUANRESULT_H__

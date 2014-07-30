@@ -29,38 +29,42 @@
 
 #include <algorithm>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class GPGMEPP_EXPORT EngineInfo {
-  public:
+class GPGMEPP_EXPORT EngineInfo
+{
+public:
     EngineInfo();
-    explicit EngineInfo( gpgme_engine_info_t engine );
+    explicit EngineInfo(gpgme_engine_info_t engine);
 
-    const EngineInfo & operator=( EngineInfo other ) {
-        swap( other );
+    const EngineInfo &operator=(EngineInfo other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( EngineInfo & other ) {
+    void swap(EngineInfo &other)
+    {
         using std::swap;
-        swap( this->d, other.d );
+        swap(this->d, other.d);
     }
 
     bool isNull() const;
 
     Protocol protocol() const;
-    const char * fileName() const;
-    const char * version() const;
-    const char * requiredVersion() const;
-    const char * homeDirectory() const;
+    const char *fileName() const;
+    const char *version() const;
+    const char *requiredVersion() const;
+    const char *homeDirectory() const;
 
-  private:
+private:
     class Private;
     boost::shared_ptr<Private> d;
-  };
+};
 
 }
 
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( EngineInfo )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(EngineInfo)
 
 #endif // __GPGMEPP_ENGINEINFO_H__

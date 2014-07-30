@@ -31,39 +31,43 @@
 #include <cstdio> // FILE
 #include <algorithm>
 
-namespace GpgME {
+namespace GpgME
+{
 
-  class DataProvider;
-  class Error;
+class DataProvider;
+class Error;
 
-  class GPGMEPP_EXPORT Data {
+class GPGMEPP_EXPORT Data
+{
     struct Null {};
-  public:
-    /* implicit */ Data( const Null & );
+public:
+    /* implicit */ Data(const Null &);
     Data();
-    explicit Data( gpgme_data_t data );
+    explicit Data(gpgme_data_t data);
 
     // Memory-Based Data Buffers:
-    Data( const char * buffer, size_t size, bool copy=true );
-    explicit Data( const char * filename );
-    Data( const char * filename, off_t offset, size_t length );
-    Data( std::FILE * fp, off_t offset, size_t length );
+    Data(const char *buffer, size_t size, bool copy = true);
+    explicit Data(const char *filename);
+    Data(const char *filename, off_t offset, size_t length);
+    Data(std::FILE *fp, off_t offset, size_t length);
     // File-Based Data Buffers:
-    explicit Data( std::FILE * fp );
-    explicit Data( int fd );
+    explicit Data(std::FILE *fp);
+    explicit Data(int fd);
     // Callback-Based Data Buffers:
-    explicit Data( DataProvider * provider );
+    explicit Data(DataProvider *provider);
 
     static Null null;
 
-    const Data & operator=( Data other ) {
-        swap( other );
+    const Data &operator=(Data other)
+    {
+        swap(other);
         return *this;
     }
 
-    void swap( Data & other ) {
+    void swap(Data &other)
+    {
         using std::swap;
-        swap( this->d, other.d );
+        swap(this->d, other.d);
     }
 
     bool isNull() const;
@@ -75,24 +79,30 @@ namespace GpgME {
         ArmorEncoding
     };
     Encoding encoding() const;
-    Error setEncoding( Encoding encoding );
+    Error setEncoding(Encoding encoding);
 
-    char * fileName() const;
-    Error setFileName( const char * name );
+    char *fileName() const;
+    Error setFileName(const char *name);
 
-    ssize_t read( void * buffer, size_t length );
-    ssize_t write( const void * buffer, size_t length );
-    off_t seek( off_t offset, int whence );
+    ssize_t read(void *buffer, size_t length);
+    ssize_t write(const void *buffer, size_t length);
+    off_t seek(off_t offset, int whence);
 
     class Private;
-    Private * impl() { return d.get(); }
-    const Private * impl() const { return d.get(); }
-  private:
+    Private *impl()
+    {
+        return d.get();
+    }
+    const Private *impl() const
+    {
+        return d.get();
+    }
+private:
     boost::shared_ptr<Private> d;
-  };
+};
 
 }
 
-GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION( Data )
+GPGMEPP_MAKE_STD_SWAP_SPECIALIZATION(Data)
 
 #endif // __GPGMEPP_DATA_H__
