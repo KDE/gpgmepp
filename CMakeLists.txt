@@ -20,6 +20,7 @@ include(KDEFrameworkCompilerSettings)
 # FIXME: Do we want the same versions in kdepimlibs and kf5?
 set(KF5_VERSION "5.1.0")
 set(KDEPIMLIBS_VERSION "4.70.0")
+set(QT_MIN_VERSION "5.2.0")
 
 ecm_setup_version(${KDEPIMLIBS_VERSION} VARIABLE_PREFIX GPGMEPP
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/gpgmepp_version.h"
@@ -28,8 +29,7 @@ ecm_setup_version(${KDEPIMLIBS_VERSION} VARIABLE_PREFIX GPGMEPP
 )
 
 ########### Find packages ###########
-find_package(KF5KIO ${KF5_VERSION} CONFIG REQUIRED)
-
+find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core)
 
 find_package(Gpgme)
 set_package_properties(Gpgme PROPERTIES
