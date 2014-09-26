@@ -68,10 +68,10 @@ public:
                                       void **r_tag);
     static void eventIOCb(void *, gpgme_event_io_t type, void *type_data);
 
-    static gpgme_io_cbs iocbs;
+    static const gpgme_io_cbs iocbs;
 };
 
-gpgme_io_cbs EventLoopInteractor::Private::iocbs = {
+const gpgme_io_cbs EventLoopInteractor::Private::iocbs = {
     &EventLoopInteractor::Private::registerIOCb,
     0,
     &EventLoopInteractor::Private::removeIOCb,

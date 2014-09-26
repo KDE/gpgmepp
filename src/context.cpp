@@ -1528,7 +1528,7 @@ GpgME::Error GpgME::checkEngine(GpgME::Protocol proto)
     return Error(gpgme_engine_check_version(p));
 }
 
-static gpgme_protocol_t UNKNOWN_PROTOCOL = static_cast<gpgme_protocol_t>(255);
+static const gpgme_protocol_t UNKNOWN_PROTOCOL = static_cast<gpgme_protocol_t>(255);
 
 static gpgme_protocol_t engine2protocol(const GpgME::Engine engine)
 {

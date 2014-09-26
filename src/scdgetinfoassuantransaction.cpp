@@ -112,7 +112,7 @@ std::vector<std::string> ScdGetInfoAssuanTransaction::applicationList() const
     }
 }
 
-static const char *scd_getinfo_tokens[] = {
+static const char *const scd_getinfo_tokens[] = {
     "version",
     "pid",
     "socket_name",

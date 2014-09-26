@@ -62,7 +62,7 @@ public:
     Key(const shared_gpgme_key_t &key);
     Key(gpgme_key_t key, bool acquireRef);
 
-    static Null null;
+    static const Null null;
 
     const Key &operator=(Key other)
     {

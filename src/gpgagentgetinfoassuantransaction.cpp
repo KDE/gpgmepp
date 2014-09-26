@@ -81,7 +81,7 @@ std::string GpgAgentGetInfoAssuanTransaction::sshSocketName() const
     }
 }
 
-static const char *gpgagent_getinfo_tokens[] = {
+static const char *const gpgagent_getinfo_tokens[] = {
     "version",
     "pid",
     "socket_name",

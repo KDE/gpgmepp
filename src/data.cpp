@@ -39,7 +39,7 @@ GpgME::Data::Private::~Private()
     }
 }
 
-GpgME::Data::Null GpgME::Data::null;
+const GpgME::Data::Null GpgME::Data::null;
 
 GpgME::Data::Data()
 {

@@ -185,7 +185,7 @@ static gpgme_error_t edit_interactor_callback(void *opaque, gpgme_status_code_t 
     return CallbackHelper::edit_interactor_callback_impl(opaque, status, args, fd);
 }
 
-gpgme_edit_cb_t GpgME::edit_interactor_callback = ::edit_interactor_callback;
+const gpgme_edit_cb_t GpgME::edit_interactor_callback = ::edit_interactor_callback;
 
 EditInteractor::Private::Private(EditInteractor *qq)
     : q(qq),
@@ -258,7 +258,7 @@ void EditInteractor::setDebugChannel(std::FILE *debug)
     d->debug = debug;
 }
 
-static const char *status_strings[] = {
+static const char *const status_strings[] = {
     "EOF",
     /* mkstatus processing starts here */
     "ENTER",

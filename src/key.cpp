@@ -30,7 +30,7 @@
 
 #include <string.h>
 
-GpgME::Key::Null GpgME::Key::null;
+const GpgME::Key::Null GpgME::Key::null;
 
 namespace GpgME
 {

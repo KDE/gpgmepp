@@ -56,7 +56,7 @@ public:
     // Callback-Based Data Buffers:
     explicit Data(DataProvider *provider);
 
-    static Null null;
+    static const Null null;
 
     const Data &operator=(Data other)
     {
