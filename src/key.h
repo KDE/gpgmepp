@@ -55,7 +55,9 @@ typedef boost::shared_ptr< boost::remove_pointer<gpgme_key_t>::type > shared_gpg
 class GPGMEPP_EXPORT Key
 {
     friend class ::GpgME::Context;
-    struct Null {};
+    struct Null {
+		Null() {}
+	};
 public:
     Key();
     /* implicit */ Key(const Null &);

@@ -39,7 +39,9 @@ class Error;
 
 class GPGMEPP_EXPORT Data
 {
-    struct Null {};
+    struct Null {
+		Null() {}
+	};
 public:
     /* implicit */ Data(const Null &);
     Data();
