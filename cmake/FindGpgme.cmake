@@ -371,22 +371,21 @@ if ( NOT Gpgme_FIND_QUIETLY )
     message( STATUS "No usable gpgme flavours found." )
   endif()
 
-  macro_bool_to_bool( Gpgme_FIND_REQUIRED _req )
-
-  if ( WIN32 )
-    set( _gpgme_homepage "http://www.gpg4win.org" )
-  else()
-    set( _gpgme_homepage "http://www.gnupg.org/related_software/gpgme" )
-  endif()
-
-  set_package_properties(Gpgme PROPERTIES DESCRIPTION "GNU Privacy Guard (GPG/PGP) support" URL ${_gpgme_homepage} TYPE REQUIRED PURPOSE "Necessary to compile many PIM applications, including KMail")
-
-else()
-
-  if ( Gpgme_FIND_REQUIRED AND NOT GPGME_FOUND )
-    message( FATAL_ERROR "Did not find GPGME" )
-  endif()
-
 endif()
+
+if ( Gpgme_FIND_REQUIRED AND NOT GPGME_FOUND )
+  message( FATAL_ERROR "Did not find GPGME" )
+endif()
+
+
+if ( WIN32 )
+  set( _gpgme_homepage "http://www.gpg4win.org" )
+else()
+  set( _gpgme_homepage "http://www.gnupg.org/related_software/gpgme" )
+endif()
+
+set_package_properties(Gpgme PROPERTIES
+  DESCRIPTION "The GnuPG Made Easy (GPGME) library)"
+  URL ${_gpgme_homepage})
 
 set( CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS_gpgme_saved )

@@ -33,9 +33,8 @@ find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core)
 
 find_package(Gpgme)
 set_package_properties(Gpgme PROPERTIES
-                       URL "http://www.gnupg.org/related_software/gpgme/"
-                       DESCRIPTION "The GnuPG Made Easy (GPGME) library)"
-                       TYPE REQUIRED
+    PURPOSE "Required to build Gpgme++"
+    TYPE REQUIRED
 )
 
 
