@@ -42,7 +42,7 @@ class QGPGME_EXPORT EventLoopInteractor : public QObject, public GpgME::EventLoo
 {
     Q_OBJECT
 protected:
-    explicit EventLoopInteractor(QObject *parent = 0);
+    explicit EventLoopInteractor(QObject *parent = Q_NULLPTR);
 public:
     virtual ~EventLoopInteractor();
 
