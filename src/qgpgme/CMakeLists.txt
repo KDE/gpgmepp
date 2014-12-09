@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"libqgpgme5\")
+
 
 set( _any_gpgme_found false )
 
@@ -42,7 +44,7 @@ if ( _any_gpgme_found )
    generate_export_header(KF5QGpgme BASE_NAME qgpgme)
 
    add_library(KF5::QGpgme ALIAS KF5QGpgme)
-   
+
    target_link_libraries(KF5QGpgme
      PUBLIC
       Qt5::Core
@@ -52,7 +54,7 @@ if ( _any_gpgme_found )
    )
 
    target_include_directories(KF5QGpgme INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/qgpgme;${Boost_INCLUDE_DIR}>")
-   target_include_directories(KF5QGpgme PUBLIC "$<BUILD_INTERFACE:${QGpgme_SOURCE_DIR}/src;${QGpgme_BINARY_DIR}/src;${Boost_INCLUDE_DIR}>")
+   target_include_directories(KF5QGpgme PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src;${Boost_INCLUDE_DIR}>")
    if ( GPGME_FOUND )
       if ( GPGME_INCLUDES )
          #REACTIVATE
@@ -62,12 +64,12 @@ if ( _any_gpgme_found )
    endif()
 
    set_target_properties(KF5QGpgme PROPERTIES
-      VERSION ${QGPGME_VERSION_STRING}
-      SOVERSION ${QGPGME_SOVERSION}
+      VERSION ${GPGMEPP_VERSION_STRING}
+      SOVERSION ${GPGMEPP_SOVERSION}
       EXPORT_NAME QGpgme
    )
 
-   install(TARGETS KF5QGpgme EXPORT KF5QGpgmeTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS KF5QGpgme EXPORT KF5GpgmeppTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
    install( FILES
      ${CMAKE_CURRENT_BINARY_DIR}/qgpgme_export.h

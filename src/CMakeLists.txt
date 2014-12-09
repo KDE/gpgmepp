@@ -177,6 +177,9 @@ endif()
 # this writes way too much, but do we care?
 #EXPORT_LIBRARY_DEPENDENCIES( ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppLibraryDepends.cmake )
 
+############ build QGPGME ###############
+add_subdirectory(qgpgme)
+
 ########### install files ###############
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/GpgmeppConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake @ONLY )

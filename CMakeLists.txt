@@ -30,6 +30,7 @@ ecm_setup_version(${KDEPIMLIBS_VERSION} VARIABLE_PREFIX GPGMEPP
 
 ########### Find packages ###########
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core)
+find_package(KF5KIO ${KF5_VERSION} CONFIG REQUIRED)
 
 find_package(Gpgme)
 set_package_properties(Gpgme PROPERTIES
@@ -72,6 +73,8 @@ install(FILES
 ########### Targets ###########
 add_definitions("-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII")
 add_subdirectory(src)
+#qt5 reactivate it
+#add_subdirectory(autotests)
 
 if ("${CMAKE_BINARY_DIR}" STREQUAL "${Gpgmepp_BINARY_DIR}")
   feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
