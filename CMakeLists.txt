@@ -76,6 +76,4 @@ add_subdirectory(src)
 #qt5 reactivate it
 #add_subdirectory(autotests)
 
-if ("${CMAKE_BINARY_DIR}" STREQUAL "${Gpgmepp_BINARY_DIR}")
-  feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
-endif()
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
