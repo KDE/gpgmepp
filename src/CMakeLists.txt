@@ -182,8 +182,6 @@ add_subdirectory(qgpgme)
 
 ########### install files ###############
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/GpgmeppConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake @ONLY )
-
 if ( GPGME_FOUND )
 
    add_subdirectory( interfaces )
@@ -206,12 +204,5 @@ if ( GPGME_FOUND )
         ${CMAKE_CURRENT_BINARY_DIR}/gpgmepp_export.h vfsmountresult.h
         DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/gpgme++ COMPONENT Devel
    )
-
-   install(
-     FILES
-     ${CMAKE_CURRENT_BINARY_DIR}/GpgmeppConfig.cmake
-     #${CMAKE_CURRENT_BINARY_DIR}/GpgmeppLibraryDepends.cmake
-     DESTINATION
-     ${LIB_INSTALL_DIR}/gpgmepp )
 
 endif()
