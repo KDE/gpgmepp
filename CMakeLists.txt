@@ -17,7 +17,7 @@ include(KDECMakeSettings)
 include(KDEFrameworkCompilerSettings)
 
 
-set(KF5_VERSION "5.5.0")
+set(KF5_VERSION "5.6.0")
 set(KDEPIMLIBS_VERSION "4.79.0")
 set(QT_MIN_VERSION "5.2.0")
 
