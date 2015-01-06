@@ -29,7 +29,6 @@ ecm_setup_version(${KDEPIMLIBS_VERSION} VARIABLE_PREFIX GPGMEPP
 
 ########### Find packages ###########
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Core)
-find_package(KF5KIO ${KF5_VERSION} CONFIG REQUIRED)
 
 find_package(Gpgme)
 set_package_properties(Gpgme PROPERTIES
