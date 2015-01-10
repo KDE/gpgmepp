@@ -38,7 +38,7 @@ set_package_properties(Gpgme PROPERTIES
 
 
 ########### CMake Config Files ###########
-set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Gpgmepp")
+set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5Gpgmepp")
 
 
 
@@ -64,7 +64,7 @@ install(EXPORT
 
 install(FILES
    ${CMAKE_CURRENT_BINARY_DIR}/gpgmepp_version.h
-   DESTINATION ${KF5_INCLUDE_INSTALL_DIR}
+   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}
    COMPONENT Devel
 )
 

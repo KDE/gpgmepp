@@ -53,7 +53,7 @@ if ( _any_gpgme_found )
       ${_qgpgme_libgpgme}
    )
 
-   target_include_directories(KF5QGpgme INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/qgpgme;${Boost_INCLUDE_DIR}>")
+   target_include_directories(KF5QGpgme INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/qgpgme;${Boost_INCLUDE_DIR}>")
    target_include_directories(KF5QGpgme PUBLIC "$<BUILD_INTERFACE:${Gpgmepp_SOURCE_DIR}/src;${Gpgmepp_BINARY_DIR}/src;${Boost_INCLUDE_DIR}>")
    if ( GPGME_FOUND )
       if ( GPGME_INCLUDES )
@@ -75,10 +75,10 @@ if ( _any_gpgme_found )
      ${CMAKE_CURRENT_BINARY_DIR}/qgpgme_export.h
      ${_qgpgme_extra_headers}
      dataprovider.h 
-     DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/qgpgme COMPONENT Devel )
+     DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/qgpgme COMPONENT Devel )
 
 endif()
 
-ecm_generate_pri_file(BASE_NAME QGpgme LIB_NAME KF5QGpgme DEPS "" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/qgpgme)
+ecm_generate_pri_file(BASE_NAME QGpgme LIB_NAME KF5QGpgme DEPS "" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF5}/qgpgme)
 install(FILES ${PRI_FILENAME} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
 

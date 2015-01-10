@@ -4,5 +4,5 @@ install( FILES
   passphraseprovider.h
   progressprovider.h
   assuantransaction.h
-  DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/gpgme++/interfaces COMPONENT Devel)
+  DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/gpgme++/interfaces COMPONENT Devel)
 
