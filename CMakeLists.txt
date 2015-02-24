@@ -36,6 +36,7 @@ set_package_properties(Gpgme PROPERTIES
     TYPE REQUIRED
 )
 
+find_package(Boost REQUIRED)
 
 ########### CMake Config Files ###########
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5Gpgmepp")
