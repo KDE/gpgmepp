@@ -72,7 +72,10 @@ install(FILES
 ########### Targets ###########
 add_definitions("-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII")
 add_subdirectory(src)
-#qt5 reactivate it
-#add_subdirectory(autotests)
+
+if(BUILD_TESTING)
+    #qt5 reactivate it
+    #add_subdirectory(autotests)
+endif()
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
