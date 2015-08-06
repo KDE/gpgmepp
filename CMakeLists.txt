@@ -37,6 +37,11 @@ set_package_properties(Gpgme PROPERTIES
 )
 
 find_package(Boost REQUIRED)
+if(WIN32)
+    find_package(KDEWin REQUIRED)
+    INCLUDE_DIRECTORIES(${KDEWIN_INCLUDES})
+    LINK_LIBRARIES(${KDEWIN_LIBRARIES})
+endif()
 
 ########### CMake Config Files ###########
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5Gpgmepp")

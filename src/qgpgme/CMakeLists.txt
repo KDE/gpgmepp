@@ -12,7 +12,7 @@ if ( WIN32 AND GPGME_VANILLA_FOUND )
    # and we don't provide gpgme-qt support
 
    set( _any_gpgme_found true )
-   set( _qgpgme_libgpgme gpgmepp )
+   set( _qgpgme_libgpgme KF5::Gpgmepp )
    #set( _qgpgme_extra_src eventloopinteractor_win.cpp )
 
 endif()
