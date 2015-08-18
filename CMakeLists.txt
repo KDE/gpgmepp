@@ -18,10 +18,10 @@ include(KDEFrameworkCompilerSettings)
 
 
 set(KF5_VERSION "5.12.0")
-set(KDEPIMLIBS_VERSION "4.79.0")
+set(GPGMEPP_LIB_VERSION "4.80.0")
 set(QT_MIN_VERSION "5.2.0")
 
-ecm_setup_version(${KDEPIMLIBS_VERSION} VARIABLE_PREFIX GPGMEPP
+ecm_setup_version(${GPGMEPP_LIB_VERSION} VARIABLE_PREFIX GPGMEPP
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/gpgmepp_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5GpgmeppConfigVersion.cmake"
                         SOVERSION 5
