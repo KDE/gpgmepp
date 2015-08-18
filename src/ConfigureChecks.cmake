@@ -429,6 +429,15 @@ check_cxx_source_compiles ("
   }
 " HAVE_GPGME_CONF_ARG_NEW_WITH_CONST_VALUE )
 
+# check if gpgme has offline mode support (new in 1.5.6)
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+     gpgme_set_offline( NULL, 1 );
+     return 0;
+  }
+" HAVE_GPGME_CTX_OFFLINE )
+
 set(CMAKE_EXTRA_INCLUDE_FILES gpgme.h)
 # defined in gpgme versions >= 1.4.2
 check_type_size(gpgme_ssize_t GPGME_SSIZE_T)

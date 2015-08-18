@@ -124,6 +124,9 @@ static inline void gpg_err_set_errno( int x ) { errno = x; }
 /* Define to 1 if your gpgme_conf_arg_new takes its 'value' parameter as const void* */
 #cmakedefine HAVE_GPGME_CONF_ARG_NEW_WITH_CONST_VALUE 1
 
+/* Define to 1 if gpgme supports the context offline mode* */
+#cmakedefine HAVE_GPGME_CTX_OFFLINE 1
+
 #ifndef GPGMEPP_ERR_SOURCE_DEFAULT
 #define GPGMEPP_ERR_SOURCE_DEFAULT 22
 #endif

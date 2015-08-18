@@ -371,6 +371,23 @@ bool Context::textMode() const
     return gpgme_get_textmode(d->ctx);
 }
 
+void Context::setOffline(bool useOfflineMode)
+{
+#ifdef HAVE_GPGME_CTX_OFFLINE
+    gpgme_set_offline(d->ctx, int(useOfflineMode));
+#else
+    Q_UNUSED(useOfflineMode);
+#endif
+}
+bool Context::offline() const
+{
+#ifdef HAVE_GPGME_CTX_OFFLINE
+    return gpgme_get_offline(d->ctx);
+#else
+    return false;
+#endif
+}
+
 void Context::setIncludeCertificates(int which)
 {
     if (which == DefaultCertificates) {

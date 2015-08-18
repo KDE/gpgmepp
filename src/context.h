@@ -84,6 +84,9 @@ public:
     void setTextMode(bool useTextMode);
     bool textMode() const;
 
+    void setOffline(bool useOfflineMode);
+    bool offline() const;
+
     enum CertificateInclusion {
         DefaultCertificates = -256,
         AllCertificatesExceptRoot = -2,
