@@ -49,7 +49,6 @@ if ( _any_gpgme_found )
      PUBLIC
       Qt5::Core
      PRIVATE
-      KF5::Gpgmepp
       ${_qgpgme_libgpgme}
    )
 
