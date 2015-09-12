@@ -34,8 +34,8 @@ QGpgME::EventLoopInteractor::EventLoopInteractor(QObject *parent)
     setObjectName(QStringLiteral("QGpgME::EventLoopInteractor::instance()"));
     if (!parent) {
         if (QCoreApplication *const app = QCoreApplication::instance()) {
-            connect(app, SIGNAL(aboutToQuit()), SLOT(deleteLater()));
-            connect(app, SIGNAL(aboutToQuit()), SIGNAL(aboutToDestroy()));
+            connect(app, &QCoreApplication::aboutToQuit, this, &QObject::deleteLater);
+            connect(app, &QCoreApplication::aboutToQuit, this, &EventLoopInteractor::aboutToDestroy);
         }
     }
     mSelf = this;
