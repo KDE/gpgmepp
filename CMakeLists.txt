@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project(Gpgmepp)
 
 # ECM setup
-find_package(ECM 5.14.0 CONFIG REQUIRED)
+find_package(ECM 5.17.0 CONFIG REQUIRED)
 set(CMAKE_MODULE_PATH ${Gpgmepp_SOURCE_DIR}/cmake ${ECM_MODULE_PATH})
 
 include(GenerateExportHeader)
@@ -17,8 +17,8 @@ include(KDECMakeSettings)
 include(KDEFrameworkCompilerSettings)
 
 
-set(KF5_VERSION "5.14.0")
-set(GPGMEPP_LIB_VERSION "4.80.0")
+set(KF5_VERSION "5.17.0")
+set(GPGMEPP_LIB_VERSION "5.40.0")
 set(QT_MIN_VERSION "5.4.0")
 
 ecm_setup_version(${GPGMEPP_LIB_VERSION} VARIABLE_PREFIX GPGMEPP
