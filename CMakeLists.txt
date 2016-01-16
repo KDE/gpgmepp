@@ -18,7 +18,7 @@ include(KDEFrameworkCompilerSettings)
 
 
 set(KF5_VERSION "5.17.0")
-set(GPGMEPP_LIB_VERSION "5.40.0")
+set(GPGMEPP_LIB_VERSION "5.0.40")
 set(QT_MIN_VERSION "5.4.0")
 
 ecm_setup_version(${GPGMEPP_LIB_VERSION} VARIABLE_PREFIX GPGMEPP
