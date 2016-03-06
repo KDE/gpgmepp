@@ -110,14 +110,6 @@ Error initializeLibrary(int)
     }
 }
 
-static void format_error(gpgme_error_t err, std::string &str)
-{
-    char buffer[ 1024 ];
-    gpgme_strerror_r(err, buffer, sizeof buffer);
-    buffer[ sizeof buffer - 1 ] = '\0';
-    str = buffer;
-}
-
 const char *Error::source() const
 {
     return gpgme_strsource((gpgme_error_t)mErr);
@@ -126,7 +118,7 @@ const char *Error::source() const
 const char *Error::asString() const
 {
     if (mMessage.empty()) {
-        format_error(static_cast<gpgme_error_t>(mErr), mMessage);
+        mMessage = gpgmepp_strerror_r(static_cast<gpgme_error_t>(mErr));
     }
     return mMessage.c_str();
 }

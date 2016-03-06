@@ -773,10 +773,7 @@ std::string UserID::Signature::statusAsString() const
     if (!sig) {
         return std::string();
     }
-    char buf[ 1024 ];
-    gpgme_strerror_r(sig->status, buf, sizeof buf);
-    buf[ sizeof buf - 1 ] = '\0';
-    return std::string(buf);
+    return gpgmepp_strerror_r(sig->status);
 }
 
 GpgME::Notation UserID::Signature::notation(unsigned int idx) const

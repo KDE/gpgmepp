@@ -25,6 +25,7 @@
 #include "editinteractor.h"
 #include "callbacks.h"
 #include "error.h"
+#include "util.h"
 
 #ifdef HAVE_GPGME_GPG_ERROR_WRAPPERS
 #include <gpgme.h>
@@ -172,8 +173,9 @@ public:
         }
 
         if (ei->debug) {
+            std::string errMsg = gpgmepp_strerror_r(ei->error.encodedError());
             std::fprintf(ei->debug, "EditInteractor: error now %u (%s)\n",
-                         ei->error.encodedError(), gpgme_strerror(ei->error.encodedError()));
+                         ei->error.encodedError(), errMsg.c_str());
         }
 
         return ei->error.encodedError();

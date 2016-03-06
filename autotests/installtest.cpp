@@ -36,6 +36,7 @@
 #include <assert.h>
 #include <errno.h>
 #include <stdlib.h>
+#include "../src/util.h"
 
 using namespace GpgME;
 
@@ -67,9 +68,9 @@ int main(int, char **)
 {
 
     printf("GPGME_PROTOCOL_CMS: %s\n",
-           gpgme_strerror(gpgme_engine_check_version(GPGME_PROTOCOL_CMS)));
+           gpgmepp_strerror_r(gpgme_engine_check_version(GPGME_PROTOCOL_CMS)));
     printf("GPGME_PROTOCOL_OpenPGP: %s\n",
-           gpgme_strerror(gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP)));
+           gpgmepp_strerror_r(gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP)));
     gpgme_engine_info_t ei = 0;
     if (gpgme_get_engine_info(&ei)) {
         printf("error not engine info found \n");

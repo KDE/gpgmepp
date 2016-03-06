@@ -176,4 +176,15 @@ static inline gpgme_sig_notation_flags_t  add_to_gpgme_sig_notation_flags_t(unsi
 }
 #endif
 
+/** @short C++ wrapper around gpgme_strerror_r */
+static inline std::string gpgmepp_strerror_r(const gpg_error_t err)
+{
+    char buf[1024];
+    gpgme_strerror_r(err, buf, sizeof(buf));
+    // the documentation for gpgme_strerror_r doesn't say anything about
+    // the trailing null, so better play it safe
+    buf[sizeof(buf) - 1] = '\0';
+    return std::string(buf);
+}
+
 #endif // __GPGMEPP_UTIL_H__

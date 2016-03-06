@@ -22,6 +22,7 @@
 
 // -*- c++ -*-
 #include "exception.h"
+#include "util.h"
 
 #include <gpgme.h>
 
@@ -44,15 +45,11 @@ string Exception::make_message(const Error &err, const string &msg, Options opt)
     if (opt & MessageOnly) {
         return msg;
     }
-    char error_string[128];
-    error_string[0] = '\0';
-    gpgme_strerror_r(err.encodedError(), error_string, sizeof error_string);
-    error_string[sizeof error_string - 1] = '\0';
     stringstream ss;
     ss << gpgme_strsource(err.encodedError()) << ": ";
     if (!msg.empty()) {
         ss << msg << ": ";
     }
-    ss << error_string << " (" << static_cast<unsigned long>(err.encodedError()) << ')';
+    ss << gpgmepp_strerror_r(err.encodedError()) << " (" << static_cast<unsigned long>(err.encodedError()) << ')';
     return ss.str();
 }
