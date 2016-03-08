@@ -114,6 +114,9 @@
 /* Define to 1 if your gpgme defines gpgme_off_t */
 #cmakedefine HAVE_GPGME_OFF_T 1
 
+/* Define to 1 if your gpgme has gpgme_pubkey_algo_string */
+#cmakedefine HAVE_GPGME_PUBKEY_ALGO_STRING 1
+
 #ifndef HAVE_GPGME_GPG_ERROR_WRAPPERS
 # ifndef HAVE_GPG_ERR_SET_ERRNO
 #  include <errno.h>

@@ -393,6 +393,21 @@ const char *Subkey::publicKeyAlgorithmAsString() const
     return gpgme_pubkey_algo_name(subkey ? subkey->pubkey_algo : (gpgme_pubkey_algo_t)0);
 }
 
+std::string Subkey::algoName() const
+{
+#ifndef HAVE_GPGME_PUBKEY_ALGO_STRING
+    return std::string();
+#else
+    char *gpgmeStr;
+    if (subkey && (gpgmeStr = gpgme_pubkey_algo_string(subkey))) {
+        std::string ret = std::string(gpgmeStr);
+        gpgme_free(gpgmeStr);
+        return ret;
+    }
+    return std::string();
+#endif
+}
+
 bool Subkey::canEncrypt() const
 {
     return subkey && subkey->can_encrypt;

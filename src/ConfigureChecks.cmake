@@ -429,7 +429,7 @@ check_cxx_source_compiles ("
   }
 " HAVE_GPGME_CONF_ARG_NEW_WITH_CONST_VALUE )
 
-# check if gpgme has offline mode support (new in 1.5.6)
+# check if gpgme has offline mode support (new in 1.6.0)
 check_cxx_source_compiles ("
   #include <gpgme.h>
   int main() {
@@ -437,6 +437,9 @@ check_cxx_source_compiles ("
      return 0;
   }
 " HAVE_GPGME_CTX_OFFLINE )
+
+# check if gpgme has pubkey_algo name mode support (new in 1.6.1)
+check_function_exists ("gpgme_pubkey_algo_string" HAVE_GPGME_PUBKEY_ALGO_STRING )
 
 set(CMAKE_EXTRA_INCLUDE_FILES gpgme.h)
 # defined in gpgme versions >= 1.4.2
