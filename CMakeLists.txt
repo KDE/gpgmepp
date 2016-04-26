@@ -16,9 +16,10 @@ include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 
+set(PIM_VERSION "5.2.41")
 
 set(KF5_VERSION "5.19.0")
-set(GPGMEPP_LIB_VERSION "5.2.41")
+set(GPGMEPP_LIB_VERSION ${PIM_VERSION})
 set(QT_MIN_VERSION "5.2.0")
 
 ecm_setup_version(${GPGMEPP_LIB_VERSION} VARIABLE_PREFIX GPGMEPP
