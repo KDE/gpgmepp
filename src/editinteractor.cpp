@@ -221,6 +221,11 @@ Error EditInteractor::lastError() const
     return d->error;
 }
 
+#ifndef GPGME_STATUS_PINENTRY_LAUNCHED
+// New in gpgme 1.5.0
+#define GPGME_STATUS_PINENTRY_LAUNCHED 88
+#endif
+
 bool EditInteractor::needsNoResponse(unsigned int status) const
 {
     switch (status) {
@@ -233,6 +238,7 @@ bool EditInteractor::needsNoResponse(unsigned int status) const
     case GPGME_STATUS_USERID_HINT:
     case GPGME_STATUS_SIGEXPIRED:
     case GPGME_STATUS_KEYEXPIRED:
+    case GPGME_STATUS_PINENTRY_LAUNCHED:
         return true;
     default:
         return false;
