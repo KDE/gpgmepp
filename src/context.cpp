@@ -1684,6 +1684,9 @@ static const unsigned long supported_features = 0
         ;
 
 static const unsigned long supported_features2 = 0
+#ifdef HAVE_GPGME_IDENTIFY_GOOD
+        | GpgME::BinaryAndFineGrainedIdentify
+#endif
         ;
 
 bool GpgME::hasFeature(unsigned long features)

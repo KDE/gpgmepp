@@ -438,6 +438,30 @@ check_cxx_source_compiles ("
   }
 " HAVE_GPGME_CTX_OFFLINE )
 
+# check if gpgme has identify support (new in 1.4.3)
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+     gpgme_data_t data;
+     gpgme_data_identify( data, 0 );
+     return 0;
+  }
+" HAVE_GPGME_DATA_IDENTIFY )
+
+# check if gpgme has decent identify support (new in 1.7.0)
+# decent means that it supports binary data and has more fine
+# grained distinctions
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+     gpgme_data_t data;
+     gpgme_data_type_t ret = gpgme_data_identify( data, 0 );
+     if (ret == GPGME_DATA_TYPE_PGP_SIGNATURE)
+       return 0;
+     return 0;
+  }
+" HAVE_GPGME_DATA_IDENTIFY_GOOD )
+
 # check if gpgme has pubkey_algo name mode support (new in 1.6.1)
 check_function_exists ("gpgme_pubkey_algo_string" HAVE_GPGME_PUBKEY_ALGO_STRING )
 

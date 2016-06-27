@@ -169,6 +169,7 @@ GpgME::Data::Type GpgME::Data::type() const
     if (isNull()) {
         return Invalid;
     }
+#ifdef HAVE_GPGME_IDENTIFY
     switch (gpgme_data_identify(d->data, 0)) {
     case GPGME_DATA_TYPE_INVALID:       return Invalid;
     case GPGME_DATA_TYPE_UNKNOWN:       return Unknown;
@@ -180,8 +181,13 @@ GpgME::Data::Type GpgME::Data::type() const
     case GPGME_DATA_TYPE_CMS_OTHER:     return CMSOther;
     case GPGME_DATA_TYPE_X509_CERT:     return X509Cert;
     case GPGME_DATA_TYPE_PKCS12:        return PKCS12;
+# ifdef HAVE_GPGME_IDENTIFY_GOOD
+    case GPGME_DATA_TYPE_PGP_ENCRYPTED: return PGPEncrypted;
+    case GPGME_DATA_TYPE_PGP_SIGNATURE: return PGPSignature;
+# endif
     }
-    return Invalid;
+#endif
+    return Unknown;
 }
 
 char *GpgME::Data::fileName() const
