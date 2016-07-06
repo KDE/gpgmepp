@@ -207,7 +207,23 @@ public:
 
     bool isSecret() const;
 
-    unsigned int publicKeyAlgorithm() const;
+    /** Same as gpgme_pubkey_algo_t */
+    enum PubkeyAlgo {
+        AlgoUnknown = 0,
+        AlgoRSA     = 1,
+        AlgoRSA_E   = 2,
+        AlgoRSA_S   = 3,
+        AlgoELG_E   = 16,
+        AlgoDSA     = 17,
+        AlgoECC     = 18,
+        AlgoELG     = 20,
+        AlgoECDSA   = 301,
+        AlgoECDH    = 302,
+        AlgoEDDSA   = 303,
+        AlgoMax     = 1 << 31
+    };
+
+    PubkeyAlgo publicKeyAlgorithm() const;
 
     /**
       @brief Get the public key algorithm name.
@@ -219,11 +235,16 @@ public:
     */
     const char *publicKeyAlgorithmAsString() const;
 
+    /** @brief Same as publicKeyAlgorithmAsString but static. */
+    static const char *publicKeyAlgorithmAsString(PubkeyAlgo algo);
+
     /**
        @brief Get the key algo string like GnuPG 2.1 prints it.
 
        This returns combinations of size and algorithm. Like
-       bp512 or rsa2048
+       bp512 or rsa2048. Misnamed because publicKeyAlgorithmAsString
+       already used the older pubkey_algo_name.
+       Actually uses gpgme_pubkey_algo_string.
 
        @returns the key algorithm as string. Empty string on error.
     */
