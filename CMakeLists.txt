@@ -17,7 +17,7 @@ include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 
-set(PIM_VERSION "5.2.90")
+set(PIM_VERSION "5.3.0")
 
 set(GPGMEPP_LIB_VERSION ${PIM_VERSION})
 set(QT_MIN_VERSION "5.2.0")
