@@ -462,6 +462,15 @@ check_cxx_source_compiles ("
   }
 " HAVE_GPGME_DATA_IDENTIFY_GOOD )
 
+# check if gpgme knows the encrypt flag SYMMETRIC (new in 1.7.0)
+check_cxx_source_compiles ("
+  #include <gpgme.h>
+  int main() {
+     gpgme_encrypt_flags_t f = GPGME_ENCRYPT_SYMMETRIC;
+     return 0;
+  }
+" HAVE_GPGME_ENCRYPT_SYMMETRIC )
+
 # check if gpgme has pubkey_algo name mode support (new in 1.6.1)
 check_function_exists ("gpgme_pubkey_algo_string" HAVE_GPGME_PUBKEY_ALGO_STRING )
 
