@@ -1228,6 +1228,22 @@ static gpgme_encrypt_flags_t encryptflags2encryptflags(Context::EncryptionFlags 
     return static_cast<gpgme_encrypt_flags_t>(result);
 }
 
+gpgme_key_t *const Context::getKeysFromRecipients(const std::vector<Key> &recipients)
+{
+    if (recipients.empty()) {
+        return Q_NULLPTR;
+    }
+    gpgme_key_t *ret = new gpgme_key_t[ recipients.size() + 1 ];
+    gpgme_key_t *keys_it = ret;
+    for (std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it) {
+        if (it->impl()) {
+            *keys_it++ = it->impl();
+        }
+    }
+    *keys_it++ = 0;
+    return ret;
+}
+
 EncryptionResult Context::encrypt(const std::vector<Key> &recipients, const Data &plainText, Data &cipherText, EncryptionFlags flags)
 {
     d->lastop = Private::Encrypt;
@@ -1238,18 +1254,12 @@ EncryptionResult Context::encrypt(const std::vector<Key> &recipients, const Data
 #endif
     const Data::Private *const pdp = plainText.impl();
     Data::Private *const cdp = cipherText.impl();
-    gpgme_key_t *const keys = new gpgme_key_t[ recipients.size() + 1 ];
-    gpgme_key_t *keys_it = keys;
-    for (std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it) {
-        if (it->impl()) {
-            *keys_it++ = it->impl();
-        }
-    }
-    *keys_it++ = 0;
-    d->lasterr = gpgme_op_encrypt(d->ctx, recipients.empty() ? Q_NULLPTR : keys,
-                                  encryptflags2encryptflags(flags),
+    gpgme_key_t *const keys = getKeysFromRecipients(recipients);
+    d->lasterr = gpgme_op_encrypt(d->ctx, keys, encryptflags2encryptflags(flags),
                                   pdp ? pdp->data : 0, cdp ? cdp->data : 0);
-    delete[] keys;
+    if (keys) {
+        delete[] keys;
+    }
     return EncryptionResult(d->ctx, Error(d->lasterr));
 }
 
@@ -1272,17 +1282,12 @@ Error Context::startEncryption(const std::vector<Key> &recipients, const Data &p
 #endif
     const Data::Private *const pdp = plainText.impl();
     Data::Private *const cdp = cipherText.impl();
-    gpgme_key_t *const keys = new gpgme_key_t[ recipients.size() + 1 ];
-    gpgme_key_t *keys_it = keys;
-    for (std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it) {
-        if (it->impl()) {
-            *keys_it++ = it->impl();
-        }
-    }
-    *keys_it++ = 0;
+    gpgme_key_t *const keys = getKeysFromRecipients(recipients);
     d->lasterr = gpgme_op_encrypt_start(d->ctx, keys, encryptflags2encryptflags(flags),
                                         pdp ? pdp->data : 0, cdp ? cdp->data : 0);
-    delete[] keys;
+    if (keys) {
+        delete[] keys;
+    }
     return Error(d->lasterr);
 }
 
@@ -1300,17 +1305,12 @@ std::pair<SigningResult, EncryptionResult> Context::signAndEncrypt(const std::ve
     d->lastop = Private::SignAndEncrypt;
     const Data::Private *const pdp = plainText.impl();
     Data::Private *const cdp = cipherText.impl();
-    gpgme_key_t *const keys = new gpgme_key_t[ recipients.size() + 1 ];
-    gpgme_key_t *keys_it = keys;
-    for (std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it) {
-        if (it->impl()) {
-            *keys_it++ = it->impl();
-        }
-    }
-    *keys_it++ = 0;
+    gpgme_key_t *const keys = getKeysFromRecipients(recipients);
     d->lasterr = gpgme_op_encrypt_sign(d->ctx, keys, encryptflags2encryptflags(flags),
                                        pdp ? pdp->data : 0, cdp ? cdp->data : 0);
-    delete[] keys;
+    if (keys) {
+        delete[] keys;
+    }
     return std::make_pair(SigningResult(d->ctx, Error(d->lasterr)),
                           EncryptionResult(d->ctx, Error(d->lasterr)));
 }
@@ -1320,17 +1320,12 @@ Error Context::startCombinedSigningAndEncryption(const std::vector<Key> &recipie
     d->lastop = Private::SignAndEncrypt;
     const Data::Private *const pdp = plainText.impl();
     Data::Private *const cdp = cipherText.impl();
-    gpgme_key_t *const keys = new gpgme_key_t[ recipients.size() + 1 ];
-    gpgme_key_t *keys_it = keys;
-    for (std::vector<Key>::const_iterator it = recipients.begin() ; it != recipients.end() ; ++it) {
-        if (it->impl()) {
-            *keys_it++ = it->impl();
-        }
-    }
-    *keys_it++ = 0;
+    gpgme_key_t *const keys = getKeysFromRecipients(recipients);
     d->lasterr = gpgme_op_encrypt_sign_start(d->ctx, keys, encryptflags2encryptflags(flags),
                  pdp ? pdp->data : 0, cdp ? cdp->data : 0);
-    delete[] keys;
+    if (keys) {
+        delete[] keys;
+    }
     return Error(d->lasterr);
 }
 
