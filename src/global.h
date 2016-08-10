@@ -133,6 +133,7 @@ enum Feature {
 };
 enum Feature2 {
     BinaryAndFineGrainedIdentify               = 0x00000001, // gpgme >= 1.7.0
+    EncryptSymmetric                           = 0x00000002, // gpgme >= 1.7.0
     Feature2MaxValue                           = 0x80000000
 };
 
