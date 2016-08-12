@@ -473,6 +473,8 @@ check_cxx_source_compiles ("
 
 # check if gpgme has pubkey_algo name mode support (new in 1.6.1)
 check_function_exists ("gpgme_pubkey_algo_string" HAVE_GPGME_PUBKEY_ALGO_STRING )
+# check if gpgme has support for data flags
+check_function_exists ("gpgme_data_set_flag" HAVE_GPGME_DATA_SET_FLAG)
 
 set(CMAKE_EXTRA_INCLUDE_FILES gpgme.h)
 # defined in gpgme versions >= 1.4.2

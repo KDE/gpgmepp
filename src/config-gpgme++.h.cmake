@@ -139,6 +139,9 @@ static inline void gpg_err_set_errno( int x ) { errno = x; }
 /* Define to 1 if gpgme supports ENCRYPT_SYMMETRIC* */
 #cmakedefine HAVE_GPGME_ENCRYPT_SYMMETRIC 1
 
+/* Define to 1 if gpgme supports gpgme_data_set_flag */
+#cmakedefine HAVE_GPGME_DATA_SET_FLAG 1
+
 #ifndef GPGMEPP_ERR_SOURCE_DEFAULT
 #define GPGMEPP_ERR_SOURCE_DEFAULT 22
 #endif
