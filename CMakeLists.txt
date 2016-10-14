@@ -20,7 +20,7 @@ include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 set(PIM_VERSION "5.3.3")
 
 set(GPGMEPP_LIB_VERSION ${PIM_VERSION})
-set(QT_MIN_VERSION "5.3.2")
+set(QT_MIN_VERSION "5.3.3")
 
 ecm_setup_version(${GPGMEPP_LIB_VERSION} VARIABLE_PREFIX GPGMEPP
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/gpgmepp_version.h"
