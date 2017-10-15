@@ -50,18 +50,18 @@ private:
     // these shall only be accessed through the dataprovider
     // interface, where they're public:
     /*! \reimp */
-    bool isSupported(Operation) const
+    bool isSupported(Operation) const override
     {
         return true;
     }
     /*! \reimp */
-    ssize_t read(void *buffer, size_t bufSize);
+    ssize_t read(void *buffer, size_t bufSize) override;
     /*! \reimp */
-    ssize_t write(const void *buffer, size_t bufSize);
+    ssize_t write(const void *buffer, size_t bufSize)  override;
     /*! \reimp */
-    off_t seek(off_t offset, int whence);
+    off_t seek(off_t offset, int whence)  override;
     /*! \reimp */
-    void release();
+    void release() override;
 
 private:
     QByteArray mArray;
@@ -83,15 +83,15 @@ private:
     // these shall only be accessed through the dataprovider
     // interface, where they're public:
     /*! \reimp */
-    bool isSupported(Operation) const;
+    bool isSupported(Operation) const override;
     /*! \reimp */
-    ssize_t read(void *buffer, size_t bufSize);
+    ssize_t read(void *buffer, size_t bufSize) override;
     /*! \reimp */
-    ssize_t write(const void *buffer, size_t bufSize);
+    ssize_t write(const void *buffer, size_t bufSize) override;
     /*! \reimp */
-    off_t seek(off_t offset, int whence);
+    off_t seek(off_t offset, int whence) override;
     /*! \reimp */
-    void release();
+    void release() override;
 
 private:
     const boost::shared_ptr<QIODevice> mIO;

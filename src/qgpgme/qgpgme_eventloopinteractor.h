@@ -66,22 +66,22 @@ protected:
     //
 
     /*! \reimp */
-    void *registerWatcher(int fd, Direction dir, bool &ok);
+    void *registerWatcher(int fd, Direction dir, bool &ok) override;
     /*! \reimp */
-    void unregisterWatcher(void *tag);
+    void unregisterWatcher(void *tag) override;
 
     //
     // Event Handler Interface
     //
 
     /*! \reimp */
-    void nextTrustItemEvent(GpgME::Context *context, const GpgME::TrustItem &item);
+    void nextTrustItemEvent(GpgME::Context *context, const GpgME::TrustItem &item) override;
     /*! \reimp */
-    void nextKeyEvent(GpgME::Context *context, const GpgME::Key &key);
+    void nextKeyEvent(GpgME::Context *context, const GpgME::Key &key) override;
     /*! \reimp */
-    void operationStartEvent(GpgME::Context *context);
+    void operationStartEvent(GpgME::Context *context) override;
     /*! \reimp */
-    void operationDoneEvent(GpgME::Context *context, const GpgME::Error &e);
+    void operationDoneEvent(GpgME::Context *context, const GpgME::Error &e) override;
 
 private:
     class Private;
