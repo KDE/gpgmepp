@@ -1608,6 +1608,11 @@ GpgME::Error GpgME::checkEngine(GpgME::Engine engine)
     return Error(gpgme_engine_check_version(p));
 }
 
+int GpgME::setGlobalFlag(const char *name, const char *value)
+{
+    return gpgme_set_global_flag(name, value);
+}
+
 static const unsigned long supported_features = 0
         | GpgME::ValidatingKeylistModeFeature
         | GpgME::CancelOperationFeature
